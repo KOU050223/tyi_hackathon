@@ -163,7 +163,7 @@ export function useFaceDetection({
     if (isDetecting) return;
     setIsDetecting(true);
     detectLoop();
-  }, [isDetecting, detectLoop]);
+  }, [detectLoop]); // isDetectingを依存配列から削除
 
   /**
    * 検出ループの停止
@@ -206,11 +206,7 @@ export function useFaceDetection({
     } else if (!enabled && isDetecting) {
       stopDetection();
     }
-
-    return () => {
-      stopDetection();
-    };
-  }, [enabled, isInitialized, isDetecting, startDetection, stopDetection]);
+  }, [enabled, isInitialized]); // startDetection, stopDetectionを依存配列から削除
 
   /**
    * クリーンアップ
