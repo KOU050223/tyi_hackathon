@@ -4,6 +4,7 @@ import { useDeviceType } from './hooks/useDeviceType'
 import { useFaceDetection } from './hooks/useFaceDetection'
 import { CanvasRenderer } from './engines/renderer/CanvasRenderer'
 import { detectExpression, getExpressionLabel } from './utils/expressionDetector'
+import { convertBlendshapes } from './utils/blendshapeConverter'
 import type { Expression } from './utils/expressionDetector'
 import './styles/main.css'
 
@@ -28,7 +29,9 @@ function App() {
     onDetection: (result) => {
       // 顔が検出され、Blendshapesが取得できた場合
       if (result.detected && result.blendshapes) {
-        const { expression, confidence } = detectExpression(result.blendshapes)
+        // MediaPipeのBlendshapesを変換
+        const blendshapes = convertBlendshapes(result.blendshapes)
+        const { expression, confidence } = detectExpression(blendshapes)
         setCurrentExpression(expression)
         setConfidence(confidence)
       }
