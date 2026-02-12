@@ -1,16 +1,42 @@
 import { useEffect, useRef, useState } from 'react'
 import { useCamera } from './hooks/useCamera'
 import { useDeviceType } from './hooks/useDeviceType'
+import { useFaceDetection } from './hooks/useFaceDetection'
 import { CanvasRenderer } from './engines/renderer/CanvasRenderer'
-import type { Expression } from './types/expression'
+import { detectExpression, getExpressionLabel } from './utils/expressionDetector'
+import type { Expression } from './utils/expressionDetector'
 import './styles/main.css'
 
 function App() {
-  const { videoRef, isReady, error, startCamera } = useCamera()
+  const { videoRef, isReady, error: cameraError, startCamera } = useCamera()
   const deviceType = useDeviceType()
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const rendererRef = useRef<CanvasRenderer | null>(null)
   const [currentExpression, setCurrentExpression] = useState<Expression>('neutral')
+  const [confidence, setConfidence] = useState<number>(0)
+
+  // MediaPipe顔検出の初期化
+  const {
+    result: faceResult,
+    isInitializing,
+    isInitialized,
+    error: faceError,
+    isDetecting,
+  } = useFaceDetection({
+    videoRef,
+    enabled: isReady,
+    onDetection: (result) => {
+      // 顔が検出され、Blendshapesが取得できた場合
+      if (result.detected && result.blendshapes) {
+        const { expression, confidence } = detectExpression(result.blendshapes)
+        setCurrentExpression(expression)
+        setConfidence(confidence)
+      }
+    },
+    onError: (err) => {
+      console.error('Face detection error:', err)
+    },
+  })
 
   // レンダラーの初期化
   useEffect(() => {
@@ -26,35 +52,7 @@ function App() {
     }
   }, [currentExpression, deviceType])
 
-  // 表情切り替えのデモ（3秒ごと）
-  useEffect(() => {
-    const expressions: Expression[] = ['neutral', 'smile', 'surprised', 'blink']
-    let index = 0
-
-    const interval = setInterval(() => {
-      index = (index + 1) % expressions.length
-      setCurrentExpression(expressions[index])
-    }, 3000)
-
-    return () => clearInterval(interval)
-  }, [])
-
-  // 表情名を日本語に変換
-  const getExpressionName = (expr: Expression): string => {
-    const names: Record<Expression, string> = {
-      neutral: '通常',
-      smile: '笑顔',
-      surprised: '驚き',
-      blink: 'まばたき',
-      sad: '悲しみ',
-      angry: '怒り',
-      confused: '困惑',
-      smug: '得意気',
-      questioning: '疑問',
-      embarrassed: '照れ'
-    }
-    return names[expr] || expr
-  }
+  const error = cameraError || faceError?.message
 
   return (
     <div style={{
@@ -100,12 +98,22 @@ function App() {
             </button>
           )}
           {error && <p style={{ color: '#FF0000', marginTop: '10px' }}>{error}</p>}
+          {isInitializing && (
+            <p style={{ color: '#FFFF00', marginTop: '10px' }}>
+              MediaPipe初期化中...
+            </p>
+          )}
         </div>
 
         {/* ドット絵表示 */}
         <div>
           <h2 style={{ fontSize: '18px', marginBottom: '10px' }}>
-            現在の表情: {getExpressionName(currentExpression)}
+            現在の表情: {getExpressionLabel(currentExpression)}
+            {confidence > 0 && (
+              <span style={{ fontSize: '14px', color: '#888', marginLeft: '10px' }}>
+                ({Math.round(confidence * 100)}%)
+              </span>
+            )}
           </h2>
           <canvas
             ref={canvasRef}
@@ -123,8 +131,19 @@ function App() {
           デバイス: {deviceType === 'smartphone' ? 'スマートフォン（目のみ表示）' : 'タブレット（目+口表示）'}
         </p>
         <p style={{ fontSize: '12px', color: '#888' }}>
-          ※ デモモード: 表情は3秒ごとに自動切り替えされます
+          {isDetecting ? (
+            <>✓ リアルタイム表情認識中</>
+          ) : isInitialized ? (
+            <>⏸ 検出待機中</>
+          ) : (
+            <>カメラを起動して表情認識を開始</>
+          )}
         </p>
+        {faceResult && !faceResult.detected && isReady && (
+          <p style={{ fontSize: '12px', color: '#FF6600' }}>
+            ⚠ 顔が検出されていません
+          </p>
+        )}
       </div>
     </div>
   )
