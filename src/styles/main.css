@@ -1,0 +1,31 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #00ff00;
+  --color-secondary: #ffff00;
+  --font-family-mono: 'Courier New', monospace;
+
+  --breakpoint-tablet: 768px;
+}
+
+/* カスタムクラス */
+@layer utilities {
+  .pixel-art {
+    image-rendering: pixelated;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: crisp-edges;
+  }
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #000;
+  color: #fff;
+  font-family: var(--font-family-mono);
+}
+
+#root {
+  width: 100%;
+  height: 100vh;
+}
