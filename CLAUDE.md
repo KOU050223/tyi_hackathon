@@ -23,6 +23,12 @@ npm run preview
 
 # リント実行
 npm run lint
+
+# コードフォーマット
+npm run format
+
+# フォーマットチェック（CIで使用）
+npm run format:check
 ```
 
 ### テスト関連
