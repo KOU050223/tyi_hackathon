@@ -1,5 +1,8 @@
-import { useEffect, useRef, useState, useCallback } from 'react';
-import { FaceLandmarker, type FaceDetectionResult } from '../engines/mediapipe/FaceLandmarker';
+import { useEffect, useRef, useState, useCallback } from "react";
+import {
+  FaceLandmarker,
+  type FaceDetectionResult,
+} from "../engines/mediapipe/FaceLandmarker";
 
 /**
  * useFaceDetection hookのオプション
@@ -8,7 +11,7 @@ export interface UseFaceDetectionOptions {
   /**
    * ビデオ要素への参照
    */
-  videoRef: React.RefObject<HTMLVideoElement>;
+  videoRef: React.RefObject<HTMLVideoElement | null>;
 
   /**
    * 顔検出を有効化するかどうか
@@ -121,7 +124,7 @@ export function useFaceDetection({
       const error = err instanceof Error ? err : new Error(String(err));
       setError(error);
       onError?.(error);
-      console.error('Failed to initialize FaceLandmarker:', error);
+      console.error("Failed to initialize FaceLandmarker:", error);
     } finally {
       setIsInitializing(false);
     }
@@ -147,7 +150,7 @@ export function useFaceDetection({
       }
     } catch (err) {
       const error = err instanceof Error ? err : new Error(String(err));
-      console.error('Detection error:', error);
+      console.error("Detection error:", error);
       setError(error);
       onError?.(error);
     }
