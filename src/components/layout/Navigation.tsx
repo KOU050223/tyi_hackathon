@@ -37,7 +37,9 @@ export function Navigation() {
               key={to}
               to={to}
               end={to === '/'}
-              className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
+              className={({ isActive }) =>
+                `nav-link ${isActive ? 'active' : ''}`
+              }
               onClick={() => setMenuOpen(false)}
             >
               {label}
@@ -45,9 +47,7 @@ export function Navigation() {
           ))}
         </div>
 
-        <div className="nav-auth">
-          {user ? <UserMenu /> : <LoginButton />}
-        </div>
+        <div className="nav-auth">{user ? <UserMenu /> : <LoginButton />}</div>
       </div>
     </nav>
   )

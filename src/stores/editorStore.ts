@@ -1,134 +1,134 @@
-import { create } from "zustand";
-import { persist } from "zustand/middleware";
-import type { Expression } from "@/types/expression";
-import type { DeviceType } from "@/types/device";
+import { create } from 'zustand'
+import { persist } from 'zustand/middleware'
+import type { Expression } from '@/types/expression'
+import type { DeviceType } from '@/types/device'
 
 function createEmptyGrid(rows: number, cols: number): number[][] {
-  return Array.from({ length: rows }, () => Array(cols).fill(0) as number[]);
+  return Array.from({ length: rows }, () => Array(cols).fill(0) as number[])
 }
 
 function resizeGrid(
   oldGrid: number[][],
   newRows: number,
-  newCols: number,
+  newCols: number
 ): number[][] {
-  const newGrid = createEmptyGrid(newRows, newCols);
-  const copyRows = Math.min(oldGrid.length, newRows);
-  const copyCols = Math.min(oldGrid[0]?.length ?? 0, newCols);
+  const newGrid = createEmptyGrid(newRows, newCols)
+  const copyRows = Math.min(oldGrid.length, newRows)
+  const copyCols = Math.min(oldGrid[0]?.length ?? 0, newCols)
   for (let r = 0; r < copyRows; r++) {
     for (let c = 0; c < copyCols; c++) {
-      newGrid[r][c] = oldGrid[r][c];
+      newGrid[r][c] = oldGrid[r][c]
     }
   }
-  return newGrid;
+  return newGrid
 }
 
-const DEFAULT_ROWS = 6;
-const DEFAULT_COLS = 12;
+const DEFAULT_ROWS = 6
+const DEFAULT_COLS = 12
 
 interface EditorState {
-  gridData: number[][];
-  color: string;
-  name: string;
-  expressionType: Expression;
-  deviceType: DeviceType;
-  isPublic: boolean;
-  tags: string[];
-  tool: "draw" | "erase";
-  isDrawing: boolean;
-  rows: number;
-  cols: number;
+  gridData: number[][]
+  color: string
+  name: string
+  expressionType: Expression
+  deviceType: DeviceType
+  isPublic: boolean
+  tags: string[]
+  tool: 'draw' | 'erase'
+  isDrawing: boolean
+  rows: number
+  cols: number
 
-  setCell: (row: number, col: number, value: number) => void;
-  toggleCell: (row: number, col: number) => void;
-  setColor: (color: string) => void;
-  setName: (name: string) => void;
-  setExpressionType: (type: Expression) => void;
-  setDeviceType: (type: DeviceType) => void;
-  setTool: (tool: "draw" | "erase") => void;
-  setIsDrawing: (drawing: boolean) => void;
-  setGridSize: (rows: number, cols: number) => void;
-  clearGrid: () => void;
-  setIsPublic: (isPublic: boolean) => void;
-  setTags: (tags: string[]) => void;
+  setCell: (row: number, col: number, value: number) => void
+  toggleCell: (row: number, col: number) => void
+  setColor: (color: string) => void
+  setName: (name: string) => void
+  setExpressionType: (type: Expression) => void
+  setDeviceType: (type: DeviceType) => void
+  setTool: (tool: 'draw' | 'erase') => void
+  setIsDrawing: (drawing: boolean) => void
+  setGridSize: (rows: number, cols: number) => void
+  clearGrid: () => void
+  setIsPublic: (isPublic: boolean) => void
+  setTags: (tags: string[]) => void
   loadPattern: (pattern: {
-    gridData: number[][];
-    color: string;
-    name: string;
-    expressionType: Expression;
-    deviceType: DeviceType;
-    isPublic: boolean;
-    tags: string[];
-  }) => void;
-  resetEditor: () => void;
+    gridData: number[][]
+    color: string
+    name: string
+    expressionType: Expression
+    deviceType: DeviceType
+    isPublic: boolean
+    tags: string[]
+  }) => void
+  resetEditor: () => void
 }
 
 const initialState = {
   gridData: createEmptyGrid(DEFAULT_ROWS, DEFAULT_COLS),
-  color: "#00FF00",
-  name: "",
-  expressionType: "neutral" as Expression,
-  deviceType: "smartphone" as DeviceType,
+  color: '#00FF00',
+  name: '',
+  expressionType: 'neutral' as Expression,
+  deviceType: 'smartphone' as DeviceType,
   isPublic: true,
   tags: [] as string[],
-  tool: "draw" as const,
+  tool: 'draw' as const,
   isDrawing: false,
   rows: DEFAULT_ROWS,
   cols: DEFAULT_COLS,
-};
+}
 
 export const useEditorStore = create<EditorState>()(
   persist(
-    (set) => ({
+    set => ({
       ...initialState,
 
       setCell: (row, col, value) =>
-        set((state) => {
-          const newGrid = state.gridData.map((r) => [...r]);
+        set(state => {
+          const newGrid = state.gridData.map(r => [...r])
           if (newGrid[row]?.[col] !== undefined) {
-            newGrid[row][col] = value;
+            newGrid[row][col] = value
           }
-          return { gridData: newGrid };
+          return { gridData: newGrid }
         }),
 
       toggleCell: (row, col) =>
-        set((state) => {
-          const newGrid = state.gridData.map((r) => [...r]);
+        set(state => {
+          const newGrid = state.gridData.map(r => [...r])
           if (newGrid[row]?.[col] !== undefined) {
-            newGrid[row][col] = newGrid[row][col] === 1 ? 0 : 1;
+            newGrid[row][col] = newGrid[row][col] === 1 ? 0 : 1
           }
-          return { gridData: newGrid };
+          return { gridData: newGrid }
         }),
 
-      setColor: (color) => set({ color }),
+      setColor: color => set({ color }),
 
-      setName: (name) => set({ name }),
+      setName: name => set({ name }),
 
-      setExpressionType: (expressionType) => set({ expressionType }),
+      setExpressionType: expressionType => set({ expressionType }),
 
-      setDeviceType: (deviceType) => set({ deviceType }),
+      setDeviceType: deviceType => set({ deviceType }),
 
-      setTool: (tool) => set({ tool }),
+      setTool: tool => set({ tool }),
 
-      setIsDrawing: (isDrawing) => set({ isDrawing }),
+      setIsDrawing: isDrawing => set({ isDrawing }),
 
       setGridSize: (rows, cols) =>
-        set((state) => ({
+        set(state => ({
           rows,
           cols,
           gridData: resizeGrid(state.gridData, rows, cols),
         })),
 
       clearGrid: () =>
-        set((state) => ({
+        set(state => ({
           gridData: createEmptyGrid(state.rows, state.cols),
         })),
 
-      setIsPublic: (isPublic) => set({ isPublic }),
+      setIsPublic: isPublic => set({ isPublic }),
 
-      setTags: (tags) => set({ tags }),
+      setTags: tags => set({ tags }),
 
-      loadPattern: (pattern) =>
+      loadPattern: pattern =>
         set({
           gridData: pattern.gridData,
           color: pattern.color,
@@ -148,8 +148,8 @@ export const useEditorStore = create<EditorState>()(
         }),
     }),
     {
-      name: "editor-draft",
-      partialize: (state) => ({
+      name: 'editor-draft',
+      partialize: state => ({
         gridData: state.gridData,
         color: state.color,
         name: state.name,
@@ -160,6 +160,6 @@ export const useEditorStore = create<EditorState>()(
         rows: state.rows,
         cols: state.cols,
       }),
-    },
-  ),
-);
+    }
+  )
+)

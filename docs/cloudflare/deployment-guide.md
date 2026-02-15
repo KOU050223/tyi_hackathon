@@ -241,7 +241,7 @@ router.all('*', () => new Response('Not Found', { status: 404 }))
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     return router.handle(request, env)
-  }
+  },
 }
 ```
 
@@ -424,6 +424,7 @@ wrangler d1 execute rina-patterns --remote --command="SELECT 1"
 ### CORS エラー
 
 `workers/src/middleware/cors.ts`を確認:
+
 ```typescript
 export const corsHeaders = {
   'Access-Control-Allow-Origin': 'https://rina-chan-board.pages.dev',
@@ -502,6 +503,7 @@ Dashboard → Notifications → Add Notification
 - **自動デプロイ**: mainブランチへのpushで自動デプロイ
 
 次のステップ:
+
 - カスタムドメイン設定
 - SSL証明書（自動発行）
 - 分析ダッシュボード確認

@@ -74,8 +74,8 @@ export interface CustomPattern {
   name: string
   expressionType: Expression
   deviceType: 'smartphone' | 'tablet'
-  color: string  // #RRGGBB
-  gridData: number[][]  // 0と1の2次元配列
+  color: string // #RRGGBB
+  gridData: number[][] // 0と1の2次元配列
   previewImageUrl?: string
   isPublic: boolean
   downloads?: number
@@ -182,46 +182,56 @@ export const usePatternStore = create<PatternState>()(
       currentDraft: null,
       isEditing: false,
 
-      addLocalPattern: (pattern) => set((state) => ({
-        localPatterns: [...state.localPatterns, { ...pattern, id: Date.now() }]
-      })),
+      addLocalPattern: pattern =>
+        set(state => ({
+          localPatterns: [
+            ...state.localPatterns,
+            { ...pattern, id: Date.now() },
+          ],
+        })),
 
-      updateLocalPattern: (id, updates) => set((state) => ({
-        localPatterns: state.localPatterns.map(p =>
-          p.id === id ? { ...p, ...updates } : p
-        )
-      })),
+      updateLocalPattern: (id, updates) =>
+        set(state => ({
+          localPatterns: state.localPatterns.map(p =>
+            p.id === id ? { ...p, ...updates } : p
+          ),
+        })),
 
-      deleteLocalPattern: (id) => set((state) => ({
-        localPatterns: state.localPatterns.filter(p => p.id !== id)
-      })),
+      deleteLocalPattern: id =>
+        set(state => ({
+          localPatterns: state.localPatterns.filter(p => p.id !== id),
+        })),
 
-      setCurrentDraft: (draft) => set({ currentDraft: draft, isEditing: !!draft }),
+      setCurrentDraft: draft =>
+        set({ currentDraft: draft, isEditing: !!draft }),
 
-      updateDraft: (updates) => set((state) => ({
-        currentDraft: state.currentDraft ? { ...state.currentDraft, ...updates } : null
-      })),
+      updateDraft: updates =>
+        set(state => ({
+          currentDraft: state.currentDraft
+            ? { ...state.currentDraft, ...updates }
+            : null,
+        })),
 
-      uploadToCloud: async (pattern) => {
+      uploadToCloud: async pattern => {
         const result = await uploadPattern(pattern)
         // アップロード成功後、ローカルパターンに追加
-        set((state) => ({
-          localPatterns: [...state.localPatterns, result]
+        set(state => ({
+          localPatterns: [...state.localPatterns, result],
         }))
       },
 
-      downloadFromCloud: async (id) => {
+      downloadFromCloud: async id => {
         const pattern = await downloadPattern(id)
-        set((state) => ({
-          localPatterns: [...state.localPatterns, pattern]
+        set(state => ({
+          localPatterns: [...state.localPatterns, pattern],
         }))
-      }
+      },
     }),
     {
       name: 'pattern-storage',
-      partialize: (state) => ({
-        localPatterns: state.localPatterns
-      })
+      partialize: state => ({
+        localPatterns: state.localPatterns,
+      }),
     }
   )
 )
@@ -256,7 +266,7 @@ interface GalleryState {
 export const useGalleryStore = create<GalleryState>((set, get) => ({
   patterns: [],
   filter: {
-    sortBy: 'latest'
+    sortBy: 'latest',
   },
   isLoading: false,
   error: null,
@@ -264,18 +274,22 @@ export const useGalleryStore = create<GalleryState>((set, get) => ({
     page: 1,
     perPage: 20,
     total: 0,
-    totalPages: 0
+    totalPages: 0,
   },
 
-  setFilter: (newFilter) => set((state) => ({
-    filter: { ...state.filter, ...newFilter },
-    pagination: { ...state.pagination, page: 1 }
-  })),
+  setFilter: newFilter =>
+    set(state => ({
+      filter: { ...state.filter, ...newFilter },
+      pagination: { ...state.pagination, page: 1 },
+    })),
 
   loadPatterns: async () => {
     set({ isLoading: true, error: null })
     try {
-      const { patterns, pagination } = await fetchPatterns(get().filter, get().pagination.page)
+      const { patterns, pagination } = await fetchPatterns(
+        get().filter,
+        get().pagination.page
+      )
       set({ patterns, pagination, isLoading: false })
     } catch (error) {
       set({ error: error.message, isLoading: false })
@@ -288,33 +302,32 @@ export const useGalleryStore = create<GalleryState>((set, get) => ({
 
     set({ isLoading: true })
     try {
-      const { patterns: newPatterns, pagination: newPagination } = await fetchPatterns(
-        get().filter,
-        pagination.page + 1
-      )
-      set((state) => ({
+      const { patterns: newPatterns, pagination: newPagination } =
+        await fetchPatterns(get().filter, pagination.page + 1)
+      set(state => ({
         patterns: [...state.patterns, ...newPatterns],
         pagination: newPagination,
-        isLoading: false
+        isLoading: false,
       }))
     } catch (error) {
       set({ error: error.message, isLoading: false })
     }
   },
 
-  likePattern: async (id) => {
+  likePattern: async id => {
     // API呼び出し + 楽観的更新
-    set((state) => ({
+    set(state => ({
       patterns: state.patterns.map(p =>
         p.id === id ? { ...p, likes: (p.likes || 0) + 1 } : p
-      )
+      ),
     }))
   },
 
-  resetGallery: () => set({
-    patterns: [],
-    pagination: { page: 1, perPage: 20, total: 0, totalPages: 0 }
-  })
+  resetGallery: () =>
+    set({
+      patterns: [],
+      pagination: { page: 1, perPage: 20, total: 0, totalPages: 0 },
+    }),
 }))
 ```
 
@@ -336,25 +349,27 @@ interface AuthState {
 
 export const useAuthStore = create<AuthState>()(
   persist(
-    (set) => ({
+    set => ({
       user: null,
       token: null,
       isAuthenticated: false,
 
-      setAuth: (user, token) => set({
-        user,
-        token,
-        isAuthenticated: true
-      }),
+      setAuth: (user, token) =>
+        set({
+          user,
+          token,
+          isAuthenticated: true,
+        }),
 
-      logout: () => set({
-        user: null,
-        token: null,
-        isAuthenticated: false
-      })
+      logout: () =>
+        set({
+          user: null,
+          token: null,
+          isAuthenticated: false,
+        }),
     }),
     {
-      name: 'auth-storage'
+      name: 'auth-storage',
     }
   )
 )
@@ -602,7 +617,11 @@ export default function PatternCard({ pattern }: PatternCardProps) {
 
 ```typescript
 import { useAuthStore } from '@/stores/authStore'
-import type { CustomPattern, GalleryFilter, GalleryResponse } from '@/types/customPattern'
+import type {
+  CustomPattern,
+  GalleryFilter,
+  GalleryResponse,
+} from '@/types/customPattern'
 
 const API_BASE = import.meta.env.VITE_API_URL
 
@@ -616,7 +635,7 @@ async function fetchWithAuth(url: string, options: RequestInit = {}) {
 
   const response = await fetch(`${API_BASE}${url}`, {
     ...options,
-    headers
+    headers,
   })
 
   if (!response.ok) {
@@ -637,17 +656,19 @@ export async function fetchPatterns(
     sortBy: filter.sortBy,
     ...(filter.expressionType && { expressionType: filter.expressionType }),
     ...(filter.deviceType && { deviceType: filter.deviceType }),
-    ...(filter.search && { search: filter.search })
+    ...(filter.search && { search: filter.search }),
   })
 
   return fetchWithAuth(`/api/patterns?${params}`)
 }
 
-export async function uploadPattern(pattern: CustomPattern): Promise<CustomPattern> {
+export async function uploadPattern(
+  pattern: CustomPattern
+): Promise<CustomPattern> {
   return fetchWithAuth('/api/patterns', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(pattern)
+    body: JSON.stringify(pattern),
   })
 }
 
@@ -670,14 +691,14 @@ export default {
   theme: {
     extend: {
       screens: {
-        'xs': '375px',   // スマホ
-        'sm': '640px',   // タブレット縦
-        'md': '768px',   // タブレット横
-        'lg': '1024px',  // デスクトップ
-        'xl': '1280px',  // 大画面
-      }
-    }
-  }
+        xs: '375px', // スマホ
+        sm: '640px', // タブレット縦
+        md: '768px', // タブレット横
+        lg: '1024px', // デスクトップ
+        xl: '1280px', // 大画面
+      },
+    },
+  },
 }
 ```
 
@@ -709,10 +730,7 @@ export default {
 ```typescript
 // DotGrid.tsx
 export default memo(DotGrid, (prev, next) => {
-  return (
-    prev.gridData === next.gridData &&
-    prev.color === next.color
-  )
+  return prev.gridData === next.gridData && prev.color === next.color
 })
 ```
 

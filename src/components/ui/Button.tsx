@@ -10,7 +10,10 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   children: ReactNode
 }
 
-const variantStyles: Record<Variant, { color: string; border: string; bg: string; shadow: string }> = {
+const variantStyles: Record<
+  Variant,
+  { color: string; border: string; bg: string; shadow: string }
+> = {
   primary: {
     color: '#000',
     border: '1px solid #00FF00',

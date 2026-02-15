@@ -25,20 +25,20 @@ export function EditorSidebar() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
 
-  const name = useEditorStore((s) => s.name)
-  const expressionType = useEditorStore((s) => s.expressionType)
-  const deviceType = useEditorStore((s) => s.deviceType)
-  const isPublic = useEditorStore((s) => s.isPublic)
-  const tags = useEditorStore((s) => s.tags)
-  const gridData = useEditorStore((s) => s.gridData)
-  const color = useEditorStore((s) => s.color)
-  const setName = useEditorStore((s) => s.setName)
-  const setExpressionType = useEditorStore((s) => s.setExpressionType)
-  const setDeviceType = useEditorStore((s) => s.setDeviceType)
-  const setIsPublic = useEditorStore((s) => s.setIsPublic)
-  const setTags = useEditorStore((s) => s.setTags)
-  const setGridSize = useEditorStore((s) => s.setGridSize)
-  const cols = useEditorStore((s) => s.cols)
+  const name = useEditorStore(s => s.name)
+  const expressionType = useEditorStore(s => s.expressionType)
+  const deviceType = useEditorStore(s => s.deviceType)
+  const isPublic = useEditorStore(s => s.isPublic)
+  const tags = useEditorStore(s => s.tags)
+  const gridData = useEditorStore(s => s.gridData)
+  const color = useEditorStore(s => s.color)
+  const setName = useEditorStore(s => s.setName)
+  const setExpressionType = useEditorStore(s => s.setExpressionType)
+  const setDeviceType = useEditorStore(s => s.setDeviceType)
+  const setIsPublic = useEditorStore(s => s.setIsPublic)
+  const setTags = useEditorStore(s => s.setTags)
+  const setGridSize = useEditorStore(s => s.setGridSize)
+  const cols = useEditorStore(s => s.cols)
 
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -54,8 +54,8 @@ export function EditorSidebar() {
     setTagInput(value)
     const parsed = value
       .split(',')
-      .map((t) => t.trim())
-      .filter((t) => t.length > 0)
+      .map(t => t.trim())
+      .filter(t => t.length > 0)
     setTags(parsed)
   }
 
@@ -96,7 +96,9 @@ export function EditorSidebar() {
       }
 
       // プレビュー画像のアップロード
-      const previewCanvas = document.querySelector<HTMLCanvasElement>('#editor-preview-canvas')
+      const previewCanvas = document.querySelector<HTMLCanvasElement>(
+        '#editor-preview-canvas'
+      )
       if (previewCanvas) {
         const previewUrl = await uploadPreviewImage(patternId, previewCanvas)
         await updatePattern(patternId, { previewImageUrl: previewUrl })
@@ -114,11 +116,13 @@ export function EditorSidebar() {
     <div className="flex flex-col gap-4 p-4 border border-[#00FF00]/30 bg-black rounded font-mono">
       {/* Pattern Name */}
       <div>
-        <label className="block text-[#00FF00]/70 text-xs mb-1">PATTERN NAME</label>
+        <label className="block text-[#00FF00]/70 text-xs mb-1">
+          PATTERN NAME
+        </label>
         <input
           type="text"
           value={name}
-          onChange={(e) => setName(e.target.value)}
+          onChange={e => setName(e.target.value)}
           placeholder="My Pattern"
           className="w-full px-3 py-2 bg-[#111] border border-[#333] text-[#00FF00] font-mono text-sm focus:border-[#00FF00] focus:outline-none"
         />
@@ -126,13 +130,15 @@ export function EditorSidebar() {
 
       {/* Expression Type */}
       <div>
-        <label className="block text-[#00FF00]/70 text-xs mb-1">EXPRESSION</label>
+        <label className="block text-[#00FF00]/70 text-xs mb-1">
+          EXPRESSION
+        </label>
         <select
           value={expressionType}
-          onChange={(e) => setExpressionType(e.target.value as Expression)}
+          onChange={e => setExpressionType(e.target.value as Expression)}
           className="w-full px-3 py-2 bg-[#111] border border-[#333] text-[#00FF00] font-mono text-sm focus:border-[#00FF00] focus:outline-none"
         >
-          {EXPRESSIONS.map((exp) => (
+          {EXPRESSIONS.map(exp => (
             <option key={exp.value} value={exp.value}>
               {exp.label}
             </option>
@@ -142,7 +148,9 @@ export function EditorSidebar() {
 
       {/* Device Type */}
       <div>
-        <label className="block text-[#00FF00]/70 text-xs mb-1">DEVICE TYPE</label>
+        <label className="block text-[#00FF00]/70 text-xs mb-1">
+          DEVICE TYPE
+        </label>
         <div className="flex gap-2">
           <label
             className={`flex-1 text-center px-3 py-2 border cursor-pointer text-sm transition-colors ${
@@ -183,7 +191,9 @@ export function EditorSidebar() {
 
       {/* Public Toggle */}
       <div>
-        <label className="block text-[#00FF00]/70 text-xs mb-1">VISIBILITY</label>
+        <label className="block text-[#00FF00]/70 text-xs mb-1">
+          VISIBILITY
+        </label>
         <button
           onClick={() => setIsPublic(!isPublic)}
           className={`w-full px-3 py-2 border font-mono text-sm transition-colors ${
@@ -198,17 +208,19 @@ export function EditorSidebar() {
 
       {/* Tags */}
       <div>
-        <label className="block text-[#00FF00]/70 text-xs mb-1">TAGS (comma separated)</label>
+        <label className="block text-[#00FF00]/70 text-xs mb-1">
+          TAGS (comma separated)
+        </label>
         <input
           type="text"
           value={tagInput}
-          onChange={(e) => handleTagInputChange(e.target.value)}
+          onChange={e => handleTagInputChange(e.target.value)}
           placeholder="cute, pixel, smile"
           className="w-full px-3 py-2 bg-[#111] border border-[#333] text-[#00FF00] font-mono text-sm focus:border-[#00FF00] focus:outline-none"
         />
         {tags.length > 0 && (
           <div className="flex flex-wrap gap-1 mt-2">
-            {tags.map((tag) => (
+            {tags.map(tag => (
               <span
                 key={tag}
                 className="px-2 py-0.5 text-xs border border-[#00FF00]/30 text-[#00FF00]/70"
@@ -235,9 +247,7 @@ export function EditorSidebar() {
             保存するにはログインしてください
           </div>
         )}
-        {error && (
-          <p className="text-[#FF0000] text-xs mt-2">{error}</p>
-        )}
+        {error && <p className="text-[#FF0000] text-xs mt-2">{error}</p>}
       </div>
     </div>
   )

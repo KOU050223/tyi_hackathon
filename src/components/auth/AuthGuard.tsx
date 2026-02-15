@@ -12,7 +12,14 @@ export function AuthGuard({ children }: AuthGuardProps) {
 
   if (loading) {
     return (
-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '200px' }}>
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          minHeight: '200px',
+        }}
+      >
         <LoadingSpinner />
       </div>
     )
@@ -30,7 +37,9 @@ export function AuthGuard({ children }: AuthGuardProps) {
           minHeight: '200px',
         }}
       >
-        <p style={{ color: '#aaa', fontSize: '14px' }}>この機能にはログインが必要です</p>
+        <p style={{ color: '#aaa', fontSize: '14px' }}>
+          この機能にはログインが必要です
+        </p>
         <LoginButton />
       </div>
     )

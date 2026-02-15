@@ -1,16 +1,16 @@
-import { lazy, Suspense } from "react";
-import { Routes, Route } from "react-router-dom";
-import { Layout } from "@/components/layout/Layout";
-import { useAuthInit } from "@/hooks/useAuthInit";
-import { AuthGuard } from "@/components/auth/AuthGuard";
+import { lazy, Suspense } from 'react'
+import { Routes, Route } from 'react-router-dom'
+import { Layout } from '@/components/layout/Layout'
+import { useAuthInit } from '@/hooks/useAuthInit'
+import { AuthGuard } from '@/components/auth/AuthGuard'
 
-const FaceDetectionPage = lazy(() => import("@/pages/FaceDetectionPage"));
-const DotEditorPage = lazy(() => import("@/pages/DotEditorPage"));
-const GalleryPage = lazy(() => import("@/pages/GalleryPage"));
-const ProfilePage = lazy(() => import("@/pages/ProfilePage"));
+const FaceDetectionPage = lazy(() => import('@/pages/FaceDetectionPage'))
+const DotEditorPage = lazy(() => import('@/pages/DotEditorPage'))
+const GalleryPage = lazy(() => import('@/pages/GalleryPage'))
+const ProfilePage = lazy(() => import('@/pages/ProfilePage'))
 
 function App() {
-  useAuthInit();
+  useAuthInit()
 
   return (
     <Layout>
@@ -31,7 +31,7 @@ function App() {
         </Routes>
       </Suspense>
     </Layout>
-  );
+  )
 }
 
-export default App;
+export default App

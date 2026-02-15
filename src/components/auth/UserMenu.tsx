@@ -69,7 +69,14 @@ export function UserMenu() {
             {displayName[0].toUpperCase()}
           </span>
         )}
-        <span style={{ maxWidth: '100px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+        <span
+          style={{
+            maxWidth: '100px',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap',
+          }}
+        >
           {displayName}
         </span>
       </button>

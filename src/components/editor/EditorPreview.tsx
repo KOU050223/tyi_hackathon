@@ -6,8 +6,8 @@ export function EditorPreview() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const rendererRef = useRef<CanvasRenderer | null>(null)
 
-  const gridData = useEditorStore((s) => s.gridData)
-  const color = useEditorStore((s) => s.color)
+  const gridData = useEditorStore(s => s.gridData)
+  const color = useEditorStore(s => s.color)
 
   useEffect(() => {
     if (canvasRef.current && !rendererRef.current) {

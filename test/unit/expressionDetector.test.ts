@@ -269,7 +269,7 @@ describe('expressionDetector', () => {
         'embarrassed',
       ]
 
-      expressions.forEach((expression) => {
+      expressions.forEach(expression => {
         const label = getExpressionLabel(expression)
         expect(label).toBeTruthy()
         expect(typeof label).toBe('string')

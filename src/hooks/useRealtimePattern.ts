@@ -20,7 +20,7 @@ export function useRealtimePattern(patternId: string | null) {
 
     const unsubscribe = onSnapshot(
       doc(db, 'patterns', patternId),
-      (snap) => {
+      snap => {
         if (snap.exists()) {
           const data = snap.data()
           setPattern({
@@ -47,7 +47,7 @@ export function useRealtimePattern(patternId: string | null) {
       () => {
         setPattern(null)
         setLoading(false)
-      },
+      }
     )
 
     return unsubscribe

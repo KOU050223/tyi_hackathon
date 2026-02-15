@@ -1,4 +1,8 @@
-import type { Expression, DotPattern, ExpressionPatterns } from '@/types/expression'
+import type {
+  Expression,
+  DotPattern,
+  ExpressionPatterns,
+} from '@/types/expression'
 
 /**
  * 各表情に対応するドット絵パターン定義

@@ -20,7 +20,9 @@ export const storage = getStorage(app)
 
 if (import.meta.env.DEV) {
   try {
-    connectAuthEmulator(auth, 'http://localhost:9099', { disableWarnings: true })
+    connectAuthEmulator(auth, 'http://localhost:9099', {
+      disableWarnings: true,
+    })
     connectFirestoreEmulator(db, 'localhost', 8080)
     connectStorageEmulator(storage, 'localhost', 9199)
   } catch {

@@ -1,25 +1,25 @@
-import { useEffect, useCallback } from "react";
-import { Link } from "react-router-dom";
-import { usePatternStore } from "@/stores/patternStore";
-import { getPublicPatterns } from "@/lib/patterns";
-import { PatternCard } from "@/components/gallery/PatternCard";
-import { PatternCardSkeleton } from "@/components/gallery/PatternCardSkeleton";
-import { getExpressionLabel } from "@/utils/expressionDetector";
-import type { Expression } from "@/types/expression";
-import type { DeviceType } from "@/types/device";
+import { useEffect, useCallback } from 'react'
+import { Link } from 'react-router-dom'
+import { usePatternStore } from '@/stores/patternStore'
+import { getPublicPatterns } from '@/lib/patterns'
+import { PatternCard } from '@/components/gallery/PatternCard'
+import { PatternCardSkeleton } from '@/components/gallery/PatternCardSkeleton'
+import { getExpressionLabel } from '@/utils/expressionDetector'
+import type { Expression } from '@/types/expression'
+import type { DeviceType } from '@/types/device'
 
 const ALL_EXPRESSIONS: Expression[] = [
-  "neutral",
-  "smile",
-  "sad",
-  "angry",
-  "surprised",
-  "blink",
-  "confused",
-  "smug",
-  "questioning",
-  "embarrassed",
-];
+  'neutral',
+  'smile',
+  'sad',
+  'angry',
+  'surprised',
+  'blink',
+  'confused',
+  'smug',
+  'questioning',
+  'embarrassed',
+]
 
 export default function GalleryPage() {
   const {
@@ -36,11 +36,11 @@ export default function GalleryPage() {
     setLoading,
     appendPatterns,
     reset,
-  } = usePatternStore();
+  } = usePatternStore()
 
   const fetchPatterns = useCallback(
     async (append = false) => {
-      setLoading(true);
+      setLoading(true)
       try {
         const result = await getPublicPatterns({
           sortBy,
@@ -48,18 +48,18 @@ export default function GalleryPage() {
           deviceType: filterDevice ?? undefined,
           limit: 12,
           startAfter: append ? (lastDoc ?? undefined) : undefined,
-        });
+        })
         if (append) {
-          appendPatterns(result.patterns, result.lastDoc);
+          appendPatterns(result.patterns, result.lastDoc)
         } else {
           // appendPatterns sets both patterns array and lastDoc/hasMore together
           // Reset first then append to empty array
-          appendPatterns(result.patterns, result.lastDoc);
+          appendPatterns(result.patterns, result.lastDoc)
         }
       } catch {
         // Fetch failed
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
     },
     [
@@ -69,24 +69,24 @@ export default function GalleryPage() {
       lastDoc,
       setLoading,
       appendPatterns,
-    ],
-  );
+    ]
+  )
 
   useEffect(() => {
-    reset();
-  }, [sortBy, filterExpression, filterDevice, reset]);
+    reset()
+  }, [sortBy, filterExpression, filterDevice, reset])
 
   useEffect(() => {
     if (patterns.length === 0 && hasMore) {
-      fetchPatterns(false);
+      fetchPatterns(false)
     }
-  }, [patterns.length, hasMore, fetchPatterns]);
+  }, [patterns.length, hasMore, fetchPatterns])
 
   const handleLoadMore = () => {
     if (!loading && hasMore) {
-      fetchPatterns(true);
+      fetchPatterns(true)
     }
-  };
+  }
 
   return (
     <div className="min-h-screen bg-black text-white font-mono">
@@ -103,14 +103,14 @@ export default function GalleryPage() {
 
         <div className="flex flex-wrap gap-3 mb-6">
           <select
-            value={filterExpression ?? ""}
-            onChange={(e) =>
+            value={filterExpression ?? ''}
+            onChange={e =>
               setFilterExpression((e.target.value || null) as Expression | null)
             }
             className="bg-black border border-[#00FF00]/30 text-white text-sm rounded px-2 py-1.5 focus:border-[#00FF00] focus:outline-none"
           >
             <option value="">すべての表情</option>
-            {ALL_EXPRESSIONS.map((expr) => (
+            {ALL_EXPRESSIONS.map(expr => (
               <option key={expr} value={expr}>
                 {getExpressionLabel(expr)}
               </option>
@@ -118,8 +118,8 @@ export default function GalleryPage() {
           </select>
 
           <select
-            value={filterDevice ?? ""}
-            onChange={(e) =>
+            value={filterDevice ?? ''}
+            onChange={e =>
               setFilterDevice((e.target.value || null) as DeviceType | null)
             }
             className="bg-black border border-[#00FF00]/30 text-white text-sm rounded px-2 py-1.5 focus:border-[#00FF00] focus:outline-none"
@@ -131,8 +131,8 @@ export default function GalleryPage() {
 
           <select
             value={sortBy}
-            onChange={(e) =>
-              setSortBy(e.target.value as "latest" | "popular" | "downloads")
+            onChange={e =>
+              setSortBy(e.target.value as 'latest' | 'popular' | 'downloads')
             }
             className="bg-black border border-[#00FF00]/30 text-white text-sm rounded px-2 py-1.5 focus:border-[#00FF00] focus:outline-none"
           >
@@ -158,7 +158,7 @@ export default function GalleryPage() {
         ) : (
           <>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {patterns.map((pattern) => (
+              {patterns.map(pattern => (
                 <PatternCard key={pattern.id} pattern={pattern} />
               ))}
               {loading &&
@@ -181,5 +181,5 @@ export default function GalleryPage() {
         )}
       </div>
     </div>
-  );
+  )
 }

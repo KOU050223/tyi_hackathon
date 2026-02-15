@@ -30,21 +30,26 @@ export default function ProfilePage() {
     fetchMyPatterns()
   }, [fetchMyPatterns])
 
-  const handleDelete = useCallback(async (patternId: string) => {
-    const confirmed = window.confirm('このパターンを削除しますか？この操作は取り消せません。')
-    if (!confirmed) return
+  const handleDelete = useCallback(
+    async (patternId: string) => {
+      const confirmed = window.confirm(
+        'このパターンを削除しますか？この操作は取り消せません。'
+      )
+      if (!confirmed) return
 
-    try {
-      const target = patterns.find((p) => p.id === patternId)
-      if (target?.previewImageUrl) {
-        await deletePreviewImage(patternId)
+      try {
+        const target = patterns.find(p => p.id === patternId)
+        if (target?.previewImageUrl) {
+          await deletePreviewImage(patternId)
+        }
+        await deletePattern(patternId)
+        setPatterns(prev => prev.filter(p => p.id !== patternId))
+      } catch {
+        // Delete failed
       }
-      await deletePattern(patternId)
-      setPatterns((prev) => prev.filter((p) => p.id !== patternId))
-    } catch {
-      // Delete failed
-    }
-  }, [patterns])
+    },
+    [patterns]
+  )
 
   return (
     <div className="min-h-screen bg-black text-white font-mono">
@@ -65,9 +70,7 @@ export default function ProfilePage() {
             <h1 className="text-xl font-bold text-white">
               {user?.displayName ?? 'Anonymous'}
             </h1>
-            <p className="text-sm text-gray-400">
-              {patterns.length} パターン
-            </p>
+            <p className="text-sm text-gray-400">{patterns.length} パターン</p>
           </div>
           <button
             onClick={() => navigate('/editor')}
@@ -88,16 +91,13 @@ export default function ProfilePage() {
         ) : patterns.length === 0 ? (
           <div className="text-center py-20">
             <p className="text-gray-400 mb-4">パターンがありません</p>
-            <Link
-              to="/editor"
-              className="text-[#00FF00] hover:underline"
-            >
+            <Link to="/editor" className="text-[#00FF00] hover:underline">
               最初のパターンを作成する
             </Link>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {patterns.map((pattern) => (
+            {patterns.map(pattern => (
               <PatternCard
                 key={pattern.id}
                 pattern={pattern}

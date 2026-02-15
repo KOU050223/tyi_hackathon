@@ -79,14 +79,14 @@ CREATE TABLE users (
 CREATE INDEX idx_users_github_id ON users(github_id);
 ```
 
-| カラム名 | 型 | 制約 | 説明 |
-|---------|-----|------|------|
-| id | INTEGER | PK, AUTO_INCREMENT | 内部ID |
-| github_id | INTEGER | UNIQUE, NOT NULL | GitHub User ID |
-| github_username | TEXT | NOT NULL | GitHubユーザー名 |
-| avatar_url | TEXT | NULL | GitHubアバター画像URL |
-| created_at | DATETIME | DEFAULT NOW | 作成日時 |
-| updated_at | DATETIME | DEFAULT NOW | 更新日時 |
+| カラム名        | 型       | 制約               | 説明                  |
+| --------------- | -------- | ------------------ | --------------------- |
+| id              | INTEGER  | PK, AUTO_INCREMENT | 内部ID                |
+| github_id       | INTEGER  | UNIQUE, NOT NULL   | GitHub User ID        |
+| github_username | TEXT     | NOT NULL           | GitHubユーザー名      |
+| avatar_url      | TEXT     | NULL               | GitHubアバター画像URL |
+| created_at      | DATETIME | DEFAULT NOW        | 作成日時              |
+| updated_at      | DATETIME | DEFAULT NOW        | 更新日時              |
 
 ### 2. patterns（カスタム表情パターン）
 
@@ -118,23 +118,24 @@ CREATE INDEX idx_patterns_likes ON patterns(likes);
 CREATE INDEX idx_patterns_created ON patterns(created_at);
 ```
 
-| カラム名 | 型 | 制約 | 説明 |
-|---------|-----|------|------|
-| id | INTEGER | PK, AUTO_INCREMENT | パターンID |
-| user_id | INTEGER | FK(users.id), NOT NULL | 作成者ID |
-| name | TEXT | NOT NULL | パターン名（例: "ニコニコ笑顔"） |
-| expression_type | TEXT | NOT NULL | 表情タイプ（neutral/smile/angry等） |
-| device_type | TEXT | CHECK | デバイスタイプ（smartphone/tablet） |
-| color | TEXT | NOT NULL | カラーコード（#RRGGBB形式） |
-| grid_data | TEXT | NOT NULL | ドットパターン（JSON配列） |
-| preview_image_url | TEXT | NULL | R2のプレビュー画像URL |
-| is_public | BOOLEAN | DEFAULT 0 | 公開フラグ（0: 非公開, 1: 公開） |
-| downloads | INTEGER | DEFAULT 0 | ダウンロード数 |
-| likes | INTEGER | DEFAULT 0 | いいね数（非正規化） |
-| created_at | DATETIME | DEFAULT NOW | 作成日時 |
-| updated_at | DATETIME | DEFAULT NOW | 更新日時 |
+| カラム名          | 型       | 制約                   | 説明                                |
+| ----------------- | -------- | ---------------------- | ----------------------------------- |
+| id                | INTEGER  | PK, AUTO_INCREMENT     | パターンID                          |
+| user_id           | INTEGER  | FK(users.id), NOT NULL | 作成者ID                            |
+| name              | TEXT     | NOT NULL               | パターン名（例: "ニコニコ笑顔"）    |
+| expression_type   | TEXT     | NOT NULL               | 表情タイプ（neutral/smile/angry等） |
+| device_type       | TEXT     | CHECK                  | デバイスタイプ（smartphone/tablet） |
+| color             | TEXT     | NOT NULL               | カラーコード（#RRGGBB形式）         |
+| grid_data         | TEXT     | NOT NULL               | ドットパターン（JSON配列）          |
+| preview_image_url | TEXT     | NULL                   | R2のプレビュー画像URL               |
+| is_public         | BOOLEAN  | DEFAULT 0              | 公開フラグ（0: 非公開, 1: 公開）    |
+| downloads         | INTEGER  | DEFAULT 0              | ダウンロード数                      |
+| likes             | INTEGER  | DEFAULT 0              | いいね数（非正規化）                |
+| created_at        | DATETIME | DEFAULT NOW            | 作成日時                            |
+| updated_at        | DATETIME | DEFAULT NOW            | 更新日時                            |
 
 **grid_data形式例**:
+
 ```json
 [
   [0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0],
@@ -162,12 +163,12 @@ CREATE INDEX idx_likes_user ON likes(user_id);
 CREATE INDEX idx_likes_pattern ON likes(pattern_id);
 ```
 
-| カラム名 | 型 | 制約 | 説明 |
-|---------|-----|------|------|
-| id | INTEGER | PK, AUTO_INCREMENT | いいねID |
-| user_id | INTEGER | FK(users.id), NOT NULL | いいねしたユーザー |
-| pattern_id | INTEGER | FK(patterns.id), NOT NULL | いいねされたパターン |
-| created_at | DATETIME | DEFAULT NOW | いいね日時 |
+| カラム名   | 型       | 制約                      | 説明                 |
+| ---------- | -------- | ------------------------- | -------------------- |
+| id         | INTEGER  | PK, AUTO_INCREMENT        | いいねID             |
+| user_id    | INTEGER  | FK(users.id), NOT NULL    | いいねしたユーザー   |
+| pattern_id | INTEGER  | FK(patterns.id), NOT NULL | いいねされたパターン |
+| created_at | DATETIME | DEFAULT NOW               | いいね日時           |
 
 **制約**: (user_id, pattern_id)の組み合わせは一意（重複いいね防止）
 
@@ -184,10 +185,10 @@ CREATE TABLE tags (
 CREATE INDEX idx_tags_name ON tags(name);
 ```
 
-| カラム名 | 型 | 制約 | 説明 |
-|---------|-----|------|------|
-| id | INTEGER | PK, AUTO_INCREMENT | タグID |
-| name | TEXT | UNIQUE, NOT NULL | タグ名（例: "かわいい", "クール"） |
+| カラム名 | 型      | 制約               | 説明                               |
+| -------- | ------- | ------------------ | ---------------------------------- |
+| id       | INTEGER | PK, AUTO_INCREMENT | タグID                             |
+| name     | TEXT    | UNIQUE, NOT NULL   | タグ名（例: "かわいい", "クール"） |
 
 ### 5. pattern_tags（パターンとタグの関連）
 
@@ -206,10 +207,10 @@ CREATE INDEX idx_pattern_tags_pattern ON pattern_tags(pattern_id);
 CREATE INDEX idx_pattern_tags_tag ON pattern_tags(tag_id);
 ```
 
-| カラム名 | 型 | 制約 | 説明 |
-|---------|-----|------|------|
+| カラム名   | 型      | 制約                      | 説明       |
+| ---------- | ------- | ------------------------- | ---------- |
 | pattern_id | INTEGER | FK(patterns.id), NOT NULL | パターンID |
-| tag_id | INTEGER | FK(tags.id), NOT NULL | タグID |
+| tag_id     | INTEGER | FK(tags.id), NOT NULL     | タグID     |
 
 ## よくあるクエリ例
 
@@ -280,14 +281,17 @@ WHERE id = ?;
 ## データ整合性
 
 ### CASCADE削除
+
 - ユーザー削除 → 関連するpatterns, likesも自動削除
 - パターン削除 → 関連するlikes, pattern_tagsも自動削除
 
 ### 非正規化
+
 - `patterns.likes`: 高速化のため、いいね数を非正規化
 - 更新タイミング: いいね追加/削除時にトリガー or アプリケーション層で更新
 
 ### 制約
+
 - `device_type`: CHECK制約でsmartphone/tabletのみ許可
 - `likes.user_id, pattern_id`: UNIQUE制約で重複いいね防止
 - `tags.name`: UNIQUE制約で重複タグ防止
@@ -316,6 +320,7 @@ workers/migrations/
 ```
 
 適用スクリプト:
+
 ```bash
 #!/bin/bash
 for migration in workers/migrations/*.sql; do
@@ -327,15 +332,18 @@ done
 ## パフォーマンス最適化
 
 ### インデックス戦略
+
 - 頻繁に検索されるカラムにインデックス作成済み
 - 複合インデックスは不要（D1の制約上、単一カラムで十分）
 
 ### クエリ最適化
+
 - WHERE句でis_public = 1を先に評価（インデックス活用）
 - JOINは必要最小限（N+1問題を防ぐ）
 - LIMIT/OFFSETでページネーション実装
 
 ### キャッシュ戦略
+
 - 人気パターンはWorkers KVにキャッシュ
 - TTL: 1時間（頻繁に変わらないデータ）
 - いいね/ダウンロード更新時にキャッシュ無効化
@@ -343,16 +351,19 @@ done
 ## データサイズ見積もり
 
 ### 1パターンあたり
+
 - メタデータ: ~200 bytes
 - grid_data (12x10): ~300 bytes
 - **合計**: ~500 bytes
 
 ### 容量計算
+
 - 10万パターン: 50 MB
 - 100万パターン: 500 MB
 - **D1無料枠（5GB）**: 最大1000万パターンまで保存可能
 
 ### R2ストレージ（プレビュー画像）
+
 - 1画像あたり: ~10 KB (PNG, 128x128)
 - 10万パターン: 1 GB
 - **R2無料枠（10GB）**: 最大100万パターンまで対応可能

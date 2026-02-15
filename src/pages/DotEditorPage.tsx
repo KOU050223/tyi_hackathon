@@ -9,7 +9,7 @@ import { getPattern } from '@/lib/patterns'
 
 export default function DotEditorPage() {
   const { id } = useParams<{ id: string }>()
-  const loadPattern = useEditorStore((s) => s.loadPattern)
+  const loadPattern = useEditorStore(s => s.loadPattern)
   const [loading, setLoading] = useState(!!id)
   const [error, setError] = useState<string | null>(null)
 
@@ -19,7 +19,7 @@ export default function DotEditorPage() {
     let cancelled = false
 
     getPattern(id)
-      .then((pattern) => {
+      .then(pattern => {
         if (cancelled) return
         if (pattern) {
           loadPattern({
@@ -35,9 +35,11 @@ export default function DotEditorPage() {
           setError('パターンが見つかりません')
         }
       })
-      .catch((err) => {
+      .catch(err => {
         if (!cancelled) {
-          setError(err instanceof Error ? err.message : '読み込みに失敗しました')
+          setError(
+            err instanceof Error ? err.message : '読み込みに失敗しました'
+          )
         }
       })
       .finally(() => {
@@ -52,7 +54,9 @@ export default function DotEditorPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[calc(100vh-60px)]">
-        <p className="text-[#00FF00] font-mono animate-pulse">Loading pattern...</p>
+        <p className="text-[#00FF00] font-mono animate-pulse">
+          Loading pattern...
+        </p>
       </div>
     )
   }

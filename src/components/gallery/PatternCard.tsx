@@ -1,7 +1,12 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth'
-import { likePattern, unlikePattern, isLikedByMe, incrementDownloads } from '@/lib/patterns'
+import {
+  likePattern,
+  unlikePattern,
+  isLikedByMe,
+  incrementDownloads,
+} from '@/lib/patterns'
 import { CanvasRenderer } from '@/engines/renderer/CanvasRenderer'
 import { getExpressionLabel } from '@/utils/expressionDetector'
 import type { PatternData } from '@/types/firebase'
@@ -12,7 +17,11 @@ interface PatternCardProps {
   onDelete?: (patternId: string) => void
 }
 
-export function PatternCard({ pattern, showDeleteButton, onDelete }: PatternCardProps) {
+export function PatternCard({
+  pattern,
+  showDeleteButton,
+  onDelete,
+}: PatternCardProps) {
   const navigate = useNavigate()
   const { user, isAuthenticated } = useAuth()
   const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -26,10 +35,12 @@ export function PatternCard({ pattern, showDeleteButton, onDelete }: PatternCard
   useEffect(() => {
     if (!isAuthenticated || !user) return
     let cancelled = false
-    isLikedByMe(pattern.id, user.uid).then((result) => {
+    isLikedByMe(pattern.id, user.uid).then(result => {
       if (!cancelled) setLiked(result)
     })
-    return () => { cancelled = true }
+    return () => {
+      cancelled = true
+    }
   }, [pattern.id, user, isAuthenticated])
 
   useEffect(() => {
@@ -44,58 +55,71 @@ export function PatternCard({ pattern, showDeleteButton, onDelete }: PatternCard
     }
   }, [pattern.previewImageUrl, pattern.expressionType, pattern.deviceType])
 
-  const handleLike = useCallback(async (e: React.MouseEvent) => {
-    e.stopPropagation()
-    if (!isAuthenticated || !user || liking) return
-    setLiking(true)
-    try {
-      if (liked) {
-        await unlikePattern(pattern.id, user.uid)
-        setLiked(false)
-        setLikeCount((c) => Math.max(0, c - 1))
-      } else {
-        await likePattern(pattern.id, user.uid)
-        setLiked(true)
-        setLikeCount((c) => c + 1)
+  const handleLike = useCallback(
+    async (e: React.MouseEvent) => {
+      e.stopPropagation()
+      if (!isAuthenticated || !user || liking) return
+      setLiking(true)
+      try {
+        if (liked) {
+          await unlikePattern(pattern.id, user.uid)
+          setLiked(false)
+          setLikeCount(c => Math.max(0, c - 1))
+        } else {
+          await likePattern(pattern.id, user.uid)
+          setLiked(true)
+          setLikeCount(c => c + 1)
+        }
+      } catch {
+        // Like/unlike failed silently
+      } finally {
+        setLiking(false)
       }
-    } catch {
-      // Like/unlike failed silently
-    } finally {
-      setLiking(false)
-    }
-  }, [isAuthenticated, user, liking, liked, pattern.id])
+    },
+    [isAuthenticated, user, liking, liked, pattern.id]
+  )
 
-  const handleDownload = useCallback(async (e: React.MouseEvent) => {
-    e.stopPropagation()
-    try {
-      const data = JSON.stringify({
-        name: pattern.name,
-        expressionType: pattern.expressionType,
-        deviceType: pattern.deviceType,
-        color: pattern.color,
-        gridData: pattern.gridData,
-      }, null, 2)
-      const blob = new Blob([data], { type: 'application/json' })
-      const url = URL.createObjectURL(blob)
-      const a = document.createElement('a')
-      a.href = url
-      a.download = `${pattern.name || 'pattern'}.json`
-      document.body.appendChild(a)
-      a.click()
-      document.body.removeChild(a)
-      URL.revokeObjectURL(url)
-      await incrementDownloads(pattern.id)
-    } catch {
-      // Download failed
-    }
-  }, [pattern])
+  const handleDownload = useCallback(
+    async (e: React.MouseEvent) => {
+      e.stopPropagation()
+      try {
+        const data = JSON.stringify(
+          {
+            name: pattern.name,
+            expressionType: pattern.expressionType,
+            deviceType: pattern.deviceType,
+            color: pattern.color,
+            gridData: pattern.gridData,
+          },
+          null,
+          2
+        )
+        const blob = new Blob([data], { type: 'application/json' })
+        const url = URL.createObjectURL(blob)
+        const a = document.createElement('a')
+        a.href = url
+        a.download = `${pattern.name || 'pattern'}.json`
+        document.body.appendChild(a)
+        a.click()
+        document.body.removeChild(a)
+        URL.revokeObjectURL(url)
+        await incrementDownloads(pattern.id)
+      } catch {
+        // Download failed
+      }
+    },
+    [pattern]
+  )
 
-  const handleDelete = useCallback((e: React.MouseEvent) => {
-    e.stopPropagation()
-    if (onDelete) {
-      onDelete(pattern.id)
-    }
-  }, [onDelete, pattern.id])
+  const handleDelete = useCallback(
+    (e: React.MouseEvent) => {
+      e.stopPropagation()
+      if (onDelete) {
+        onDelete(pattern.id)
+      }
+    },
+    [onDelete, pattern.id]
+  )
 
   const handleCardClick = () => {
     if (isOwner) {
@@ -157,7 +181,13 @@ export function PatternCard({ pattern, showDeleteButton, onDelete }: PatternCard
             className={`flex items-center gap-1 transition-colors ${
               liked ? 'text-red-500' : 'text-gray-400 hover:text-red-400'
             } ${!isAuthenticated ? 'cursor-default' : 'cursor-pointer'}`}
-            title={isAuthenticated ? (liked ? 'いいねを取り消す' : 'いいね') : 'ログインしていいね'}
+            title={
+              isAuthenticated
+                ? liked
+                  ? 'いいねを取り消す'
+                  : 'いいね'
+                : 'ログインしていいね'
+            }
           >
             <span>{liked ? '♥' : '♥'}</span>
             <span>{likeCount}</span>

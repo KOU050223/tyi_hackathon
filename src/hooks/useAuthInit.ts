@@ -7,7 +7,7 @@ export function useAuthInit() {
 
   useEffect(() => {
     setLoading(true)
-    const unsubscribe = onAuthChanged((user) => {
+    const unsubscribe = onAuthChanged(user => {
       setUser(user)
       setLoading(false)
     })

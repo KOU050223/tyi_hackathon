@@ -24,12 +24,12 @@ Firebase/Firestoreを使用したバックエンドの具体的な実装手順�
 ```javascript
 // コピーされる設定例
 const firebaseConfig = {
-  apiKey: "AIzaSyXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
-  authDomain: "rina-chan-board.firebaseapp.com",
-  projectId: "rina-chan-board",
-  storageBucket: "rina-chan-board.appspot.com",
-  messagingSenderId: "123456789012",
-  appId: "1:123456789012:web:abcdef1234567890"
+  apiKey: 'AIzaSyXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX',
+  authDomain: 'rina-chan-board.firebaseapp.com',
+  projectId: 'rina-chan-board',
+  storageBucket: 'rina-chan-board.appspot.com',
+  messagingSenderId: '123456789012',
+  appId: '1:123456789012:web:abcdef1234567890',
 }
 ```
 
@@ -93,6 +93,7 @@ firebase init
 ```
 
 生成されるファイル:
+
 ```
 tyi_hackathon/
 ├── firebase.json
@@ -127,7 +128,7 @@ const firebaseConfig = {
   projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
   storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
   messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-  appId: import.meta.env.VITE_FIREBASE_APP_ID
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
 }
 
 // Firebase初期化
@@ -191,7 +192,7 @@ import {
   GithubAuthProvider,
   signOut as firebaseSignOut,
   onAuthStateChanged,
-  User
+  User,
 } from 'firebase/auth'
 import { doc, setDoc, serverTimestamp } from 'firebase/firestore'
 import { auth, db } from './firebase'
@@ -205,13 +206,17 @@ export async function signInWithGitHub() {
     const user = result.user
 
     // Firestoreにユーザー情報を保存
-    await setDoc(doc(db, 'users', user.uid), {
-      githubId: user.providerData[0]?.uid,
-      githubUsername: user.displayName || 'Anonymous',
-      avatarUrl: user.photoURL || '',
-      createdAt: serverTimestamp(),
-      updatedAt: serverTimestamp()
-    }, { merge: true })
+    await setDoc(
+      doc(db, 'users', user.uid),
+      {
+        githubId: user.providerData[0]?.uid,
+        githubUsername: user.displayName || 'Anonymous',
+        avatarUrl: user.photoURL || '',
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+      },
+      { merge: true }
+    )
 
     return user
   } catch (error) {
@@ -286,7 +291,7 @@ import {
   increment,
   writeBatch,
   type Query,
-  type QueryDocumentSnapshot
+  type QueryDocumentSnapshot,
 } from 'firebase/firestore'
 import { db, auth } from './firebase'
 import type { FirestorePattern } from '@/types/firebase'
@@ -312,7 +317,7 @@ export async function createPattern(pattern: Omit<CustomPattern, 'id'>) {
     likes: 0,
     tags: pattern.tags || [],
     createdAt: serverTimestamp(),
-    updatedAt: serverTimestamp()
+    updatedAt: serverTimestamp(),
   } as Omit<FirestorePattern, 'createdAt' | 'updatedAt'> & {
     createdAt: ReturnType<typeof serverTimestamp>
     updatedAt: ReturnType<typeof serverTimestamp>
@@ -322,14 +327,16 @@ export async function createPattern(pattern: Omit<CustomPattern, 'id'>) {
 }
 
 // パターン取得（単一）
-export async function getPattern(patternId: string): Promise<CustomPattern | null> {
+export async function getPattern(
+  patternId: string
+): Promise<CustomPattern | null> {
   const docSnap = await getDoc(doc(db, 'patterns', patternId))
 
   if (!docSnap.exists()) return null
 
   return {
     id: docSnap.id,
-    ...docSnap.data()
+    ...docSnap.data(),
   } as CustomPattern
 }
 
@@ -338,12 +345,11 @@ export async function getPublicPatterns(
   sortBy: 'latest' | 'popular' | 'downloads' = 'latest',
   limitCount: number = 20,
   lastDoc?: QueryDocumentSnapshot
-): Promise<{ patterns: CustomPattern[], lastDoc: QueryDocumentSnapshot | null }> {
-
-  let q: Query = query(
-    patternsRef,
-    where('isPublic', '==', true)
-  )
+): Promise<{
+  patterns: CustomPattern[]
+  lastDoc: QueryDocumentSnapshot | null
+}> {
+  let q: Query = query(patternsRef, where('isPublic', '==', true))
 
   // ソート順
   if (sortBy === 'popular') {
@@ -365,12 +371,12 @@ export async function getPublicPatterns(
 
   const patterns = snapshot.docs.map(doc => ({
     id: doc.id,
-    ...doc.data()
+    ...doc.data(),
   })) as CustomPattern[]
 
   return {
     patterns,
-    lastDoc: snapshot.docs[snapshot.docs.length - 1] || null
+    lastDoc: snapshot.docs[snapshot.docs.length - 1] || null,
   }
 }
 
@@ -389,7 +395,7 @@ export async function getMyPatterns(): Promise<CustomPattern[]> {
 
   return snapshot.docs.map(doc => ({
     id: doc.id,
-    ...doc.data()
+    ...doc.data(),
   })) as CustomPattern[]
 }
 
@@ -409,7 +415,7 @@ export async function updatePattern(
 
   await updateDoc(doc(db, 'patterns', patternId), {
     ...updates,
-    updatedAt: serverTimestamp()
+    updatedAt: serverTimestamp(),
   })
 }
 
@@ -437,13 +443,13 @@ export async function likePattern(patternId: string) {
   // likedBy サブコレクションに追加
   const likeRef = doc(db, 'patterns', patternId, 'likedBy', user.uid)
   batch.set(likeRef, {
-    likedAt: serverTimestamp()
+    likedAt: serverTimestamp(),
   })
 
   // likes カウント+1
   const patternRef = doc(db, 'patterns', patternId)
   batch.update(patternRef, {
-    likes: increment(1)
+    likes: increment(1),
   })
 
   await batch.commit()
@@ -463,7 +469,7 @@ export async function unlikePattern(patternId: string) {
   // likes カウント-1
   const patternRef = doc(db, 'patterns', patternId)
   batch.update(patternRef, {
-    likes: increment(-1)
+    likes: increment(-1),
   })
 
   await batch.commit()
@@ -474,14 +480,16 @@ export async function isLikedByMe(patternId: string): Promise<boolean> {
   const user = auth.currentUser
   if (!user) return false
 
-  const likeDoc = await getDoc(doc(db, 'patterns', patternId, 'likedBy', user.uid))
+  const likeDoc = await getDoc(
+    doc(db, 'patterns', patternId, 'likedBy', user.uid)
+  )
   return likeDoc.exists()
 }
 
 // ダウンロード数カウント
 export async function incrementDownloads(patternId: string) {
   await updateDoc(doc(db, 'patterns', patternId), {
-    downloads: increment(1)
+    downloads: increment(1),
   })
 }
 ```
@@ -498,7 +506,7 @@ import { storage } from './firebase'
 // Canvas → Blob変換
 export async function canvasToBlob(canvas: HTMLCanvasElement): Promise<Blob> {
   return new Promise((resolve, reject) => {
-    canvas.toBlob((blob) => {
+    canvas.toBlob(blob => {
       if (blob) resolve(blob)
       else reject(new Error('Canvas to Blob conversion failed'))
     }, 'image/png')
@@ -515,7 +523,7 @@ export async function uploadPreviewImage(
 
   await uploadBytes(storageRef, blob, {
     contentType: 'image/png',
-    cacheControl: 'public, max-age=31536000'  // 1年キャッシュ
+    cacheControl: 'public, max-age=31536000', // 1年キャッシュ
   })
 
   return getDownloadURL(storageRef)
@@ -535,7 +543,14 @@ export async function deletePreviewImage(patternId: string) {
 ```typescript
 // src/hooks/useRealtimePatterns.ts
 import { useEffect, useState } from 'react'
-import { collection, query, where, orderBy, limit, onSnapshot } from 'firebase/firestore'
+import {
+  collection,
+  query,
+  where,
+  orderBy,
+  limit,
+  onSnapshot,
+} from 'firebase/firestore'
 import { db } from '@/lib/firebase'
 import type { CustomPattern } from '@/types/customPattern'
 
@@ -554,16 +569,16 @@ export function useRealtimePatterns(limitCount: number = 20) {
 
     const unsubscribe = onSnapshot(
       q,
-      (snapshot) => {
+      snapshot => {
         const newPatterns = snapshot.docs.map(doc => ({
           id: doc.id,
-          ...doc.data()
+          ...doc.data(),
         })) as CustomPattern[]
 
         setPatterns(newPatterns)
         setLoading(false)
       },
-      (err) => {
+      err => {
         setError(err as Error)
         setLoading(false)
       }
@@ -590,17 +605,14 @@ export function useRealtimePattern(patternId: string) {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    const unsubscribe = onSnapshot(
-      doc(db, 'patterns', patternId),
-      (doc) => {
-        if (doc.exists()) {
-          setPattern({ id: doc.id, ...doc.data() } as CustomPattern)
-        } else {
-          setPattern(null)
-        }
-        setLoading(false)
+    const unsubscribe = onSnapshot(doc(db, 'patterns', patternId), doc => {
+      if (doc.exists()) {
+        setPattern({ id: doc.id, ...doc.data() } as CustomPattern)
+      } else {
+        setPattern(null)
       }
-    )
+      setLoading(false)
+    })
 
     return () => unsubscribe()
   }, [patternId])
@@ -626,7 +638,10 @@ interface PatternState {
   setCurrentDraft: (draft: CustomPattern | null) => void
 
   // Firebaseへアップロード
-  uploadPattern: (pattern: CustomPattern, canvas: HTMLCanvasElement) => Promise<string>
+  uploadPattern: (
+    pattern: CustomPattern,
+    canvas: HTMLCanvasElement
+  ) => Promise<string>
 }
 
 export const usePatternStore = create<PatternState>()(
@@ -635,11 +650,12 @@ export const usePatternStore = create<PatternState>()(
       localPatterns: [],
       currentDraft: null,
 
-      addLocalPattern: (pattern) => set((state) => ({
-        localPatterns: [...state.localPatterns, pattern]
-      })),
+      addLocalPattern: pattern =>
+        set(state => ({
+          localPatterns: [...state.localPatterns, pattern],
+        })),
 
-      setCurrentDraft: (draft) => set({ currentDraft: draft }),
+      setCurrentDraft: draft => set({ currentDraft: draft }),
 
       uploadPattern: async (pattern, canvas) => {
         // 1. Firestoreにパターン作成
@@ -650,15 +666,15 @@ export const usePatternStore = create<PatternState>()(
 
         // 3. パターン更新（画像URL追加）
         await updateDoc(doc(db, 'patterns', patternId), {
-          previewImageUrl
+          previewImageUrl,
         })
 
         return patternId
-      }
+      },
     }),
     {
       name: 'pattern-storage',
-      partialize: (state) => ({ localPatterns: state.localPatterns })
+      partialize: state => ({ localPatterns: state.localPatterns }),
     }
   )
 )
@@ -682,6 +698,7 @@ firebase emulators:start
 ### 8.2 テストデータ投入
 
 Emulator UI（http://127.0.0.1:4000）から:
+
 1. Firestore → Start collection
 2. Collection ID: `patterns`
 3. Document ID: Auto-ID
@@ -702,14 +719,17 @@ async function seedData() {
       expressionType: 'smile',
       deviceType: 'tablet',
       color: '#FFFF00',
-      gridData: [[1,0,1], [0,1,0]],
+      gridData: [
+        [1, 0, 1],
+        [0, 1, 0],
+      ],
       isPublic: true,
       downloads: 10,
       likes: 5,
       tags: ['かわいい'],
       createdAt: serverTimestamp(),
-      updatedAt: serverTimestamp()
-    }
+      updatedAt: serverTimestamp(),
+    },
     // ... 他のテストデータ
   ]
 
@@ -827,6 +847,7 @@ jobs:
 ✅ CI/CD（GitHub Actions）
 
 次のステップ:
+
 - フロントエンドUIの実装（`frontend-design.md`参照）
 - ドットエディタコンポーネント作成
 - ギャラリーUI実装

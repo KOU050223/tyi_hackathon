@@ -14,14 +14,14 @@ const PRESET_COLORS = [
 ]
 
 export function EditorToolbar() {
-  const tool = useEditorStore((s) => s.tool)
-  const color = useEditorStore((s) => s.color)
-  const rows = useEditorStore((s) => s.rows)
-  const cols = useEditorStore((s) => s.cols)
-  const setTool = useEditorStore((s) => s.setTool)
-  const setColor = useEditorStore((s) => s.setColor)
-  const setGridSize = useEditorStore((s) => s.setGridSize)
-  const clearGrid = useEditorStore((s) => s.clearGrid)
+  const tool = useEditorStore(s => s.tool)
+  const color = useEditorStore(s => s.color)
+  const rows = useEditorStore(s => s.rows)
+  const cols = useEditorStore(s => s.cols)
+  const setTool = useEditorStore(s => s.setTool)
+  const setColor = useEditorStore(s => s.setColor)
+  const setGridSize = useEditorStore(s => s.setGridSize)
+  const clearGrid = useEditorStore(s => s.clearGrid)
 
   return (
     <div className="flex flex-col gap-4 p-4 border border-[#00FF00]/30 bg-black rounded font-mono">
@@ -56,13 +56,13 @@ export function EditorToolbar() {
           <input
             type="color"
             value={color}
-            onChange={(e) => setColor(e.target.value)}
+            onChange={e => setColor(e.target.value)}
             className="w-8 h-8 border border-[#333] bg-transparent cursor-pointer"
           />
           <span className="text-[#00FF00] text-sm">{color}</span>
         </div>
         <div className="flex flex-wrap gap-1">
-          {PRESET_COLORS.map((c) => (
+          {PRESET_COLORS.map(c => (
             <button
               key={c}
               onClick={() => setColor(c)}
@@ -86,7 +86,7 @@ export function EditorToolbar() {
           min={4}
           max={16}
           value={rows}
-          onChange={(e) => setGridSize(parseInt(e.target.value, 10), cols)}
+          onChange={e => setGridSize(parseInt(e.target.value, 10), cols)}
           className="w-full accent-[#00FF00]"
         />
         <div className="flex justify-between text-[#888] text-xs mt-1">

@@ -40,20 +40,20 @@ export function useRealtimePatterns(limitCount = 20) {
       collection(db, 'patterns'),
       where('isPublic', '==', true),
       orderBy('createdAt', 'desc'),
-      limit(limitCount),
+      limit(limitCount)
     )
 
     const unsubscribe = onSnapshot(
       q,
-      (snapshot) => {
-        const data = snapshot.docs.map((d) => toPatternData(d.id, d.data()))
+      snapshot => {
+        const data = snapshot.docs.map(d => toPatternData(d.id, d.data()))
         setPatterns(data)
         setLoading(false)
       },
-      (err) => {
+      err => {
         setError(err.message)
         setLoading(false)
-      },
+      }
     )
 
     return unsubscribe

@@ -36,6 +36,7 @@ Cloudflare版よりもシンプルで、認証・DB・ストレージが統合�
 ## 使用するFirebaseサービス
 
 ### 1. Firebase Hosting
+
 - **用途**: Viteアプリのホスティング
 - **特徴**:
   - 自動SSL証明書
@@ -44,6 +45,7 @@ Cloudflare版よりもシンプルで、認証・DB・ストレージが統合�
 - **無料枠**: 10GB/月
 
 ### 2. Firebase Authentication
+
 - **用途**: ユーザー認証
 - **プロバイダー**: GitHub OAuth
 - **特徴**:
@@ -53,6 +55,7 @@ Cloudflare版よりもシンプルで、認証・DB・ストレージが統合�
 - **無料枠**: 無制限
 
 ### 3. Cloud Firestore
+
 - **用途**: パターンデータ、ユーザー情報
 - **特徴**:
   - NoSQLドキュメントDB
@@ -62,6 +65,7 @@ Cloudflare版よりもシンプルで、認証・DB・ストレージが統合�
 - **無料枠**: 1GB / 5万読取/日 / 2万書込/日
 
 ### 4. Firebase Storage
+
 - **用途**: プレビュー画像保存
 - **特徴**:
   - Google Cloud Storage基盤
@@ -70,6 +74,7 @@ Cloudflare版よりもシンプルで、認証・DB・ストレージが統合�
 - **無料枠**: 5GB / 1GB転送/日
 
 ### 5. Cloud Functions (オプション)
+
 - **用途**: サーバーサイド処理
 - **使用例**:
   - 画像リサイズ
@@ -353,14 +358,17 @@ async function loginWithGitHub() {
     const user = result.user
 
     // Firestoreにユーザー情報保存
-    await setDoc(doc(db, 'users', user.uid), {
-      githubId: user.providerData[0].uid,
-      githubUsername: user.displayName,
-      avatarUrl: user.photoURL,
-      createdAt: serverTimestamp(),
-      updatedAt: serverTimestamp()
-    }, { merge: true })
-
+    await setDoc(
+      doc(db, 'users', user.uid),
+      {
+        githubId: user.providerData[0].uid,
+        githubUsername: user.displayName,
+        avatarUrl: user.photoURL,
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+      },
+      { merge: true }
+    )
   } catch (error) {
     console.error('Login failed:', error)
   }
@@ -372,7 +380,7 @@ async function logout() {
 }
 
 // 認証状態監視
-onAuthStateChanged(auth, (user) => {
+onAuthStateChanged(auth, user => {
   if (user) {
     // ログイン済み
   } else {
@@ -407,10 +415,10 @@ const snapshot = await getDocs(q)
 const q = query(
   collection(db, 'patterns'),
   where('isPublic', '==', true),
-  limit(50)  // 最大50件まで監視
+  limit(50) // 最大50件まで監視
 )
 
-const unsubscribe = onSnapshot(q, (snapshot) => {
+const unsubscribe = onSnapshot(q, snapshot => {
   // 更新処理
 })
 
@@ -427,11 +435,11 @@ useEffect(() => {
 const batch = writeBatch(db)
 
 batch.set(doc(db, 'patterns', patternId, 'likedBy', userId), {
-  likedAt: serverTimestamp()
+  likedAt: serverTimestamp(),
 })
 
 batch.update(doc(db, 'patterns', patternId), {
-  likes: increment(1)
+  likes: increment(1),
 })
 
 await batch.commit()
@@ -441,18 +449,19 @@ await batch.commit()
 
 ### 無料枠
 
-| サービス | 無料枠 | 想定使用量 | 超過後料金 |
-|---------|--------|-----------|----------|
-| Hosting | 10GB/月 | ~2GB | $0.15/GB |
-| Firestore 読取 | 5万/日 | 3万/日 | $0.06/10万 |
-| Firestore 書込 | 2万/日 | 5千/日 | $0.18/10万 |
-| Firestore ストレージ | 1GB | 500MB | $0.18/GB |
-| Storage | 5GB / 1GB転送/日 | 2GB / 500MB/日 | $0.026/GB |
-| Functions | 200万/月 | 未使用 | $0.40/100万 |
+| サービス             | 無料枠           | 想定使用量     | 超過後料金  |
+| -------------------- | ---------------- | -------------- | ----------- |
+| Hosting              | 10GB/月          | ~2GB           | $0.15/GB    |
+| Firestore 読取       | 5万/日           | 3万/日         | $0.06/10万  |
+| Firestore 書込       | 2万/日           | 5千/日         | $0.18/10万  |
+| Firestore ストレージ | 1GB              | 500MB          | $0.18/GB    |
+| Storage              | 5GB / 1GB転送/日 | 2GB / 500MB/日 | $0.026/GB   |
+| Functions            | 200万/月         | 未使用         | $0.40/100万 |
 
 ### 月間コスト試算
 
 **想定**: 月間1万アクティブユーザー、1日あたり:
+
 - ギャラリー閲覧: 3万読取
 - パターン作成: 100書込
 - いいね: 500書込
@@ -461,6 +470,7 @@ await batch.commit()
 **結果**: **月額 $0**（無料枠内）
 
 **スケール時** (10万ユーザー):
+
 - 読取超過: ~$3/月
 - 書込超過: ~$2/月
 - ストレージ: ~$1/月
@@ -503,7 +513,7 @@ import { initializeAppCheck, ReCaptchaV3Provider } from 'firebase/app-check'
 
 const appCheck = initializeAppCheck(app, {
   provider: new ReCaptchaV3Provider('YOUR_RECAPTCHA_SITE_KEY'),
-  isTokenAutoRefreshEnabled: true
+  isTokenAutoRefreshEnabled: true,
 })
 ```
 

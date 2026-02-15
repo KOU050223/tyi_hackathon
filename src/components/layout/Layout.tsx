@@ -9,9 +9,7 @@ export function Layout({ children }: LayoutProps) {
   return (
     <div className="layout">
       <Navigation />
-      <main className="main-content">
-        {children}
-      </main>
+      <main className="main-content">{children}</main>
     </div>
   )
 }

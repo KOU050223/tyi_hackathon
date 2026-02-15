@@ -15,9 +15,11 @@
 ## 並行作業可能なタスク 🔄
 
 ### タスク #1: MediaPipe Face Landmarkerの統合とモデルファイル配置
+
 **優先度: 高** | **担当: mediapipe-specialist**
 
 #### 実装内容
+
 - MediaPipeモデルファイル（face_landmarker.task）をpublic/models/に配置
 - FaceLandmarker.tsのラッパークラス作成
 - useFaceDetection hookの実装
@@ -27,12 +29,14 @@
   - エラーハンドリング
 
 #### 成果物
+
 - `src/engines/mediapipe/FaceLandmarker.ts`
 - `src/engines/mediapipe/blendshapes.ts`
 - `src/hooks/useFaceDetection.ts`
 - `public/models/face_landmarker.task`
 
 #### 技術的詳細
+
 - @mediapipe/tasks-vision ^0.10.18を使用
 - runningMode: 'VIDEO'で設定
 - outputFaceBlendshapes: trueで有効化
@@ -41,9 +45,11 @@
 ---
 
 ### タスク #2: 表情判定アルゴリズム（expressionDetector）の実装
+
 **優先度: 高** | **担当: algorithm-developer**
 
 #### 実装内容
+
 - src/utils/expressionDetector.ts の作成
 - 10種類の表情判定ロジック
   - **neutral（通常）**: デフォルト状態
@@ -58,10 +64,12 @@
   - **embarrassed（照れ）**: 特定の組み合わせ
 
 #### 成果物
+
 - `src/utils/expressionDetector.ts`
 - `test/unit/expressionDetector.test.ts`（ユニットテスト）
 
 #### 技術的詳細
+
 - Blendshape閾値の調整
 - 複合条件の実装（例: 笑顔 = 口角上昇 + 目の形）
 - 信頼度フィルタリング（低信頼度データの除外）
@@ -69,9 +77,11 @@
 ---
 
 ### タスク #3: 残りの表情パターン（6種類）のドット絵デザイン
+
 **優先度: 中** | **担当: ui-designer**
 
 #### 実装内容
+
 - src/utils/dotPatterns.ts に以下を追加
   - **sad（悲しみ）**: 目が下がり、口が下向き（色: #4444FF 青系）
   - **angry（怒り）**: 眉が下がり、目が鋭く（色: #FF0000 赤）
@@ -81,21 +91,25 @@
   - **embarrassed（照れ）**: 目が点、頬に斜線（色: #FFAAAA ピンク）
 
 #### デザイン要件
+
 - スマホ用（目のみ）とタブレット用（目+口）の両方
 - 12x6～12x11のグリッドサイズ
 - ピクセルアート風のシンプルなデザイン
 - 各表情に合った色を設定
 
 #### 成果物
+
 - `dotPatterns.ts`の更新
 - `test/visual/dotPattern.visual.test.ts`（視覚的テスト）
 
 ---
 
 ### タスク #5: ユニットテストと統合テストの作成
+
 **優先度: 中** | **担当: test-engineer**
 
 #### 実装内容
+
 - ユニットテスト
   - `test/unit/expressionDetector.test.ts`
   - `test/unit/dotPatterns.test.ts`
@@ -109,11 +123,13 @@
   - `test/fixtures/mock-blendshapes.json`
 
 #### 成果物
+
 - 各テストファイル
 - Vitestの設定調整
 - カバレッジレポート
 
 #### 技術的詳細
+
 - Vitestでのモック化
 - Testing Libraryでのコンポーネントテスト
 - カバレッジ目標: 80%以上
@@ -121,9 +137,11 @@
 ---
 
 ### タスク #6: デバッグパネルの実装
+
 **優先度: 低** | **担当: developer**
 
 #### 実装内容
+
 - src/components/DebugPanel.tsx の作成
 - 表示情報
   - FPS（フレームレート）
@@ -136,10 +154,12 @@
 - 開発モード時のみ表示
 
 #### 成果物
+
 - `src/components/DebugPanel.tsx`
 - `src/utils/performance.ts`（パフォーマンス測定）
 
 #### 技術的詳細
+
 - performance.now()でFPS計測
 - Blendshape値のリアルタイム表示
 - トグル表示機能
@@ -149,10 +169,12 @@
 ## 依存関係のあるタスク 🔗
 
 ### タスク #4: リアルタイム表情認識とレンダリングの統合
+
 **優先度: 最高** | **担当: team-lead**
 **依存: タスク #1, #2 完了後**
 
 #### 実装内容
+
 - App.tsxの更新
   - デモモードの削除
   - useFaceDetection hookの統合
@@ -163,11 +185,13 @@
   - 遅延100ms以下を目標
 
 #### 成果物
+
 - `src/App.tsx`（更新）
 - `src/hooks/useExpressionMapper.ts`
 - `src/hooks/useRenderer.ts`
 
 #### 技術的詳細
+
 - ビデオフレーム → MediaPipe → Blendshapes → 表情判定 → Canvas描画
 - フレームレート制御
 - メモリリーク対策
@@ -177,6 +201,7 @@
 ## 作業の流れ
 
 ### 第1フェーズ（並行作業可能）
+
 1. **タスク #1**: MediaPipe統合 ← mediapipe-specialist
 2. **タスク #2**: 表情判定ロジック ← algorithm-developer
 3. **タスク #3**: ドット絵デザイン ← ui-designer
@@ -184,20 +209,21 @@
 5. **タスク #6**: デバッグパネル ← developer
 
 ### 第2フェーズ（統合）
+
 6. **タスク #4**: リアルタイム統合 ← team-lead（タスク#1,#2完了後）
 
 ---
 
 ## 推定作業時間
 
-| タスク | 作業時間 | 優先度 |
-|--------|----------|--------|
-| #1 MediaPipe統合 | 2-3時間 | 高 |
-| #2 表情判定アルゴリズム | 1-2時間 | 高 |
-| #3 ドット絵デザイン | 2-3時間 | 中 |
-| #4 リアルタイム統合 | 2-3時間 | 最高 |
-| #5 テスト作成 | 3-4時間 | 中 |
-| #6 デバッグパネル | 1-2時間 | 低 |
+| タスク                  | 作業時間 | 優先度 |
+| ----------------------- | -------- | ------ |
+| #1 MediaPipe統合        | 2-3時間  | 高     |
+| #2 表情判定アルゴリズム | 1-2時間  | 高     |
+| #3 ドット絵デザイン     | 2-3時間  | 中     |
+| #4 リアルタイム統合     | 2-3時間  | 最高   |
+| #5 テスト作成           | 3-4時間  | 中     |
+| #6 デバッグパネル       | 1-2時間  | 低     |
 
 **合計推定時間**: 11-17時間
 **並行作業時の推定時間**: 5-8時間

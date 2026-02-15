@@ -55,23 +55,23 @@ export type BlendshapeName =
   | 'mouthUpperUpLeft'
   | 'mouthUpperUpRight'
   | 'noseSneerLeft'
-  | 'noseSneerRight';
+  | 'noseSneerRight'
 
 /**
  * Blendshapeの値（0.0～1.0の範囲）
  */
 export interface BlendshapeValue {
-  categoryName: BlendshapeName;
-  score: number;
-  displayName?: string;
-  index?: number;
+  categoryName: BlendshapeName
+  score: number
+  displayName?: string
+  index?: number
 }
 
 /**
  * 顔検出結果に含まれるBlendshapesデータ
  */
 export interface FaceBlendshapes {
-  categories: BlendshapeValue[];
+  categories: BlendshapeValue[]
 }
 
 /**
@@ -80,11 +80,11 @@ export interface FaceBlendshapes {
 export function blendshapesToMap(
   blendshapes: FaceBlendshapes
 ): Map<BlendshapeName, number> {
-  const map = new Map<BlendshapeName, number>();
+  const map = new Map<BlendshapeName, number>()
   for (const category of blendshapes.categories) {
-    map.set(category.categoryName, category.score);
+    map.set(category.categoryName, category.score)
   }
-  return map;
+  return map
 }
 
 /**
@@ -98,11 +98,9 @@ export function getBlendshapeValue(
   name: BlendshapeName,
   defaultValue = 0
 ): number {
-  if (!blendshapes) return defaultValue;
-  const category = blendshapes.categories.find(
-    (c) => c.categoryName === name
-  );
-  return category?.score ?? defaultValue;
+  if (!blendshapes) return defaultValue
+  const category = blendshapes.categories.find(c => c.categoryName === name)
+  return category?.score ?? defaultValue
 }
 
 /**
@@ -112,6 +110,6 @@ export function averageBlendshapes(
   blendshapes: FaceBlendshapes,
   names: BlendshapeName[]
 ): number {
-  const values = names.map((name) => getBlendshapeValue(blendshapes, name));
-  return values.reduce((sum, val) => sum + val, 0) / values.length;
+  const values = names.map(name => getBlendshapeValue(blendshapes, name))
+  return values.reduce((sum, val) => sum + val, 0) / values.length
 }

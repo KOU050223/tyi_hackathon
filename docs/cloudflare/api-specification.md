@@ -29,11 +29,11 @@ GitHub OAuthとJWTを使用。
 
 ```json
 {
-  "sub": "123",           // user_id
-  "githubId": 45678901,   // GitHub ID
-  "username": "octocat",  // GitHubユーザー名
-  "iat": 1234567890,      // 発行時刻
-  "exp": 1234671490       // 有効期限（7日間）
+  "sub": "123", // user_id
+  "githubId": 45678901, // GitHub ID
+  "username": "octocat", // GitHubユーザー名
+  "iat": 1234567890, // 発行時刻
+  "exp": 1234671490 // 有効期限（7日間）
 }
 ```
 
@@ -41,33 +41,33 @@ GitHub OAuthとJWTを使用。
 
 ### 認証 (Auth)
 
-| メソッド | パス | 認証 | 説明 |
-|---------|------|------|------|
-| GET | /auth/github | 不要 | GitHub OAuthへリダイレクト |
-| GET | /auth/callback | 不要 | OAuthコールバック、JWT発行 |
-| GET | /auth/me | 必須 | 現在のユーザー情報取得 |
-| POST | /auth/logout | 必須 | ログアウト（トークン無効化） |
+| メソッド | パス           | 認証 | 説明                         |
+| -------- | -------------- | ---- | ---------------------------- |
+| GET      | /auth/github   | 不要 | GitHub OAuthへリダイレクト   |
+| GET      | /auth/callback | 不要 | OAuthコールバック、JWT発行   |
+| GET      | /auth/me       | 必須 | 現在のユーザー情報取得       |
+| POST     | /auth/logout   | 必須 | ログアウト（トークン無効化） |
 
 ### パターン (Patterns)
 
-| メソッド | パス | 認証 | 説明 |
-|---------|------|------|------|
-| GET | /api/patterns | 不要 | 公開パターン一覧取得 |
-| GET | /api/patterns/:id | 不要 | 特定パターンの詳細取得 |
-| POST | /api/patterns | 必須 | 新規パターン作成 |
-| PUT | /api/patterns/:id | 必須 | パターン更新（作成者のみ） |
-| DELETE | /api/patterns/:id | 必須 | パターン削除（作成者のみ） |
-| POST | /api/patterns/:id/like | 必須 | いいね追加 |
-| DELETE | /api/patterns/:id/like | 必須 | いいね削除 |
-| POST | /api/patterns/:id/download | 不要 | ダウンロード数カウント |
+| メソッド | パス                       | 認証 | 説明                       |
+| -------- | -------------------------- | ---- | -------------------------- |
+| GET      | /api/patterns              | 不要 | 公開パターン一覧取得       |
+| GET      | /api/patterns/:id          | 不要 | 特定パターンの詳細取得     |
+| POST     | /api/patterns              | 必須 | 新規パターン作成           |
+| PUT      | /api/patterns/:id          | 必須 | パターン更新（作成者のみ） |
+| DELETE   | /api/patterns/:id          | 必須 | パターン削除（作成者のみ） |
+| POST     | /api/patterns/:id/like     | 必須 | いいね追加                 |
+| DELETE   | /api/patterns/:id/like     | 必須 | いいね削除                 |
+| POST     | /api/patterns/:id/download | 不要 | ダウンロード数カウント     |
 
 ### ユーザー (Users)
 
-| メソッド | パス | 認証 | 説明 |
-|---------|------|------|------|
-| GET | /api/users/:id | 不要 | ユーザー情報取得 |
-| GET | /api/users/:id/patterns | 不要 | ユーザーの公開パターン一覧 |
-| GET | /api/users/me/patterns | 必須 | 自分のパターン一覧（非公開含む） |
+| メソッド | パス                    | 認証 | 説明                             |
+| -------- | ----------------------- | ---- | -------------------------------- |
+| GET      | /api/users/:id          | 不要 | ユーザー情報取得                 |
+| GET      | /api/users/:id/patterns | 不要 | ユーザーの公開パターン一覧       |
+| GET      | /api/users/me/patterns  | 必須 | 自分のパターン一覧（非公開含む） |
 
 ---
 
@@ -78,11 +78,13 @@ GitHub OAuthとJWTを使用。
 GitHub OAuthフローを開始。
 
 **リクエスト例**:
+
 ```http
 GET /auth/github
 ```
 
 **レスポンス**:
+
 ```http
 HTTP/1.1 302 Found
 Location: https://github.com/login/oauth/authorize?client_id=xxx&redirect_uri=xxx&scope=read:user
@@ -95,11 +97,13 @@ Location: https://github.com/login/oauth/authorize?client_id=xxx&redirect_uri=xx
 GitHub認証後のコールバック処理。
 
 **リクエスト例**:
+
 ```http
 GET /auth/callback?code=abc123&state=xyz
 ```
 
 **レスポンス** (成功):
+
 ```json
 {
   "success": true,
@@ -114,6 +118,7 @@ GET /auth/callback?code=abc123&state=xyz
 ```
 
 **エラーレスポンス**:
+
 ```json
 {
   "success": false,
@@ -128,12 +133,14 @@ GET /auth/callback?code=abc123&state=xyz
 現在ログイン中のユーザー情報を取得。
 
 **リクエスト例**:
+
 ```http
 GET /auth/me
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 ```
 
 **レスポンス** (成功):
+
 ```json
 {
   "id": 1,
@@ -145,6 +152,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 ```
 
 **エラーレスポンス** (401):
+
 ```json
 {
   "error": "Unauthorized"
@@ -158,6 +166,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 公開パターンの一覧を取得（ページネーション、フィルタ、ソート対応）。
 
 **リクエスト例**:
+
 ```http
 GET /api/patterns?page=1&perPage=20&sortBy=popular&expressionType=smile&deviceType=tablet
 ```
@@ -173,6 +182,7 @@ GET /api/patterns?page=1&perPage=20&sortBy=popular&expressionType=smile&deviceTy
 | search | string | No | - | 名前で検索 |
 
 **レスポンス** (成功):
+
 ```json
 {
   "patterns": [
@@ -212,11 +222,13 @@ GET /api/patterns?page=1&perPage=20&sortBy=popular&expressionType=smile&deviceTy
 特定パターンの詳細情報を取得。
 
 **リクエスト例**:
+
 ```http
 GET /api/patterns/123
 ```
 
 **レスポンス** (成功):
+
 ```json
 {
   "id": 123,
@@ -245,6 +257,7 @@ GET /api/patterns/123
 ```
 
 **エラーレスポンス** (404):
+
 ```json
 {
   "error": "Pattern not found"
@@ -258,6 +271,7 @@ GET /api/patterns/123
 新しいパターンを作成。
 
 **リクエスト例**:
+
 ```http
 POST /api/patterns
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
@@ -278,6 +292,7 @@ Content-Type: application/json
 ```
 
 **バリデーション**:
+
 - `name`: 必須、1-50文字
 - `expressionType`: 必須、既定の表情タイプ
 - `deviceType`: 必須、smartphone or tablet
@@ -287,6 +302,7 @@ Content-Type: application/json
 - `tags`: オプション、最大10個
 
 **レスポンス** (成功):
+
 ```json
 {
   "id": 124,
@@ -310,6 +326,7 @@ Content-Type: application/json
 ```
 
 **エラーレスポンス** (400):
+
 ```json
 {
   "error": "Validation failed",
@@ -321,6 +338,7 @@ Content-Type: application/json
 ```
 
 **エラーレスポンス** (401):
+
 ```json
 {
   "error": "Unauthorized"
@@ -334,6 +352,7 @@ Content-Type: application/json
 パターンを更新（作成者のみ）。
 
 **リクエスト例**:
+
 ```http
 PUT /api/patterns/124
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
@@ -346,6 +365,7 @@ Content-Type: application/json
 ```
 
 **更新可能フィールド**:
+
 - `name`
 - `color`
 - `gridData`
@@ -353,6 +373,7 @@ Content-Type: application/json
 - `tags`
 
 **レスポンス** (成功):
+
 ```json
 {
   "id": 124,
@@ -363,6 +384,7 @@ Content-Type: application/json
 ```
 
 **エラーレスポンス** (403):
+
 ```json
 {
   "error": "Forbidden: You are not the owner of this pattern"
@@ -376,17 +398,20 @@ Content-Type: application/json
 パターンを削除（作成者のみ）。
 
 **リクエスト例**:
+
 ```http
 DELETE /api/patterns/124
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 ```
 
 **レスポンス** (成功):
+
 ```http
 HTTP/1.1 204 No Content
 ```
 
 **エラーレスポンス** (403):
+
 ```json
 {
   "error": "Forbidden: You are not the owner of this pattern"
@@ -400,12 +425,14 @@ HTTP/1.1 204 No Content
 パターンにいいねを追加。
 
 **リクエスト例**:
+
 ```http
 POST /api/patterns/123/like
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 ```
 
 **レスポンス** (成功):
+
 ```json
 {
   "success": true,
@@ -414,6 +441,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 ```
 
 **エラーレスポンス** (409):
+
 ```json
 {
   "error": "Already liked"
@@ -427,12 +455,14 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 いいねを削除。
 
 **リクエスト例**:
+
 ```http
 DELETE /api/patterns/123/like
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 ```
 
 **レスポンス** (成功):
+
 ```json
 {
   "success": true,
@@ -447,11 +477,13 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 ダウンロード数をカウント（認証不要）。
 
 **リクエスト例**:
+
 ```http
 POST /api/patterns/123/download
 ```
 
 **レスポンス** (成功):
+
 ```json
 {
   "success": true,
@@ -466,11 +498,13 @@ POST /api/patterns/123/download
 特定ユーザーの公開パターン一覧。
 
 **リクエスト例**:
+
 ```http
 GET /api/users/1/patterns?page=1&perPage=10
 ```
 
 **レスポンス** (成功):
+
 ```json
 {
   "patterns": [...],
@@ -490,12 +524,14 @@ GET /api/users/1/patterns?page=1&perPage=10
 自分のパターン一覧（非公開含む）。
 
 **リクエスト例**:
+
 ```http
 GET /api/users/me/patterns
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 ```
 
 **レスポンス** (成功):
+
 ```json
 {
   "patterns": [
@@ -531,30 +567,31 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 
 ### HTTPステータスコード
 
-| コード | 説明 |
-|-------|------|
-| 200 | 成功 |
-| 201 | 作成成功 |
-| 204 | 削除成功（レスポンスボディなし） |
-| 400 | バリデーションエラー |
-| 401 | 認証エラー |
-| 403 | 権限エラー |
-| 404 | リソース未検出 |
-| 409 | 競合（重複いいね等） |
-| 429 | レート制限 |
-| 500 | サーバーエラー |
+| コード | 説明                             |
+| ------ | -------------------------------- |
+| 200    | 成功                             |
+| 201    | 作成成功                         |
+| 204    | 削除成功（レスポンスボディなし） |
+| 400    | バリデーションエラー             |
+| 401    | 認証エラー                       |
+| 403    | 権限エラー                       |
+| 404    | リソース未検出                   |
+| 409    | 競合（重複いいね等）             |
+| 429    | レート制限                       |
+| 500    | サーバーエラー                   |
 
 ---
 
 ## レート制限
 
-| エンドポイント | 制限 |
-|--------------|------|
-| GET系 | 100リクエスト/分 |
-| POST/PUT/DELETE | 30リクエスト/分 |
-| /auth/* | 10リクエスト/分 |
+| エンドポイント  | 制限             |
+| --------------- | ---------------- |
+| GET系           | 100リクエスト/分 |
+| POST/PUT/DELETE | 30リクエスト/分  |
+| /auth/\*        | 10リクエスト/分  |
 
 **レート制限超過時**:
+
 ```http
 HTTP/1.1 429 Too Many Requests
 Retry-After: 60
@@ -583,6 +620,7 @@ Access-Control-Max-Age: 86400
 ### GET /health
 
 **レスポンス**:
+
 ```json
 {
   "status": "healthy",

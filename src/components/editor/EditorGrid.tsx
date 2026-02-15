@@ -2,21 +2,21 @@ import { useCallback, useEffect } from 'react'
 import { useEditorStore } from '@/stores/editorStore'
 
 export function EditorGrid() {
-  const gridData = useEditorStore((s) => s.gridData)
-  const color = useEditorStore((s) => s.color)
-  const tool = useEditorStore((s) => s.tool)
-  const isDrawing = useEditorStore((s) => s.isDrawing)
-  const rows = useEditorStore((s) => s.rows)
-  const cols = useEditorStore((s) => s.cols)
-  const setCell = useEditorStore((s) => s.setCell)
-  const setIsDrawing = useEditorStore((s) => s.setIsDrawing)
+  const gridData = useEditorStore(s => s.gridData)
+  const color = useEditorStore(s => s.color)
+  const tool = useEditorStore(s => s.tool)
+  const isDrawing = useEditorStore(s => s.isDrawing)
+  const rows = useEditorStore(s => s.rows)
+  const cols = useEditorStore(s => s.cols)
+  const setCell = useEditorStore(s => s.setCell)
+  const setIsDrawing = useEditorStore(s => s.setIsDrawing)
 
   const handleCellAction = useCallback(
     (row: number, col: number) => {
       const value = tool === 'draw' ? 1 : 0
       setCell(row, col, value)
     },
-    [tool, setCell],
+    [tool, setCell]
   )
 
   const handleMouseDown = useCallback(
@@ -24,7 +24,7 @@ export function EditorGrid() {
       setIsDrawing(true)
       handleCellAction(row, col)
     },
-    [setIsDrawing, handleCellAction],
+    [setIsDrawing, handleCellAction]
   )
 
   const handleMouseEnter = useCallback(
@@ -33,7 +33,7 @@ export function EditorGrid() {
         handleCellAction(row, col)
       }
     },
-    [isDrawing, handleCellAction],
+    [isDrawing, handleCellAction]
   )
 
   const handleTouchMove = useCallback(
@@ -41,13 +41,17 @@ export function EditorGrid() {
       e.preventDefault()
       const touch = e.touches[0]
       const target = document.elementFromPoint(touch.clientX, touch.clientY)
-      if (target instanceof HTMLElement && target.dataset.row && target.dataset.col) {
+      if (
+        target instanceof HTMLElement &&
+        target.dataset.row &&
+        target.dataset.col
+      ) {
         const row = parseInt(target.dataset.row, 10)
         const col = parseInt(target.dataset.col, 10)
         handleCellAction(row, col)
       }
     },
-    [handleCellAction],
+    [handleCellAction]
   )
 
   useEffect(() => {
@@ -79,12 +83,12 @@ export function EditorGrid() {
             key={`${rowIdx}-${colIdx}`}
             data-row={rowIdx}
             data-col={colIdx}
-            onMouseDown={(e) => {
+            onMouseDown={e => {
               e.preventDefault()
               handleMouseDown(rowIdx, colIdx)
             }}
             onMouseEnter={() => handleMouseEnter(rowIdx, colIdx)}
-            onTouchStart={(e) => {
+            onTouchStart={e => {
               e.preventDefault()
               setIsDrawing(true)
               handleCellAction(rowIdx, colIdx)
@@ -98,7 +102,7 @@ export function EditorGrid() {
               boxSizing: 'border-box',
             }}
           />
-        )),
+        ))
       )}
     </div>
   )

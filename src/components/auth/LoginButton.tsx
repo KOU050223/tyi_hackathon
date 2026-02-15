@@ -39,10 +39,11 @@ export function LoginButton() {
           transition: 'box-shadow 0.2s, opacity 0.2s',
           boxShadow: '0 0 8px rgba(0, 255, 0, 0.3)',
         }}
-        onMouseEnter={(e) => {
-          if (!busy) e.currentTarget.style.boxShadow = '0 0 16px rgba(0, 255, 0, 0.6)'
+        onMouseEnter={e => {
+          if (!busy)
+            e.currentTarget.style.boxShadow = '0 0 16px rgba(0, 255, 0, 0.6)'
         }}
-        onMouseLeave={(e) => {
+        onMouseLeave={e => {
           e.currentTarget.style.boxShadow = '0 0 8px rgba(0, 255, 0, 0.3)'
         }}
       >
@@ -52,7 +53,9 @@ export function LoginButton() {
         {busy ? 'ログイン中...' : 'GitHubでログイン'}
       </button>
       {error && (
-        <p style={{ color: '#ff4444', fontSize: '12px', marginTop: '4px' }}>{error}</p>
+        <p style={{ color: '#ff4444', fontSize: '12px', marginTop: '4px' }}>
+          {error}
+        </p>
       )}
     </div>
   )
