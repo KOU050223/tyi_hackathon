@@ -1,4 +1,4 @@
-import { BlendShapes } from '../types/face'
+import type { BlendShapes } from '@/types/face'
 
 /**
  * 表情の種類
