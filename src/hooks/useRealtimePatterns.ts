@@ -36,9 +36,6 @@ export function useRealtimePatterns(limitCount = 20) {
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    setLoading(true)
-    setError(null)
-
     const q = query(
       collection(db, 'patterns'),
       where('isPublic', '==', true),

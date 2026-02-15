@@ -10,15 +10,13 @@ import { getPattern } from '@/lib/patterns'
 export default function DotEditorPage() {
   const { id } = useParams<{ id: string }>()
   const loadPattern = useEditorStore((s) => s.loadPattern)
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(!!id)
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     if (!id) return
 
     let cancelled = false
-    setLoading(true)
-    setError(null)
 
     getPattern(id)
       .then((pattern) => {

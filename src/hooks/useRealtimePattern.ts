@@ -5,16 +5,18 @@ import type { PatternData } from '@/types/firebase'
 
 export function useRealtimePattern(patternId: string | null) {
   const [pattern, setPattern] = useState<PatternData | null>(null)
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(!!patternId)
 
   useEffect(() => {
     if (!patternId) {
-      setPattern(null)
-      setLoading(false)
+      // patternIdがnullの場合は初期状態に戻す
+      // カスケーディングレンダーを避けるため、非同期に設定
+      Promise.resolve().then(() => {
+        setPattern(null)
+        setLoading(false)
+      })
       return
     }
-
-    setLoading(true)
 
     const unsubscribe = onSnapshot(
       doc(db, 'patterns', patternId),

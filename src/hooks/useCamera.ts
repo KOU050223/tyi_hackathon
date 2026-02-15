@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 
 interface UseCameraReturn {
   videoRef: React.RefObject<HTMLVideoElement | null>;
@@ -51,20 +51,20 @@ export const useCamera = (): UseCameraReturn => {
     }
   };
 
-  const stopCamera = () => {
+  const stopCamera = useCallback(() => {
     if (stream) {
       stream.getTracks().forEach((track) => track.stop());
       setStream(null);
       setIsReady(false);
     }
-  };
+  }, [stream]);
 
   // コンポーネントのアンマウント時にカメラを停止
   useEffect(() => {
     return () => {
       stopCamera();
     };
-  }, [stream]);
+  }, [stopCamera]);
 
   return {
     videoRef,
