@@ -1,0 +1,52 @@
+{
+  "version": "2.0.0",
+  "generatedAt": "2026-02-16T13:35:19.529Z",
+  "expressions": [
+    {
+      "name": "neutral",
+      "file": "neutral.json"
+    },
+    {
+      "name": "smile",
+      "file": "smile.json"
+    },
+    {
+      "name": "surprised",
+      "file": "surprised.json"
+    },
+    {
+      "name": "blink",
+      "file": "blink.json"
+    },
+    {
+      "name": "sad",
+      "file": "sad.json"
+    },
+    {
+      "name": "angry",
+      "file": "angry.json"
+    },
+    {
+      "name": "confused",
+      "file": "confused.json"
+    },
+    {
+      "name": "smug",
+      "file": "smug.json"
+    },
+    {
+      "name": "questioning",
+      "file": "questioning.json"
+    },
+    {
+      "name": "embarrassed",
+      "file": "embarrassed.json"
+    }
+  ],
+  "metadata": {
+    "patternSize": "21x26",
+    "eyeOnlyRows": 14,
+    "fullRows": 26,
+    "description": "Optimized: Single 21x26 pattern per expression. Render top 14 rows for smartphone (eyes only), all 26 rows for tablet (eyes + mouth)."
+  }
+}
