@@ -17,7 +17,8 @@
     "test:coverage": "vitest run --coverage",
     "test:watch": "vitest watch",
     "firebase:emulators": "firebase emulators:start",
-    "firebase:deploy": "firebase deploy"
+    "firebase:deploy": "firebase deploy",
+    "export:patterns": "node scripts/export-patterns.js"
   },
   "dependencies": {
     "@mediapipe/tasks-vision": "^0.10.32",

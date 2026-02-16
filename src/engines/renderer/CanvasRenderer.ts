@@ -38,15 +38,25 @@ export class CanvasRenderer {
 
   /**
    * ドット絵パターンを描画
+   * 画面サイズに収まるようにdotSizeを自動調整
    */
   private drawDotPattern(pattern: DotPattern) {
     const { color, grid } = pattern;
     const rows = grid.length;
     const cols = grid[0]?.length || 0;
 
-    // キャンバスサイズをパターンに合わせて調整
-    const canvasWidth = cols * this.dotSize;
-    const canvasHeight = rows * this.dotSize;
+    // 画面サイズを取得
+    const maxWidth = window.innerWidth;
+    const maxHeight = window.innerHeight;
+
+    // 画面に収まる最大のdotSizeを計算（余白10%確保）
+    const maxDotSizeByWidth = Math.floor((maxWidth * 0.9) / cols);
+    const maxDotSizeByHeight = Math.floor((maxHeight * 0.9) / rows);
+    const optimalDotSize = Math.min(maxDotSizeByWidth, maxDotSizeByHeight, this.dotSize);
+
+    // キャンバスサイズを計算
+    const canvasWidth = cols * optimalDotSize;
+    const canvasHeight = rows * optimalDotSize;
 
     if (this.canvas.width !== canvasWidth || this.canvas.height !== canvasHeight) {
       this.canvas.width = canvasWidth;
@@ -60,7 +70,12 @@ export class CanvasRenderer {
       for (let col = 0; col < cols; col++) {
         if (grid[row][col] === 1) {
           this.ctx.fillStyle = color;
-          this.ctx.fillRect(col * this.dotSize, row * this.dotSize, this.dotSize, this.dotSize);
+          this.ctx.fillRect(
+            col * optimalDotSize,
+            row * optimalDotSize,
+            optimalDotSize,
+            optimalDotSize,
+          );
         }
       }
     }
