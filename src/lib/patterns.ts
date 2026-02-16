@@ -23,6 +23,11 @@ import type { Expression } from '@/types/expression'
 import type { DeviceType } from '@/types/device'
 
 function toPatternData(id: string, data: DocumentData): PatternData {
+  // gridDataSerializedから2次元配列に変換
+  const gridData = data.gridDataSerialized
+    ? JSON.parse(data.gridDataSerialized)
+    : data.gridData ?? []
+
   return {
     id,
     userId: data.userId ?? '',
@@ -30,7 +35,7 @@ function toPatternData(id: string, data: DocumentData): PatternData {
     expressionType: data.expressionType ?? 'neutral',
     deviceType: data.deviceType ?? 'smartphone',
     color: data.color ?? '#00FF00',
-    gridData: data.gridData ?? [],
+    gridData,
     previewImageUrl: data.previewImageUrl,
     isPublic: data.isPublic ?? false,
     downloads: data.downloads ?? 0,
@@ -52,8 +57,11 @@ export async function createPattern(input: {
   tags: string[]
   previewImageUrl?: string
 }): Promise<string> {
+  // gridDataを文字列化してFirestoreに保存
+  const { gridData, ...rest } = input
   const docRef = await addDoc(collection(db, 'patterns'), {
-    ...input,
+    ...rest,
+    gridDataSerialized: JSON.stringify(gridData),
     downloads: 0,
     likes: 0,
     createdAt: serverTimestamp(),
@@ -155,8 +163,15 @@ export async function updatePattern(
     >
   >
 ): Promise<void> {
+  // gridDataが含まれていれば文字列化
+  const { gridData, ...rest } = updates
+  const data: Record<string, unknown> = { ...rest }
+  if (gridData) {
+    data.gridDataSerialized = JSON.stringify(gridData)
+  }
+  
   await updateDoc(doc(db, 'patterns', id), {
-    ...updates,
+    ...data,
     updatedAt: serverTimestamp(),
   })
 }

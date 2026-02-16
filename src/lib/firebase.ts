@@ -18,14 +18,15 @@ export const auth = getAuth(app)
 export const db = getFirestore(app)
 export const storage = getStorage(app)
 
-if (import.meta.env.DEV) {
-  try {
-    connectAuthEmulator(auth, 'http://localhost:9099', {
-      disableWarnings: true,
-    })
-    connectFirestoreEmulator(db, 'localhost', 8080)
-    connectStorageEmulator(storage, 'localhost', 9199)
-  } catch {
-    // Emulator接続済みの場合は無視
-  }
-}
+// エミュレーター接続を無効化（本番環境に接続）
+// if (import.meta.env.DEV) {
+//   try {
+//     connectAuthEmulator(auth, 'http://localhost:9099', {
+//       disableWarnings: true,
+//     })
+//     connectFirestoreEmulator(db, 'localhost', 8080)
+//     connectStorageEmulator(storage, 'localhost', 9199)
+//   } catch {
+//     // Emulator接続済みの場合は無視
+//   }
+// }
