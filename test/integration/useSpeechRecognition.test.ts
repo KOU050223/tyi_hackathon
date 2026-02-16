@@ -44,7 +44,10 @@ describe("useSpeechRecognition", () => {
 
     // 型のチェック
     expect(typeof result.current.isWaitingForCommand).toBe("boolean");
-    expect(typeof result.current.commandTimeRemaining === "number" || result.current.commandTimeRemaining === null).toBe(true);
+    expect(
+      typeof result.current.commandTimeRemaining === "number" ||
+        result.current.commandTimeRemaining === null,
+    ).toBe(true);
   });
 
   it("オプションが正しく受け入れられる", () => {

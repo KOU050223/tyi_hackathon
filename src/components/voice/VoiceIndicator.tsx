@@ -36,7 +36,12 @@ export function VoiceIndicator({
     return (
       <div className="fixed bottom-24 right-4 z-50">
         <div className="bg-[#E66CBC] rounded-full px-8 py-4 shadow-2xl animate-bounce">
-          <div className="flex items-center gap-4" role="status" aria-live="polite" aria-atomic="true">
+          <div
+            className="flex items-center gap-4"
+            role="status"
+            aria-live="polite"
+            aria-atomic="true"
+          >
             {/* 璃奈ちゃんカラーのアイコン */}
             <svg
               className="w-6 h-6 text-white"
@@ -85,7 +90,13 @@ export function VoiceIndicator({
         aria-live="polite"
       >
         {/* マイクアイコン */}
-        <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+        <svg
+          className="w-5 h-5 text-white"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+          aria-hidden="true"
+        >
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
