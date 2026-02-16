@@ -94,8 +94,8 @@ src/
 `@/`は`./src/`へのエイリアスとして設定されています（vite.config.ts & tsconfig.app.json）。
 
 ```typescript
-import { detectExpression } from '@/utils/expressionDetector'
-import type { Expression } from '@/types/expression'
+import { detectExpression } from "@/utils/expressionDetector";
+import type { Expression } from "@/types/expression";
 ```
 
 ### 技術スタック

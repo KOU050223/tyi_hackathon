@@ -4,10 +4,7 @@ import { usePatternStore } from "@/stores/patternStore";
 import { getPublicPatterns } from "@/lib/patterns";
 import { PatternCard } from "@/components/gallery/PatternCard";
 import { PatternCardSkeleton } from "@/components/gallery/PatternCardSkeleton";
-import {
-  getExpressionLabel,
-  ALL_EXPRESSIONS,
-} from "@/utils/expressionDetector";
+import { getExpressionLabel, ALL_EXPRESSIONS } from "@/utils/expressionDetector";
 import type { Expression } from "@/types/expression";
 import type { DeviceType } from "@/types/device";
 
@@ -52,14 +49,7 @@ export default function GalleryPage() {
         setLoading(false);
       }
     },
-    [
-      sortBy,
-      filterExpression,
-      filterDevice,
-      lastDoc,
-      setLoading,
-      appendPatterns,
-    ],
+    [sortBy, filterExpression, filterDevice, lastDoc, setLoading, appendPatterns],
   );
 
   useEffect(() => {
@@ -94,9 +84,7 @@ export default function GalleryPage() {
         <div className="flex flex-wrap gap-3 mb-6">
           <select
             value={filterExpression ?? ""}
-            onChange={(e) =>
-              setFilterExpression((e.target.value || null) as Expression | null)
-            }
+            onChange={(e) => setFilterExpression((e.target.value || null) as Expression | null)}
             className="bg-[#231834] border border-[#E66CBC]/30 text-[#F5F0FF] text-sm rounded px-2 py-1.5 focus:border-[#E66CBC] focus:outline-none"
           >
             <option value="">すべての表情</option>
@@ -109,9 +97,7 @@ export default function GalleryPage() {
 
           <select
             value={filterDevice ?? ""}
-            onChange={(e) =>
-              setFilterDevice((e.target.value || null) as DeviceType | null)
-            }
+            onChange={(e) => setFilterDevice((e.target.value || null) as DeviceType | null)}
             className="bg-[#231834] border border-[#E66CBC]/30 text-[#F5F0FF] text-sm rounded px-2 py-1.5 focus:border-[#E66CBC] focus:outline-none"
           >
             <option value="">すべてのデバイス</option>
@@ -121,9 +107,7 @@ export default function GalleryPage() {
 
           <select
             value={sortBy}
-            onChange={(e) =>
-              setSortBy(e.target.value as "latest" | "popular" | "downloads")
-            }
+            onChange={(e) => setSortBy(e.target.value as "latest" | "popular" | "downloads")}
             className="bg-[#231834] border border-[#E66CBC]/30 text-[#F5F0FF] text-sm rounded px-2 py-1.5 focus:border-[#E66CBC] focus:outline-none"
           >
             <option value="latest">新着順</option>

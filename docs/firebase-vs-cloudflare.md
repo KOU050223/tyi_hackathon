@@ -83,12 +83,12 @@ Firebase/FirestoreとCloudflare (Workers + D1 + R2) の詳細比較。
 ```typescript
 // シンプルなクエリ
 const q = query(
-  collection(db, 'patterns'),
-  where('isPublic', '==', true),
-  orderBy('likes', 'desc'),
-  limit(20)
-)
-const snapshot = await getDocs(q)
+  collection(db, "patterns"),
+  where("isPublic", "==", true),
+  orderBy("likes", "desc"),
+  limit(20),
+);
+const snapshot = await getDocs(q);
 ```
 
 **特徴:**
@@ -117,8 +117,8 @@ const { results } = await env.DB.prepare(
   WHERE p.is_public = 1
   ORDER BY p.likes DESC
   LIMIT 20
-`
-).all()
+`,
+).all();
 ```
 
 **特徴:**
@@ -150,10 +150,10 @@ const { results } = await env.DB.prepare(
 
 ```typescript
 // GitHub OAuth（超簡単）
-import { signInWithPopup, GithubAuthProvider } from 'firebase/auth'
+import { signInWithPopup, GithubAuthProvider } from "firebase/auth";
 
-const provider = new GithubAuthProvider()
-const result = await signInWithPopup(auth, provider)
+const provider = new GithubAuthProvider();
+const result = await signInWithPopup(auth, provider);
 // 完了！
 ```
 
@@ -213,11 +213,11 @@ const result = await signInWithPopup(auth, provider)
 
 ```typescript
 // 画像アップロード（簡単）
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
-const storageRef = ref(storage, `previews/${id}.png`)
-await uploadBytes(storageRef, blob)
-const url = await getDownloadURL(storageRef)
+const storageRef = ref(storage, `previews/${id}.png`);
+await uploadBytes(storageRef, blob);
+const url = await getDownloadURL(storageRef);
 ```
 
 **特徴:**
@@ -232,9 +232,9 @@ const url = await getDownloadURL(storageRef)
 ```typescript
 // 画像アップロード（Workers経由）
 await env.R2_BUCKET.put(key, blob, {
-  httpMetadata: { contentType: 'image/png' },
-})
-const url = `https://r2-domain.com/${key}`
+  httpMetadata: { contentType: "image/png" },
+});
+const url = `https://r2-domain.com/${key}`;
 ```
 
 **特徴:**
@@ -324,19 +324,19 @@ const url = `https://r2-domain.com/${key}`
 
 ```typescript
 // リアルタイムリスナー（標準機能）
-onSnapshot(query, snapshot => {
-  snapshot.docChanges().forEach(change => {
-    if (change.type === 'added') {
+onSnapshot(query, (snapshot) => {
+  snapshot.docChanges().forEach((change) => {
+    if (change.type === "added") {
       /* 追加 */
     }
-    if (change.type === 'modified') {
+    if (change.type === "modified") {
       /* 更新 */
     }
-    if (change.type === 'removed') {
+    if (change.type === "removed") {
       /* 削除 */
     }
-  })
-})
+  });
+});
 ```
 
 **特徴:**
@@ -351,9 +351,9 @@ onSnapshot(query, snapshot => {
 // WebSocket自前実装（Durable Objects使用）
 // または Polling
 setInterval(async () => {
-  const data = await fetch('/api/patterns')
+  const data = await fetch("/api/patterns");
   // 更新チェック
-}, 5000)
+}, 5000);
 ```
 
 **特徴:**

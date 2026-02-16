@@ -24,9 +24,7 @@ export function ExpressionCard({
   useEffect(() => {
     if (showBothDeviceTypes || deviceType === "smartphone") {
       if (smartphoneCanvasRef.current && !smartphoneRendererRef.current) {
-        smartphoneRendererRef.current = new CanvasRenderer(
-          smartphoneCanvasRef.current,
-        );
+        smartphoneRendererRef.current = new CanvasRenderer(smartphoneCanvasRef.current);
         smartphoneRendererRef.current.setDotSize(15);
         const pattern = getDotPattern(expression, "smartphone");
         smartphoneRendererRef.current.renderPattern(pattern);
@@ -89,11 +87,7 @@ export function ExpressionCard({
         ) : (
           <div className="flex justify-center">
             <canvas
-              ref={
-                deviceType === "smartphone"
-                  ? smartphoneCanvasRef
-                  : tabletCanvasRef
-              }
+              ref={deviceType === "smartphone" ? smartphoneCanvasRef : tabletCanvasRef}
               className="border border-[#3D2A55]"
               style={{ imageRendering: "pixelated" }}
             />

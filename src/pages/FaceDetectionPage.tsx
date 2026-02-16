@@ -3,10 +3,7 @@ import { useCamera } from "@/hooks/useCamera";
 import { useDeviceType } from "@/hooks/useDeviceType";
 import { useFaceDetection } from "@/hooks/useFaceDetection";
 import { CanvasRenderer } from "@/engines/renderer/CanvasRenderer";
-import {
-  detectExpression,
-  getExpressionLabel,
-} from "@/utils/expressionDetector";
+import { detectExpression, getExpressionLabel } from "@/utils/expressionDetector";
 import { convertBlendshapes } from "@/utils/blendshapeConverter";
 import type { Expression } from "@/types/expression";
 
@@ -15,8 +12,7 @@ export default function FaceDetectionPage() {
   const deviceType = useDeviceType();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const rendererRef = useRef<CanvasRenderer | null>(null);
-  const [currentExpression, setCurrentExpression] =
-    useState<Expression>("neutral");
+  const [currentExpression, setCurrentExpression] = useState<Expression>("neutral");
   const [confidence, setConfidence] = useState<number>(0);
 
   const {
@@ -81,9 +77,7 @@ export default function FaceDetectionPage() {
         }}
       >
         <div>
-          <h2 style={{ fontSize: "18px", marginBottom: "10px" }}>
-            カメラプレビュー
-          </h2>
+          <h2 style={{ fontSize: "18px", marginBottom: "10px" }}>カメラプレビュー</h2>
           <video
             ref={videoRef}
             style={{
@@ -109,13 +103,9 @@ export default function FaceDetectionPage() {
               カメラを起動
             </button>
           )}
-          {error && (
-            <p style={{ color: "#FF5A7E", marginTop: "10px" }}>{error}</p>
-          )}
+          {error && <p style={{ color: "#FF5A7E", marginTop: "10px" }}>{error}</p>}
           {isInitializing && (
-            <p style={{ color: "#7DD3E8", marginTop: "10px" }}>
-              MediaPipe初期化中...
-            </p>
+            <p style={{ color: "#7DD3E8", marginTop: "10px" }}>MediaPipe初期化中...</p>
           )}
         </div>
 
@@ -148,9 +138,7 @@ export default function FaceDetectionPage() {
       <div style={{ marginTop: "20px", textAlign: "center" }}>
         <p style={{ fontSize: "14px", color: "#A89BBE" }}>
           デバイス:{" "}
-          {deviceType === "smartphone"
-            ? "スマートフォン（目のみ表示）"
-            : "タブレット（目+口表示）"}
+          {deviceType === "smartphone" ? "スマートフォン（目のみ表示）" : "タブレット（目+口表示）"}
         </p>
         <p style={{ fontSize: "12px", color: "#7B6B96" }}>
           {isDetecting ? (
@@ -162,9 +150,7 @@ export default function FaceDetectionPage() {
           )}
         </p>
         {faceResult && !faceResult.detected && isReady && (
-          <p style={{ fontSize: "12px", color: "#FFCC4D" }}>
-            顔が検出されていません
-          </p>
+          <p style={{ fontSize: "12px", color: "#FFCC4D" }}>顔が検出されていません</p>
         )}
       </div>
     </div>

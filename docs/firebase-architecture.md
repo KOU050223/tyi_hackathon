@@ -346,20 +346,20 @@ Firebase Console
 ### 2. フロントエンド実装
 
 ```typescript
-import { getAuth, signInWithPopup, GithubAuthProvider } from 'firebase/auth'
+import { getAuth, signInWithPopup, GithubAuthProvider } from "firebase/auth";
 
-const auth = getAuth()
-const provider = new GithubAuthProvider()
+const auth = getAuth();
+const provider = new GithubAuthProvider();
 
 // ログイン
 async function loginWithGitHub() {
   try {
-    const result = await signInWithPopup(auth, provider)
-    const user = result.user
+    const result = await signInWithPopup(auth, provider);
+    const user = result.user;
 
     // Firestoreにユーザー情報保存
     await setDoc(
-      doc(db, 'users', user.uid),
+      doc(db, "users", user.uid),
       {
         githubId: user.providerData[0].uid,
         githubUsername: user.displayName,
@@ -367,26 +367,26 @@ async function loginWithGitHub() {
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
       },
-      { merge: true }
-    )
+      { merge: true },
+    );
   } catch (error) {
-    console.error('Login failed:', error)
+    console.error("Login failed:", error);
   }
 }
 
 // ログアウト
 async function logout() {
-  await auth.signOut()
+  await auth.signOut();
 }
 
 // 認証状態監視
-onAuthStateChanged(auth, user => {
+onAuthStateChanged(auth, (user) => {
   if (user) {
     // ログイン済み
   } else {
     // 未ログイン
   }
-})
+});
 ```
 
 ## パフォーマンス最適化
@@ -395,17 +395,17 @@ onAuthStateChanged(auth, user => {
 
 ```typescript
 // ❌ 悪い例: 全件取得してフィルタ
-const allPatterns = await getDocs(collection(db, 'patterns'))
-const publicPatterns = allPatterns.docs.filter(doc => doc.data().isPublic)
+const allPatterns = await getDocs(collection(db, "patterns"));
+const publicPatterns = allPatterns.docs.filter((doc) => doc.data().isPublic);
 
 // ✅ 良い例: クエリでフィルタ
 const q = query(
-  collection(db, 'patterns'),
-  where('isPublic', '==', true),
-  orderBy('likes', 'desc'),
-  limit(20)
-)
-const snapshot = await getDocs(q)
+  collection(db, "patterns"),
+  where("isPublic", "==", true),
+  orderBy("likes", "desc"),
+  limit(20),
+);
+const snapshot = await getDocs(q);
 ```
 
 ### 2. リアルタイムリスナーの制限
@@ -413,36 +413,36 @@ const snapshot = await getDocs(q)
 ```typescript
 // ✅ 必要な範囲のみリスナー設定
 const q = query(
-  collection(db, 'patterns'),
-  where('isPublic', '==', true),
-  limit(50) // 最大50件まで監視
-)
+  collection(db, "patterns"),
+  where("isPublic", "==", true),
+  limit(50), // 最大50件まで監視
+);
 
-const unsubscribe = onSnapshot(q, snapshot => {
+const unsubscribe = onSnapshot(q, (snapshot) => {
   // 更新処理
-})
+});
 
 // コンポーネントアンマウント時に解除
 useEffect(() => {
-  return () => unsubscribe()
-}, [])
+  return () => unsubscribe();
+}, []);
 ```
 
 ### 3. バッチ書き込み
 
 ```typescript
 // ✅ 複数の書き込みを1トランザクションで
-const batch = writeBatch(db)
+const batch = writeBatch(db);
 
-batch.set(doc(db, 'patterns', patternId, 'likedBy', userId), {
+batch.set(doc(db, "patterns", patternId, "likedBy", userId), {
   likedAt: serverTimestamp(),
-})
+});
 
-batch.update(doc(db, 'patterns', patternId), {
+batch.update(doc(db, "patterns", patternId), {
   likes: increment(1),
-})
+});
 
-await batch.commit()
+await batch.commit();
 ```
 
 ## コスト試算
@@ -488,9 +488,9 @@ await batch.commit()
 ### Performance Monitoring（オプション）
 
 ```typescript
-import { getPerformance } from 'firebase/performance'
+import { getPerformance } from "firebase/performance";
 
-const perf = getPerformance(app)
+const perf = getPerformance(app);
 // 自動的にパフォーマンスデータ収集
 ```
 
@@ -509,12 +509,12 @@ npm run test:rules
 ### 2. App Check（推奨）
 
 ```typescript
-import { initializeAppCheck, ReCaptchaV3Provider } from 'firebase/app-check'
+import { initializeAppCheck, ReCaptchaV3Provider } from "firebase/app-check";
 
 const appCheck = initializeAppCheck(app, {
-  provider: new ReCaptchaV3Provider('YOUR_RECAPTCHA_SITE_KEY'),
+  provider: new ReCaptchaV3Provider("YOUR_RECAPTCHA_SITE_KEY"),
   isTokenAutoRefreshEnabled: true,
-})
+});
 ```
 
 ## バックアップ戦略

@@ -66,38 +66,38 @@ src/
 ### src/types/customPattern.ts
 
 ```typescript
-import type { Expression } from './expression'
+import type { Expression } from "./expression";
 
 export interface CustomPattern {
-  id?: number
-  userId?: number
-  name: string
-  expressionType: Expression
-  deviceType: 'smartphone' | 'tablet'
-  color: string // #RRGGBB
-  gridData: number[][] // 0と1の2次元配列
-  previewImageUrl?: string
-  isPublic: boolean
-  downloads?: number
-  likes?: number
-  createdAt?: string
-  updatedAt?: string
+  id?: number;
+  userId?: number;
+  name: string;
+  expressionType: Expression;
+  deviceType: "smartphone" | "tablet";
+  color: string; // #RRGGBB
+  gridData: number[][]; // 0と1の2次元配列
+  previewImageUrl?: string;
+  isPublic: boolean;
+  downloads?: number;
+  likes?: number;
+  createdAt?: string;
+  updatedAt?: string;
   author?: {
-    id: number
-    githubUsername: string
-    avatarUrl?: string
-  }
-  tags?: string[]
+    id: number;
+    githubUsername: string;
+    avatarUrl?: string;
+  };
+  tags?: string[];
 }
 
 export interface PatternDraft {
-  name: string
-  expressionType: Expression
-  deviceType: 'smartphone' | 'tablet'
-  color: string
-  gridData: number[][]
-  isPublic: boolean
-  tags: string[]
+  name: string;
+  expressionType: Expression;
+  deviceType: "smartphone" | "tablet";
+  color: string;
+  gridData: number[][];
+  isPublic: boolean;
+  tags: string[];
 }
 ```
 
@@ -105,21 +105,21 @@ export interface PatternDraft {
 
 ```typescript
 export interface GalleryFilter {
-  expressionType?: Expression
-  deviceType?: 'smartphone' | 'tablet'
-  sortBy: 'latest' | 'popular' | 'downloads'
-  tags?: string[]
-  search?: string
+  expressionType?: Expression;
+  deviceType?: "smartphone" | "tablet";
+  sortBy: "latest" | "popular" | "downloads";
+  tags?: string[];
+  search?: string;
 }
 
 export interface GalleryResponse {
-  patterns: CustomPattern[]
+  patterns: CustomPattern[];
   pagination: {
-    page: number
-    perPage: number
-    total: number
-    totalPages: number
-  }
+    page: number;
+    perPage: number;
+    total: number;
+    totalPages: number;
+  };
 }
 ```
 
@@ -127,18 +127,18 @@ export interface GalleryResponse {
 
 ```typescript
 export interface User {
-  id: number
-  githubId: number
-  githubUsername: string
-  avatarUrl?: string
-  createdAt: string
+  id: number;
+  githubId: number;
+  githubUsername: string;
+  avatarUrl?: string;
+  createdAt: string;
 }
 
 export interface AuthResponse {
-  success: boolean
-  token?: string
-  user?: User
-  error?: string
+  success: boolean;
+  token?: string;
+  user?: User;
+  error?: string;
 }
 ```
 
@@ -147,32 +147,32 @@ export interface AuthResponse {
 ### src/stores/patternStore.ts
 
 ```typescript
-import { create } from 'zustand'
-import { persist } from 'zustand/middleware'
-import type { CustomPattern, PatternDraft } from '@/types/customPattern'
-import { uploadPattern, downloadPattern } from '@/utils/api'
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
+import type { CustomPattern, PatternDraft } from "@/types/customPattern";
+import { uploadPattern, downloadPattern } from "@/utils/api";
 
 interface PatternState {
   // ローカル保存されたパターン
-  localPatterns: CustomPattern[]
+  localPatterns: CustomPattern[];
 
   // 現在編集中のパターン
-  currentDraft: PatternDraft | null
+  currentDraft: PatternDraft | null;
 
   // 編集モード
-  isEditing: boolean
+  isEditing: boolean;
 
   // アクション
-  addLocalPattern: (pattern: CustomPattern) => void
-  updateLocalPattern: (id: number, pattern: Partial<CustomPattern>) => void
-  deleteLocalPattern: (id: number) => void
+  addLocalPattern: (pattern: CustomPattern) => void;
+  updateLocalPattern: (id: number, pattern: Partial<CustomPattern>) => void;
+  deleteLocalPattern: (id: number) => void;
 
-  setCurrentDraft: (draft: PatternDraft | null) => void
-  updateDraft: (updates: Partial<PatternDraft>) => void
+  setCurrentDraft: (draft: PatternDraft | null) => void;
+  updateDraft: (updates: Partial<PatternDraft>) => void;
 
   // クラウド連携
-  uploadToCloud: (pattern: CustomPattern) => Promise<void>
-  downloadFromCloud: (id: number) => Promise<void>
+  uploadToCloud: (pattern: CustomPattern) => Promise<void>;
+  downloadFromCloud: (id: number) => Promise<void>;
 }
 
 export const usePatternStore = create<PatternState>()(
@@ -182,91 +182,83 @@ export const usePatternStore = create<PatternState>()(
       currentDraft: null,
       isEditing: false,
 
-      addLocalPattern: pattern =>
-        set(state => ({
-          localPatterns: [
-            ...state.localPatterns,
-            { ...pattern, id: Date.now() },
-          ],
+      addLocalPattern: (pattern) =>
+        set((state) => ({
+          localPatterns: [...state.localPatterns, { ...pattern, id: Date.now() }],
         })),
 
       updateLocalPattern: (id, updates) =>
-        set(state => ({
-          localPatterns: state.localPatterns.map(p =>
-            p.id === id ? { ...p, ...updates } : p
-          ),
+        set((state) => ({
+          localPatterns: state.localPatterns.map((p) => (p.id === id ? { ...p, ...updates } : p)),
         })),
 
-      deleteLocalPattern: id =>
-        set(state => ({
-          localPatterns: state.localPatterns.filter(p => p.id !== id),
+      deleteLocalPattern: (id) =>
+        set((state) => ({
+          localPatterns: state.localPatterns.filter((p) => p.id !== id),
         })),
 
-      setCurrentDraft: draft =>
-        set({ currentDraft: draft, isEditing: !!draft }),
+      setCurrentDraft: (draft) => set({ currentDraft: draft, isEditing: !!draft }),
 
-      updateDraft: updates =>
-        set(state => ({
-          currentDraft: state.currentDraft
-            ? { ...state.currentDraft, ...updates }
-            : null,
+      updateDraft: (updates) =>
+        set((state) => ({
+          currentDraft: state.currentDraft ? { ...state.currentDraft, ...updates } : null,
         })),
 
-      uploadToCloud: async pattern => {
-        const result = await uploadPattern(pattern)
+      uploadToCloud: async (pattern) => {
+        const result = await uploadPattern(pattern);
         // アップロード成功後、ローカルパターンに追加
-        set(state => ({
+        set((state) => ({
           localPatterns: [...state.localPatterns, result],
-        }))
+        }));
       },
 
-      downloadFromCloud: async id => {
-        const pattern = await downloadPattern(id)
-        set(state => ({
+      downloadFromCloud: async (id) => {
+        const pattern = await downloadPattern(id);
+        set((state) => ({
           localPatterns: [...state.localPatterns, pattern],
-        }))
+        }));
       },
     }),
     {
-      name: 'pattern-storage',
-      partialize: state => ({
+      name: "pattern-storage",
+      partialize: (state) => ({
         localPatterns: state.localPatterns,
       }),
-    }
-  )
-)
+    },
+  ),
+);
 ```
 
 ### src/stores/galleryStore.ts
 
 ```typescript
-import { create } from 'zustand'
-import type { CustomPattern, GalleryFilter } from '@/types/customPattern'
-import { fetchPatterns } from '@/utils/api'
+import { create } from "zustand";
+import type { CustomPattern, GalleryFilter } from "@/types/customPattern";
+import { fetchPatterns } from "@/utils/api";
 
 interface GalleryState {
-  patterns: CustomPattern[]
-  filter: GalleryFilter
-  isLoading: boolean
-  error: string | null
+  patterns: CustomPattern[];
+  filter: GalleryFilter;
+  isLoading: boolean;
+  error: string | null;
   pagination: {
-    page: number
-    perPage: number
-    total: number
-    totalPages: number
-  }
+    page: number;
+    perPage: number;
+    total: number;
+    totalPages: number;
+  };
 
-  setFilter: (filter: Partial<GalleryFilter>) => void
-  loadPatterns: () => Promise<void>
-  loadMore: () => Promise<void>
-  likePattern: (id: number) => Promise<void>
-  resetGallery: () => void
+  setFilter: (filter: Partial<GalleryFilter>) => void;
+  loadPatterns: () => Promise<void>;
+  loadMore: () => Promise<void>;
+  likePattern: (id: number) => Promise<void>;
+  resetGallery: () => void;
 }
 
 export const useGalleryStore = create<GalleryState>((set, get) => ({
   patterns: [],
   filter: {
-    sortBy: 'latest',
+    sortBy: "latest",
   },
   isLoading: false,
   error: null,
@@ -277,50 +269,47 @@ export const useGalleryStore = create<GalleryState>((set, get) => ({
     totalPages: 0,
   },
 
-  setFilter: newFilter =>
-    set(state => ({
+  setFilter: (newFilter) =>
+    set((state) => ({
       filter: { ...state.filter, ...newFilter },
       pagination: { ...state.pagination, page: 1 },
     })),
 
   loadPatterns: async () => {
-    set({ isLoading: true, error: null })
+    set({ isLoading: true, error: null });
     try {
-      const { patterns, pagination } = await fetchPatterns(
-        get().filter,
-        get().pagination.page
-      )
-      set({ patterns, pagination, isLoading: false })
+      const { patterns, pagination } = await fetchPatterns(get().filter, get().pagination.page);
+      set({ patterns, pagination, isLoading: false });
     } catch (error) {
-      set({ error: error.message, isLoading: false })
+      set({ error: error.message, isLoading: false });
     }
   },
 
   loadMore: async () => {
-    const { pagination } = get()
-    if (pagination.page >= pagination.totalPages) return
+    const { pagination } = get();
+    if (pagination.page >= pagination.totalPages) return;
 
-    set({ isLoading: true })
+    set({ isLoading: true });
     try {
-      const { patterns: newPatterns, pagination: newPagination } =
-        await fetchPatterns(get().filter, pagination.page + 1)
-      set(state => ({
+      const { patterns: newPatterns, pagination: newPagination } = await fetchPatterns(
+        get().filter,
+        pagination.page + 1,
+      );
+      set((state) => ({
         patterns: [...state.patterns, ...newPatterns],
         pagination: newPagination,
         isLoading: false,
-      }))
+      }));
     } catch (error) {
-      set({ error: error.message, isLoading: false })
+      set({ error: error.message, isLoading: false });
     }
   },
 
-  likePattern: async id => {
+  likePattern: async (id) => {
     // API呼び出し + 楽観的更新
-    set(state => ({
-      patterns: state.patterns.map(p =>
-        p.id === id ? { ...p, likes: (p.likes || 0) + 1 } : p
-      ),
-    }))
+    set((state) => ({
+      patterns: state.patterns.map((p) => (p.id === id ? { ...p, likes: (p.likes || 0) + 1 } : p)),
+    }));
   },
 
   resetGallery: () =>
@@ -328,28 +317,28 @@ export const useGalleryStore = create<GalleryState>((set, get) => ({
       patterns: [],
       pagination: { page: 1, perPage: 20, total: 0, totalPages: 0 },
     }),
-}))
+}));
 ```
 
 ### src/stores/authStore.ts
 
 ```typescript
-import { create } from 'zustand'
-import { persist } from 'zustand/middleware'
-import type { User } from '@/types/auth'
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
+import type { User } from "@/types/auth";
 
 interface AuthState {
-  user: User | null
-  token: string | null
-  isAuthenticated: boolean
+  user: User | null;
+  token: string | null;
+  isAuthenticated: boolean;
 
-  setAuth: (user: User, token: string) => void
-  logout: () => void
+  setAuth: (user: User, token: string) => void;
+  logout: () => void;
 }
 
 export const useAuthStore = create<AuthState>()(
   persist(
-    set => ({
+    (set) => ({
       user: null,
       token: null,
       isAuthenticated: false,
@@ -369,10 +358,10 @@ export const useAuthStore = create<AuthState>()(
         }),
     }),
     {
-      name: 'auth-storage',
-    }
-  )
-)
+      name: "auth-storage",
+    },
+  ),
+);
 ```
 
 ## 主要コンポーネント設計
@@ -616,68 +605,62 @@ export default function PatternCard({ pattern }: PatternCardProps) {
 ### src/utils/api.ts
 
 ```typescript
-import { useAuthStore } from '@/stores/authStore'
-import type {
-  CustomPattern,
-  GalleryFilter,
-  GalleryResponse,
-} from '@/types/customPattern'
+import { useAuthStore } from "@/stores/authStore";
+import type { CustomPattern, GalleryFilter, GalleryResponse } from "@/types/customPattern";
 
-const API_BASE = import.meta.env.VITE_API_URL
+const API_BASE = import.meta.env.VITE_API_URL;
 
 async function fetchWithAuth(url: string, options: RequestInit = {}) {
-  const token = useAuthStore.getState().token
+  const token = useAuthStore.getState().token;
 
-  const headers = new Headers(options.headers)
+  const headers = new Headers(options.headers);
   if (token) {
-    headers.set('Authorization', `Bearer ${token}`)
+    headers.set("Authorization", `Bearer ${token}`);
   }
 
   const response = await fetch(`${API_BASE}${url}`, {
     ...options,
     headers,
-  })
+  });
 
   if (!response.ok) {
-    const error = await response.json()
-    throw new Error(error.error || 'API Error')
+    const error = await response.json();
+    throw new Error(error.error || "API Error");
   }
 
-  return response.json()
+  return response.json();
 }
 
 export async function fetchPatterns(
   filter: GalleryFilter,
-  page: number = 1
+  page: number = 1,
 ): Promise<GalleryResponse> {
   const params = new URLSearchParams({
     page: page.toString(),
-    perPage: '20',
+    perPage: "20",
     sortBy: filter.sortBy,
     ...(filter.expressionType && { expressionType: filter.expressionType }),
     ...(filter.deviceType && { deviceType: filter.deviceType }),
     ...(filter.search && { search: filter.search }),
-  })
+  });
 
-  return fetchWithAuth(`/api/patterns?${params}`)
+  return fetchWithAuth(`/api/patterns?${params}`);
 }
 
-export async function uploadPattern(
-  pattern: CustomPattern
-): Promise<CustomPattern> {
-  return fetchWithAuth('/api/patterns', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+export async function uploadPattern(pattern: CustomPattern): Promise<CustomPattern> {
+  return fetchWithAuth("/api/patterns", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(pattern),
-  })
+  });
 }
 
 export async function downloadPattern(id: number): Promise<CustomPattern> {
-  return fetchWithAuth(`/api/patterns/${id}`)
+  return fetchWithAuth(`/api/patterns/${id}`);
 }
 
 export async function likePattern(id: number): Promise<void> {
-  return fetchWithAuth(`/api/patterns/${id}/like`, { method: 'POST' })
+  return fetchWithAuth(`/api/patterns/${id}/like`, { method: "POST" });
 }
 ```
 
@@ -691,15 +674,15 @@ export default {
   theme: {
     extend: {
       screens: {
-        xs: '375px', // スマホ
-        sm: '640px', // タブレット縦
-        md: '768px', // タブレット横
-        lg: '1024px', // デスクトップ
-        xl: '1280px', // 大画面
+        xs: "375px", // スマホ
+        sm: "640px", // タブレット縦
+        md: "768px", // タブレット横
+        lg: "1024px", // デスクトップ
+        xl: "1280px", // 大画面
       },
     },
   },
-}
+};
 ```
 
 ### レスポンシブレイアウト
@@ -730,8 +713,8 @@ export default {
 ```typescript
 // DotGrid.tsx
 export default memo(DotGrid, (prev, next) => {
-  return prev.gridData === next.gridData && prev.color === next.color
-})
+  return prev.gridData === next.gridData && prev.color === next.color;
+});
 ```
 
 ### 無限スクロール（Intersection Observer）

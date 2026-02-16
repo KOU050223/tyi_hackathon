@@ -1,12 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
-import {
-  likePattern,
-  unlikePattern,
-  isLikedByMe,
-  incrementDownloads,
-} from "@/lib/patterns";
+import { likePattern, unlikePattern, isLikedByMe, incrementDownloads } from "@/lib/patterns";
 import { CanvasRenderer } from "@/engines/renderer/CanvasRenderer";
 import { getExpressionLabel } from "@/utils/expressionDetector";
 import type { PatternData } from "@/types/firebase";
@@ -17,11 +12,7 @@ interface PatternCardProps {
   onDelete?: (patternId: string) => void;
 }
 
-export function PatternCard({
-  pattern,
-  showDeleteButton,
-  onDelete,
-}: PatternCardProps) {
+export function PatternCard({ pattern, showDeleteButton, onDelete }: PatternCardProps) {
   const navigate = useNavigate();
   const { user, isAuthenticated } = useAuth();
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -181,13 +172,7 @@ export function PatternCard({
             className={`flex items-center gap-1 transition-colors ${
               liked ? "text-red-500" : "text-[#A89BBE] hover:text-red-400"
             } ${!isAuthenticated ? "cursor-default" : "cursor-pointer"}`}
-            title={
-              isAuthenticated
-                ? liked
-                  ? "いいねを取り消す"
-                  : "いいね"
-                : "ログインしていいね"
-            }
+            title={isAuthenticated ? (liked ? "いいねを取り消す" : "いいね") : "ログインしていいね"}
           >
             <span>{liked ? "♥" : "♥"}</span>
             <span>{likeCount}</span>

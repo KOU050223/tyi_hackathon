@@ -122,17 +122,11 @@ export async function getPublicPatterns(
         startAfter(startAfterDoc),
         firestoreLimit(limitCount),
       )
-    : query(
-        collection(db, "patterns"),
-        ...filters,
-        sortConstraint,
-        firestoreLimit(limitCount),
-      );
+    : query(collection(db, "patterns"), ...filters, sortConstraint, firestoreLimit(limitCount));
   const snapshot = await getDocs(q);
 
   const patterns = snapshot.docs.map((d) => toPatternData(d.id, d.data()));
-  const lastDoc =
-    snapshot.docs.length > 0 ? snapshot.docs[snapshot.docs.length - 1] : null;
+  const lastDoc = snapshot.docs.length > 0 ? snapshot.docs[snapshot.docs.length - 1] : null;
 
   return { patterns, lastDoc };
 }
@@ -180,10 +174,7 @@ export async function deletePattern(id: string): Promise<void> {
   await deleteDoc(doc(db, "patterns", id));
 }
 
-export async function likePattern(
-  patternId: string,
-  userId: string,
-): Promise<void> {
+export async function likePattern(patternId: string, userId: string): Promise<void> {
   const batch = writeBatch(db);
   const likeRef = doc(db, "patterns", patternId, "likedBy", userId);
   batch.set(likeRef, { likedAt: serverTimestamp() });
@@ -192,10 +183,7 @@ export async function likePattern(
   await batch.commit();
 }
 
-export async function unlikePattern(
-  patternId: string,
-  userId: string,
-): Promise<void> {
+export async function unlikePattern(patternId: string, userId: string): Promise<void> {
   const batch = writeBatch(db);
   const likeRef = doc(db, "patterns", patternId, "likedBy", userId);
   batch.delete(likeRef);
@@ -204,13 +192,8 @@ export async function unlikePattern(
   await batch.commit();
 }
 
-export async function isLikedByMe(
-  patternId: string,
-  userId: string,
-): Promise<boolean> {
-  const likeDoc = await getDoc(
-    doc(db, "patterns", patternId, "likedBy", userId),
-  );
+export async function isLikedByMe(patternId: string, userId: string): Promise<boolean> {
+  const likeDoc = await getDoc(doc(db, "patterns", patternId, "likedBy", userId));
   return likeDoc.exists();
 }
 

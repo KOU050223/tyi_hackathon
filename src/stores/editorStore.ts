@@ -7,11 +7,7 @@ function createEmptyGrid(rows: number, cols: number): number[][] {
   return Array.from({ length: rows }, () => Array(cols).fill(0) as number[]);
 }
 
-function resizeGrid(
-  oldGrid: number[][],
-  newRows: number,
-  newCols: number,
-): number[][] {
+function resizeGrid(oldGrid: number[][], newRows: number, newCols: number): number[][] {
   const newGrid = createEmptyGrid(newRows, newCols);
   const copyRows = Math.min(oldGrid.length, newRows);
   const copyCols = Math.min(oldGrid[0]?.length ?? 0, newCols);

@@ -40,9 +40,7 @@ export function LoginButton() {
           boxShadow: "0 0 8px rgba(230, 108, 188, 0.3)",
         }}
         onMouseEnter={(e) => {
-          if (!busy)
-            e.currentTarget.style.boxShadow =
-              "0 0 16px rgba(230, 108, 188, 0.6)";
+          if (!busy) e.currentTarget.style.boxShadow = "0 0 16px rgba(230, 108, 188, 0.6)";
         }}
         onMouseLeave={(e) => {
           e.currentTarget.style.boxShadow = "0 0 8px rgba(230, 108, 188, 0.3)";
@@ -53,11 +51,7 @@ export function LoginButton() {
         </svg>
         {busy ? "ログイン中..." : "GitHubでログイン"}
       </button>
-      {error && (
-        <p style={{ color: "#FF5A7E", fontSize: "12px", marginTop: "4px" }}>
-          {error}
-        </p>
-      )}
+      {error && <p style={{ color: "#FF5A7E", fontSize: "12px", marginTop: "4px" }}>{error}</p>}
     </div>
   );
 }

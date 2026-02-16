@@ -1,16 +1,14 @@
-import type { FaceBlendshapes } from '@/engines/mediapipe/blendshapes'
-import type { BlendShapes } from '@/types/face'
+import type { FaceBlendshapes } from "@/engines/mediapipe/blendshapes";
+import type { BlendShapes } from "@/types/face";
 
 /**
  * MediaPipe FaceBlendshapesをBlendShapes型に変換
  * @param faceBlendshapes MediaPipeから返されるBlendshapes
  * @returns expressionDetectorで使用可能なBlendShapes
  */
-export function convertBlendshapes(
-  faceBlendshapes: FaceBlendshapes | undefined
-): BlendShapes {
+export function convertBlendshapes(faceBlendshapes: FaceBlendshapes | undefined): BlendShapes {
   if (!faceBlendshapes || !faceBlendshapes.categories) {
-    return createEmptyBlendshapes()
+    return createEmptyBlendshapes();
   }
 
   const blendshapes: BlendShapes = {
@@ -28,20 +26,20 @@ export function convertBlendshapes(
     eyeBlinkRight: 0,
     eyeWideLeft: 0,
     eyeWideRight: 0,
-  }
+  };
 
   // MediaPipeのBlendshapesを変換
   for (const category of faceBlendshapes.categories) {
-    const name = category.categoryName
-    const score = category.score
+    const name = category.categoryName;
+    const score = category.score;
 
     // expressionDetectorで使用するBlendshapeのみ抽出
     if (name in blendshapes) {
-      blendshapes[name as keyof BlendShapes] = score
+      blendshapes[name as keyof BlendShapes] = score;
     }
   }
 
-  return blendshapes
+  return blendshapes;
 }
 
 /**
@@ -63,5 +61,5 @@ function createEmptyBlendshapes(): BlendShapes {
     eyeBlinkRight: 0,
     eyeWideLeft: 0,
     eyeWideRight: 0,
-  }
+  };
 }

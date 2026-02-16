@@ -96,9 +96,7 @@ export function EditorSidebar() {
       }
 
       // プレビュー画像のアップロード
-      const previewCanvas = document.querySelector<HTMLCanvasElement>(
-        "#editor-preview-canvas",
-      );
+      const previewCanvas = document.querySelector<HTMLCanvasElement>("#editor-preview-canvas");
       if (previewCanvas) {
         const previewUrl = await uploadPreviewImage(patternId, previewCanvas);
         await updatePattern(patternId, { previewImageUrl: previewUrl });
@@ -116,9 +114,7 @@ export function EditorSidebar() {
     <div className="flex flex-col gap-4 p-4 border border-[#E66CBC]/30 bg-[#231834] rounded font-mono">
       {/* Pattern Name */}
       <div>
-        <label className="block text-[#E66CBC]/70 text-xs mb-1">
-          PATTERN NAME
-        </label>
+        <label className="block text-[#E66CBC]/70 text-xs mb-1">PATTERN NAME</label>
         <input
           type="text"
           value={name}
@@ -130,9 +126,7 @@ export function EditorSidebar() {
 
       {/* Expression Type */}
       <div>
-        <label className="block text-[#E66CBC]/70 text-xs mb-1">
-          EXPRESSION
-        </label>
+        <label className="block text-[#E66CBC]/70 text-xs mb-1">EXPRESSION</label>
         <select
           value={expressionType}
           onChange={(e) => setExpressionType(e.target.value as Expression)}
@@ -148,9 +142,7 @@ export function EditorSidebar() {
 
       {/* Device Type */}
       <div>
-        <label className="block text-[#E66CBC]/70 text-xs mb-1">
-          DEVICE TYPE
-        </label>
+        <label className="block text-[#E66CBC]/70 text-xs mb-1">DEVICE TYPE</label>
         <div className="flex gap-2">
           <label
             className={`flex-1 text-center px-3 py-2 border cursor-pointer text-sm transition-colors ${
@@ -191,9 +183,7 @@ export function EditorSidebar() {
 
       {/* Public Toggle */}
       <div>
-        <label className="block text-[#E66CBC]/70 text-xs mb-1">
-          VISIBILITY
-        </label>
+        <label className="block text-[#E66CBC]/70 text-xs mb-1">VISIBILITY</label>
         <button
           onClick={() => setIsPublic(!isPublic)}
           className={`w-full px-3 py-2 border font-mono text-sm transition-colors ${
@@ -208,9 +198,7 @@ export function EditorSidebar() {
 
       {/* Tags */}
       <div>
-        <label className="block text-[#E66CBC]/70 text-xs mb-1">
-          TAGS (comma separated)
-        </label>
+        <label className="block text-[#E66CBC]/70 text-xs mb-1">TAGS (comma separated)</label>
         <input
           type="text"
           value={tagInput}

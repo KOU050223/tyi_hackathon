@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react'
-import type { DeviceType } from '@/types/device'
+import { useState, useEffect } from "react";
+import type { DeviceType } from "@/types/device";
 
 /**
  * デバイスタイプ（スマートフォン/タブレット）を検出するhook
@@ -10,21 +10,21 @@ import type { DeviceType } from '@/types/device'
  * - タブレット（画面幅 ≥ 768px）: 目 + 口を描画
  */
 export const useDeviceType = (): DeviceType => {
-  const [deviceType, setDeviceType] = useState<DeviceType>('smartphone')
+  const [deviceType, setDeviceType] = useState<DeviceType>("smartphone");
 
   useEffect(() => {
     const checkDevice = () => {
-      const isTablet = window.innerWidth >= 768
-      setDeviceType(isTablet ? 'tablet' : 'smartphone')
-    }
+      const isTablet = window.innerWidth >= 768;
+      setDeviceType(isTablet ? "tablet" : "smartphone");
+    };
 
-    checkDevice()
-    window.addEventListener('resize', checkDevice)
+    checkDevice();
+    window.addEventListener("resize", checkDevice);
 
     return () => {
-      window.removeEventListener('resize', checkDevice)
-    }
-  }, [])
+      window.removeEventListener("resize", checkDevice);
+    };
+  }, []);
 
-  return deviceType
-}
+  return deviceType;
+};

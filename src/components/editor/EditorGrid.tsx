@@ -41,11 +41,7 @@ export function EditorGrid() {
       e.preventDefault();
       const touch = e.touches[0];
       const target = document.elementFromPoint(touch.clientX, touch.clientY);
-      if (
-        target instanceof HTMLElement &&
-        target.dataset.row &&
-        target.dataset.col
-      ) {
+      if (target instanceof HTMLElement && target.dataset.row && target.dataset.col) {
         const row = parseInt(target.dataset.row, 10);
         const col = parseInt(target.dataset.col, 10);
         handleCellAction(row, col);

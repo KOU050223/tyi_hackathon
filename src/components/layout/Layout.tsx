@@ -1,8 +1,8 @@
-import type { ReactNode } from 'react'
-import { Navigation } from './Navigation'
+import type { ReactNode } from "react";
+import { Navigation } from "./Navigation";
 
 interface LayoutProps {
-  children: ReactNode
+  children: ReactNode;
 }
 
 export function Layout({ children }: LayoutProps) {
@@ -11,5 +11,5 @@ export function Layout({ children }: LayoutProps) {
       <Navigation />
       <main className="main-content">{children}</main>
     </div>
-  )
+  );
 }

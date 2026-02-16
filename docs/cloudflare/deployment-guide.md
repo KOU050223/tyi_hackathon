@@ -219,30 +219,29 @@ workers/
 
 ```typescript
 // workers/src/index.ts
-import { Router } from 'itty-router'
-import { corsHeaders } from './middleware/cors'
+import { Router } from "itty-router";
+import { corsHeaders } from "./middleware/cors";
 
-const router = Router()
+const router = Router();
 
 // CORS Preflight
-router.options('*', () => new Response(null, { headers: corsHeaders }))
+router.options("*", () => new Response(null, { headers: corsHeaders }));
 
 // Health Check
-router.get('/health', () => {
-  return new Response(
-    JSON.stringify({ status: 'healthy', timestamp: new Date().toISOString() }),
-    { headers: { 'Content-Type': 'application/json', ...corsHeaders } }
-  )
-})
+router.get("/health", () => {
+  return new Response(JSON.stringify({ status: "healthy", timestamp: new Date().toISOString() }), {
+    headers: { "Content-Type": "application/json", ...corsHeaders },
+  });
+});
 
 // 404
-router.all('*', () => new Response('Not Found', { status: 404 }))
+router.all("*", () => new Response("Not Found", { status: 404 }));
 
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
-    return router.handle(request, env)
+    return router.handle(request, env);
   },
-}
+};
 ```
 
 ## 5. Workersデプロイ
@@ -333,7 +332,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: "20"
 
       - name: Install dependencies
         working-directory: ./workers
@@ -343,7 +342,7 @@ jobs:
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          workingDirectory: 'workers'
+          workingDirectory: "workers"
 
   deploy-pages:
     name: Deploy Frontend
@@ -354,7 +353,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: "20"
 
       - name: Install dependencies
         run: npm ci
@@ -427,10 +426,10 @@ wrangler d1 execute rina-patterns --remote --command="SELECT 1"
 
 ```typescript
 export const corsHeaders = {
-  'Access-Control-Allow-Origin': 'https://rina-chan-board.pages.dev',
-  'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-}
+  "Access-Control-Allow-Origin": "https://rina-chan-board.pages.dev",
+  "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type, Authorization",
+};
 ```
 
 ### GitHub OAuth エラー

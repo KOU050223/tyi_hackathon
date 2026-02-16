@@ -37,9 +37,7 @@ export default function DotEditorPage() {
       })
       .catch((err) => {
         if (!cancelled) {
-          setError(
-            err instanceof Error ? err.message : "読み込みに失敗しました",
-          );
+          setError(err instanceof Error ? err.message : "読み込みに失敗しました");
         }
       })
       .finally(() => {
@@ -54,9 +52,7 @@ export default function DotEditorPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[calc(100vh-60px)]">
-        <p className="text-[#E66CBC] font-mono animate-pulse">
-          Loading pattern...
-        </p>
+        <p className="text-[#E66CBC] font-mono animate-pulse">Loading pattern...</p>
       </div>
     );
   }
@@ -71,9 +67,7 @@ export default function DotEditorPage() {
 
   return (
     <div className="min-h-[calc(100vh-60px)] p-4 font-mono">
-      <h1 className="text-[#E66CBC] text-xl mb-4">
-        {id ? "Edit Pattern" : "New Pattern"}
-      </h1>
+      <h1 className="text-[#E66CBC] text-xl mb-4">{id ? "Edit Pattern" : "New Pattern"}</h1>
 
       {/* Desktop layout */}
       <div className="hidden md:grid md:grid-cols-[1fr_300px] gap-4">

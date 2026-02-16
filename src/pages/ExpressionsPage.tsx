@@ -13,9 +13,7 @@ export default function ExpressionsPage() {
       <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-[#E66CBC] mb-3">表情一覧</h1>
-          <p className="text-[#A89BBE] mb-6">
-            このアプリで利用可能な10種類の表情パターン
-          </p>
+          <p className="text-[#A89BBE] mb-6">このアプリで利用可能な10種類の表情パターン</p>
 
           <div className="flex gap-2">
             <button
@@ -56,9 +54,7 @@ export default function ExpressionsPage() {
             <ExpressionCard
               key={expression}
               expression={expression}
-              deviceType={
-                viewMode === "both" ? "smartphone" : (viewMode as DeviceType)
-              }
+              deviceType={viewMode === "both" ? "smartphone" : (viewMode as DeviceType)}
               showBothDeviceTypes={viewMode === "both"}
             />
           ))}
@@ -68,9 +64,7 @@ export default function ExpressionsPage() {
           <h2 className="text-[#E66CBC] text-lg mb-2">使い方</h2>
           <ul className="text-sm text-[#A89BBE] space-y-1">
             <li>• カメラで顔を認識すると、表情に応じてドット絵が変化します</li>
-            <li>
-              • スマートフォン版は目のみ、タブレット版は目+口が表示されます
-            </li>
+            <li>• スマートフォン版は目のみ、タブレット版は目+口が表示されます</li>
             <li>• 各表情は優先度順に判定され、最も強い表情が表示されます</li>
           </ul>
         </div>

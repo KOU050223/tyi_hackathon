@@ -32,9 +32,7 @@ export default function ProfilePage() {
 
   const handleDelete = useCallback(
     async (patternId: string) => {
-      const confirmed = window.confirm(
-        "このパターンを削除しますか？この操作は取り消せません。",
-      );
+      const confirmed = window.confirm("このパターンを削除しますか？この操作は取り消せません。");
       if (!confirmed) return;
 
       try {
@@ -67,9 +65,7 @@ export default function ProfilePage() {
             </div>
           )}
           <div className="flex-1">
-            <h1 className="text-xl font-bold text-white">
-              {user?.displayName ?? "Anonymous"}
-            </h1>
+            <h1 className="text-xl font-bold text-white">{user?.displayName ?? "Anonymous"}</h1>
             <p className="text-sm text-[#A89BBE]">{patterns.length} パターン</p>
           </div>
           <button
