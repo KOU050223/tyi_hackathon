@@ -24,7 +24,7 @@ export default function FaceDetectionPage() {
   const [isRegistering, setIsRegistering] = useState<boolean>(false);
 
   // 音声認識デバッグモード（開発環境のみ有効）
-  const isVoiceIndicatorDebug = process.env.NODE_ENV === "development";
+  const isVoiceIndicatorDebug = import.meta.env.DEV;
 
   // 許可されたナビゲーションパス
   const ALLOWED_PATHS = ["/", "/gallery", "/editor", "/settings"];
@@ -92,16 +92,16 @@ export default function FaceDetectionPage() {
     lang: "ja-JP",
     wakeWordEnabled: true, // ウェイクワードモードを有効化
     onWakeWordDetected: () => {
-      if (process.env.NODE_ENV === "development") {
+      if (import.meta.env.DEV) {
         console.log("ウェイクワード検出！コマンド待機中...");
       }
     },
     onResult: (result) => {
-      if (process.env.NODE_ENV === "development") {
+      if (import.meta.env.DEV) {
         console.log("Voice recognition result:", result);
       }
       if (result.matchedCommand && result.isFinal) {
-        if (process.env.NODE_ENV === "development") {
+        if (import.meta.env.DEV) {
           console.log("Command matched:", result.matchedCommand);
         }
         if (result.matchedCommand.action.type === "navigate") {
@@ -110,7 +110,7 @@ export default function FaceDetectionPage() {
           if (ALLOWED_PATHS.includes(targetPath)) {
             navigate(targetPath);
           } else {
-            if (process.env.NODE_ENV === "development") {
+            if (import.meta.env.DEV) {
               console.warn(`不正なナビゲーションパス: ${targetPath}`);
             }
           }

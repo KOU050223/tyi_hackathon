@@ -180,7 +180,7 @@ export function useSpeechRecognition(
     }
 
     if (isListeningRef.current) {
-      if (process.env.NODE_ENV === "development") {
+      if (import.meta.env.DEV) {
         console.warn("Already listening");
       }
       return;
@@ -266,7 +266,7 @@ export function useSpeechRecognition(
           setTranscript(currentTranscript);
 
           // デバッグログ（開発環境のみ）
-          if (process.env.NODE_ENV === "development") {
+          if (import.meta.env.DEV) {
             console.log(
               `[音声認識] テキスト: "${currentTranscript}" | 信頼度: ${confidence.toFixed(2)} | 確定: ${isFinal ? "✓" : "×"}`,
             );
@@ -279,7 +279,7 @@ export function useSpeechRecognition(
               const wakeWordResult = detectWakeWord(currentTranscript, wakeWordConfigRef.current);
 
               // デバッグログ（開発環境のみ）
-              if (process.env.NODE_ENV === "development") {
+              if (import.meta.env.DEV) {
                 console.log(
                   `[ウェイクワード判定] 検出: ${wakeWordResult.detected ? "✓" : "×"} | 信頼度: ${wakeWordResult.confidence.toFixed(2)}`,
                 );
@@ -288,7 +288,7 @@ export function useSpeechRecognition(
               // ウェイクワード検出（isFinalでなくても反応するように変更）
               if (wakeWordResult.detected) {
                 // ウェイクワード検出！
-                if (process.env.NODE_ENV === "development") {
+                if (import.meta.env.DEV) {
                   console.log("🎯 ウェイクワード検出成功!", currentTranscript);
                 }
                 setIsWaitingForCommand(true);
@@ -311,7 +311,7 @@ export function useSpeechRecognition(
 
                 // タイムアウトを設定（3秒後に自動リセット）
                 commandTimeoutRef.current = setTimeout(() => {
-                  if (process.env.NODE_ENV === "development") {
+                  if (import.meta.env.DEV) {
                     console.log("コマンド受付タイムアウト");
                   }
                   setIsWaitingForCommand(false);
@@ -330,7 +330,7 @@ export function useSpeechRecognition(
               const matchResult = matchVoiceCommand(currentTranscript, minCommandConfidence);
 
               // デバッグログ（開発環境のみ）
-              if (process.env.NODE_ENV === "development") {
+              if (import.meta.env.DEV) {
                 if (matchResult) {
                   console.log(
                     `[コマンド判定] マッチ: ✓ "${matchResult.command.id}" | 信頼度: ${matchResult.confidence.toFixed(2)}`,
@@ -342,7 +342,7 @@ export function useSpeechRecognition(
 
               if (matchResult && isFinal) {
                 // コマンド検出！タイマーをクリア
-                if (process.env.NODE_ENV === "development") {
+                if (import.meta.env.DEV) {
                   console.log("🚀 コマンド実行:", matchResult.command.id, "→", currentTranscript);
                 }
                 if (commandTimeoutRef.current) {
