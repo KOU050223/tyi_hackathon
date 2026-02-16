@@ -1,0 +1,7 @@
+{
+  "rules": {
+    "typescript": "error",
+    "react": "error",
+    "react-hooks": "error"
+  }
+}
