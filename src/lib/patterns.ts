@@ -17,7 +17,7 @@ import {
   type QueryDocumentSnapshot,
   type DocumentData,
 } from "firebase/firestore";
-import { db } from "./firebase";
+import { db } from "@/lib/firebase";
 import type { FirestorePattern, PatternData } from "@/types/firebase";
 import type { Expression } from "@/types/expression";
 import type { DeviceType } from "@/types/device";

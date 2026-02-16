@@ -140,7 +140,7 @@ export default function GalleryPage() {
           </div>
         ) : patterns.length === 0 ? (
           <div className="text-center py-20">
-            <p className="text-gray-400 mb-4">パターンが見つかりません</p>
+            <p className="text-[#A89BBE] mb-4">パターンが見つかりません</p>
             <Link to="/editor" className="text-[#E66CBC] hover:underline">
               最初のパターンを作成する
             </Link>
