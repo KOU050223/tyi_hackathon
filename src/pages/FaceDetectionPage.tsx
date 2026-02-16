@@ -10,7 +10,7 @@ import { convertBlendshapes } from "@/utils/blendshapeConverter";
 import { VoiceControl } from "@/components/voice/VoiceControl";
 import { VoiceIndicator } from "@/components/voice/VoiceIndicator";
 import type { Expression } from "@/types/expression";
-import { registerDefaultPatterns } from "../../scripts/registerDefaultPatterns";
+import { registerDefaultPatterns } from "@/lib/registerDefaultPatterns";
 
 export default function FaceDetectionPage() {
   const navigate = useNavigate();
