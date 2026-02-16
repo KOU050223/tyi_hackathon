@@ -74,7 +74,7 @@ npm run export:patterns
 
 ```javascript
 // 特定の表情を取得
-const response = await fetch('/patterns/smile.json');
+const response = await fetch("/patterns/smile.json");
 const pattern = await response.json();
 
 // スマホ用（目のみ）: 上14行だけ使用
@@ -87,10 +87,11 @@ console.log(`Full: ${fullGrid.length} rows`); // 26
 
 // レンダリング例
 function renderPattern(pattern, deviceType) {
-  const rows = deviceType === 'smartphone' 
-    ? pattern.grid.slice(0, 14)  // 上14行のみ
-    : pattern.grid;               // 全26行
-  
+  const rows =
+    deviceType === "smartphone"
+      ? pattern.grid.slice(0, 14) // 上14行のみ
+      : pattern.grid; // 全26行
+
   // Canvasに描画...
   rows.forEach((row, y) => {
     row.forEach((cell, x) => {
@@ -106,13 +107,16 @@ function renderPattern(pattern, deviceType) {
 ### インデックスから全表情を取得
 
 ```javascript
-const index = await fetch('/patterns/index.json').then(r => r.json());
-console.log('Available expressions:', index.expressions.map(e => e.name));
-console.log('Pattern size:', index.metadata.patternSize); // "21x26"
+const index = await fetch("/patterns/index.json").then((r) => r.json());
+console.log(
+  "Available expressions:",
+  index.expressions.map((e) => e.name),
+);
+console.log("Pattern size:", index.metadata.patternSize); // "21x26"
 
 // 全パターンを順次読み込み
 for (const expr of index.expressions) {
-  const pattern = await fetch(`/patterns/${expr.file}`).then(r => r.json());
+  const pattern = await fetch(`/patterns/${expr.file}`).then((r) => r.json());
   // パターンを使用
 }
 ```

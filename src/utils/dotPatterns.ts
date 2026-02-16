@@ -299,7 +299,7 @@ export const getDotPattern = (
   deviceType: "smartphone" | "tablet",
 ): DotPattern => {
   const fullPattern = patterns[expression] || patterns.neutral;
-  
+
   if (deviceType === "smartphone") {
     // スマートフォンは上14行のみ（目のみ）
     return {
@@ -307,7 +307,7 @@ export const getDotPattern = (
       grid: fullPattern.grid.slice(0, 14),
     };
   }
-  
+
   // タブレットは全26行
   return fullPattern;
 };
