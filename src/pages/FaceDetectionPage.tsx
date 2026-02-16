@@ -1,19 +1,25 @@
 import { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router";
 import { useCamera } from "@/hooks/useCamera";
 import { useDeviceType } from "@/hooks/useDeviceType";
 import { useFaceDetection } from "@/hooks/useFaceDetection";
+import { useSpeechRecognition } from "@/hooks/useSpeechRecognition";
 import { CanvasRenderer } from "@/engines/renderer/CanvasRenderer";
 import { detectExpression } from "@/utils/expressionDetector";
 import { convertBlendshapes } from "@/utils/blendshapeConverter";
+import { VoiceControl } from "@/components/voice/VoiceControl";
+import { VoiceIndicator } from "@/components/voice/VoiceIndicator";
 import type { Expression } from "@/types/expression";
 
 export default function FaceDetectionPage() {
+  const navigate = useNavigate();
   const { videoRef, isReady, error: cameraError, startCamera } = useCamera();
   const deviceType = useDeviceType();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const rendererRef = useRef<CanvasRenderer | null>(null);
   const [currentExpression, setCurrentExpression] = useState<Expression>("neutral");
   const [_confidence, setConfidence] = useState<number>(0);
+  const [voiceEnabled, setVoiceEnabled] = useState<boolean>(false);
 
   const {
     result: _faceResult,
@@ -37,6 +43,40 @@ export default function FaceDetectionPage() {
     },
   });
 
+  // 音声認識
+  const {
+    isListening,
+    isSupported,
+    state: voiceState,
+    transcript,
+    error: voiceError,
+    isWaitingForCommand,
+    commandTimeRemaining,
+    startListening: _startListening,
+    stopListening: _stopListening,
+  } = useSpeechRecognition({
+    enabled: voiceEnabled && isReady,
+    continuous: true,
+    interimResults: true,
+    lang: "ja-JP",
+    wakeWordEnabled: true, // ウェイクワードモードを有効化
+    onWakeWordDetected: () => {
+      console.log("ウェイクワード検出！コマンド待機中...");
+    },
+    onResult: (result) => {
+      console.log("Voice recognition result:", result);
+      if (result.matchedCommand && result.isFinal) {
+        console.log("Command matched:", result.matchedCommand);
+        if (result.matchedCommand.action.type === "navigate") {
+          navigate(result.matchedCommand.action.path);
+        }
+      }
+    },
+    onError: (err) => {
+      console.error("Voice recognition error:", err);
+    },
+  });
+
   useEffect(() => {
     if (canvasRef.current && !rendererRef.current) {
       rendererRef.current = new CanvasRenderer(canvasRef.current);
@@ -49,7 +89,7 @@ export default function FaceDetectionPage() {
     }
   }, [currentExpression, deviceType]);
 
-  const error = cameraError || faceError?.message;
+  const error = cameraError || faceError?.message || voiceError?.message;
 
   return (
     <div
@@ -112,50 +152,69 @@ export default function FaceDetectionPage() {
         />
       </div>
 
-      {/* 下部のコントロール */}
+      {/* 音声認識インジケーター */}
+      <VoiceIndicator
+        transcript={transcript}
+        show={isListening}
+        isWaitingForCommand={isWaitingForCommand}
+        commandTimeRemaining={commandTimeRemaining}
+        debug={true}
+      />
+
+      {/* 右下のコントロール */}
       <div
         style={{
           position: "fixed",
           bottom: "20px",
-          left: "50%",
-          transform: "translateX(-50%)",
-          textAlign: "center",
+          right: "20px",
+          textAlign: "right",
           zIndex: 10,
         }}
       >
-        {!isReady && (
-          <button
-            onClick={startCamera}
-            style={{
-              padding: "15px 30px",
-              fontSize: "18px",
-              backgroundColor: "#E66CBC",
-              color: "#1A1225",
-              border: "none",
-              cursor: "pointer",
-              borderRadius: "8px",
-              fontWeight: "bold",
-              boxShadow: "0 4px 8px rgba(230, 108, 188, 0.4)",
-            }}
-          >
-            カメラを起動
-          </button>
-        )}
-        {error && <p style={{ color: "#FF5A7E", marginTop: "10px" }}>{error}</p>}
-        {isInitializing && (
-          <p style={{ color: "#7DD3E8", fontSize: "14px" }}>MediaPipe初期化中...</p>
-        )}
-        {isReady && (
-          <p style={{ fontSize: "12px", color: "#A89BBE" }}>
-            {isDetecting ? (
-              <>リアルタイム表情認識中</>
-            ) : isInitialized ? (
-              <>検出待機中</>
-            ) : (
-              <>初期化中...</>
-            )}
-          </p>
-        )}
+        <div style={{ display: "flex", flexDirection: "column", gap: "12px", alignItems: "flex-end" }}>
+          {!isReady && (
+            <button
+              onClick={startCamera}
+              style={{
+                padding: "15px 30px",
+                fontSize: "18px",
+                backgroundColor: "#E66CBC",
+                color: "#1A1225",
+                border: "none",
+                cursor: "pointer",
+                borderRadius: "8px",
+                fontWeight: "bold",
+                boxShadow: "0 4px 8px rgba(230, 108, 188, 0.4)",
+              }}
+            >
+              カメラを起動
+            </button>
+          )}
+          {isReady && (
+            <VoiceControl
+              isListening={isListening}
+              isSupported={isSupported}
+              state={voiceState}
+              onStart={() => setVoiceEnabled(true)}
+              onStop={() => setVoiceEnabled(false)}
+            />
+          )}
+          {error && <p style={{ color: "#FF5A7E", fontSize: "14px", maxWidth: "300px" }}>{error}</p>}
+          {isInitializing && (
+            <p style={{ color: "#7DD3E8", fontSize: "14px" }}>MediaPipe初期化中...</p>
+          )}
+          {isReady && (
+            <p style={{ fontSize: "12px", color: "#A89BBE" }}>
+              {isDetecting ? (
+                <>リアルタイム表情認識中</>
+              ) : isInitialized ? (
+                <>検出待機中</>
+              ) : (
+                <>初期化中...</>
+              )}
+            </p>
+          )}
+        </div>
       </div>
     </div>
   );
