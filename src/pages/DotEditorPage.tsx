@@ -1,26 +1,26 @@
-import { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
-import { EditorGrid } from '@/components/editor/EditorGrid'
-import { EditorToolbar } from '@/components/editor/EditorToolbar'
-import { EditorSidebar } from '@/components/editor/EditorSidebar'
-import { EditorPreview } from '@/components/editor/EditorPreview'
-import { useEditorStore } from '@/stores/editorStore'
-import { getPattern } from '@/lib/patterns'
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import { EditorGrid } from "@/components/editor/EditorGrid";
+import { EditorToolbar } from "@/components/editor/EditorToolbar";
+import { EditorSidebar } from "@/components/editor/EditorSidebar";
+import { EditorPreview } from "@/components/editor/EditorPreview";
+import { useEditorStore } from "@/stores/editorStore";
+import { getPattern } from "@/lib/patterns";
 
 export default function DotEditorPage() {
-  const { id } = useParams<{ id: string }>()
-  const loadPattern = useEditorStore(s => s.loadPattern)
-  const [loading, setLoading] = useState(!!id)
-  const [error, setError] = useState<string | null>(null)
+  const { id } = useParams<{ id: string }>();
+  const loadPattern = useEditorStore((s) => s.loadPattern);
+  const [loading, setLoading] = useState(!!id);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!id) return
+    if (!id) return;
 
-    let cancelled = false
+    let cancelled = false;
 
     getPattern(id)
-      .then(pattern => {
-        if (cancelled) return
+      .then((pattern) => {
+        if (cancelled) return;
         if (pattern) {
           loadPattern({
             gridData: pattern.gridData,
@@ -30,49 +30,49 @@ export default function DotEditorPage() {
             deviceType: pattern.deviceType,
             isPublic: pattern.isPublic,
             tags: pattern.tags,
-          })
+          });
         } else {
-          setError('パターンが見つかりません')
+          setError("パターンが見つかりません");
         }
       })
-      .catch(err => {
+      .catch((err) => {
         if (!cancelled) {
           setError(
-            err instanceof Error ? err.message : '読み込みに失敗しました'
-          )
+            err instanceof Error ? err.message : "読み込みに失敗しました",
+          );
         }
       })
       .finally(() => {
-        if (!cancelled) setLoading(false)
-      })
+        if (!cancelled) setLoading(false);
+      });
 
     return () => {
-      cancelled = true
-    }
-  }, [id, loadPattern])
+      cancelled = true;
+    };
+  }, [id, loadPattern]);
 
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[calc(100vh-60px)]">
-        <p className="text-[#00FF00] font-mono animate-pulse">
+        <p className="text-[#E66CBC] font-mono animate-pulse">
           Loading pattern...
         </p>
       </div>
-    )
+    );
   }
 
   if (error) {
     return (
       <div className="flex items-center justify-center min-h-[calc(100vh-60px)]">
-        <p className="text-[#FF0000] font-mono">{error}</p>
+        <p className="text-[#FF5A7E] font-mono">{error}</p>
       </div>
-    )
+    );
   }
 
   return (
     <div className="min-h-[calc(100vh-60px)] p-4 font-mono">
-      <h1 className="text-[#00FF00] text-xl mb-4">
-        {id ? 'Edit Pattern' : 'New Pattern'}
+      <h1 className="text-[#E66CBC] text-xl mb-4">
+        {id ? "Edit Pattern" : "New Pattern"}
       </h1>
 
       {/* Desktop layout */}
@@ -80,7 +80,7 @@ export default function DotEditorPage() {
         {/* Left: Toolbar + Grid */}
         <div className="flex flex-col gap-4">
           <EditorToolbar />
-          <div className="flex justify-center p-4 border border-[#00FF00]/30 bg-black rounded">
+          <div className="flex justify-center p-4 border border-[#E66CBC]/30 bg-[#1A1225] rounded">
             <EditorGrid />
           </div>
         </div>
@@ -95,12 +95,12 @@ export default function DotEditorPage() {
       {/* Mobile layout */}
       <div className="flex flex-col gap-4 md:hidden">
         <EditorToolbar />
-        <div className="flex justify-center p-4 border border-[#00FF00]/30 bg-black rounded">
+        <div className="flex justify-center p-4 border border-[#E66CBC]/30 bg-[#1A1225] rounded">
           <EditorGrid />
         </div>
         <EditorPreview />
         <EditorSidebar />
       </div>
     </div>
-  )
+  );
 }
