@@ -9,6 +9,7 @@ export class CanvasRenderer {
   private canvas: HTMLCanvasElement;
   private currentExpression: Expression | null = null;
   private dotSize: number = 40; // 各ドットのサイズ（ピクセル）
+  private _renderVersion: number = 0; // レンダリング競合防止用バージョントークン
 
   constructor(canvas: HTMLCanvasElement) {
     this.canvas = canvas;
@@ -61,6 +62,8 @@ export class CanvasRenderer {
     if (this.canvas.width !== canvasWidth || this.canvas.height !== canvasHeight) {
       this.canvas.width = canvasWidth;
       this.canvas.height = canvasHeight;
+      // Canvas resizeは2Dコンテキストをリセットするため再初期化
+      this.setupCanvas();
     }
 
     this.clear();
@@ -92,7 +95,17 @@ export class CanvasRenderer {
       return;
     }
 
+    // レンダリングバージョンをインクリメント（非同期競合防止）
+    this._renderVersion++;
+    const currentVersion = this._renderVersion;
+
     const pattern = await getDotPattern(expression, deviceType);
+
+    // 非同期処理中に新しいrenderが呼ばれた場合はスキップ
+    if (currentVersion !== this._renderVersion) {
+      return;
+    }
+
     this.drawDotPattern(pattern);
     this.currentExpression = expression;
   }

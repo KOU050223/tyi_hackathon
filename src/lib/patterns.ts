@@ -202,3 +202,23 @@ export async function incrementDownloads(id: string): Promise<void> {
     downloads: increment(1),
   });
 }
+
+/**
+ * パターンを検索（表情タイプ・ユーザーID・デバイスタイプで照合）
+ */
+export async function findPatternByKey(
+  userId: string,
+  expressionType: Expression,
+  deviceType: DeviceType,
+): Promise<PatternData | null> {
+  const q = query(
+    collection(db, "patterns"),
+    where("userId", "==", userId),
+    where("expressionType", "==", expressionType),
+    where("deviceType", "==", deviceType),
+    firestoreLimit(1),
+  );
+  const snapshot = await getDocs(q);
+  if (snapshot.empty) return null;
+  return toPatternData(snapshot.docs[0].id, snapshot.docs[0].data());
+}

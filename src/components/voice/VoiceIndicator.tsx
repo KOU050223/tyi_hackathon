@@ -36,13 +36,14 @@ export function VoiceIndicator({
     return (
       <div className="fixed bottom-24 right-4 z-50">
         <div className="bg-[#E66CBC] rounded-full px-8 py-4 shadow-2xl animate-bounce">
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-4" role="status" aria-live="polite" aria-atomic="true">
             {/* 璃奈ちゃんカラーのアイコン */}
             <svg
               className="w-6 h-6 text-white"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
+              aria-hidden="true"
             >
               <path
                 strokeLinecap="round"
@@ -61,9 +62,13 @@ export function VoiceIndicator({
           </div>
         </div>
 
-        {/* デバッグモード時のテキスト表示 */}
+        {/* デバッグモード時のテキスト表示（スクリーンリーダー対応） */}
         {debug && transcript && (
-          <div className="mt-2 bg-black/70 backdrop-blur-sm rounded-lg px-4 py-2 text-white text-sm text-center">
+          <div
+            className="mt-2 bg-black/70 backdrop-blur-sm rounded-lg px-4 py-2 text-white text-sm text-center"
+            role="status"
+            aria-live="polite"
+          >
             {transcript}
           </div>
         )}
@@ -74,9 +79,13 @@ export function VoiceIndicator({
   // 通常のリスニング表示
   return (
     <div className="fixed bottom-24 right-4 z-50">
-      <div className="bg-[#E66CBC]/90 backdrop-blur-sm rounded-full px-6 py-3 shadow-lg flex items-center gap-3 animate-pulse">
+      <div
+        className="bg-[#E66CBC]/90 backdrop-blur-sm rounded-full px-6 py-3 shadow-lg flex items-center gap-3 animate-pulse"
+        role="status"
+        aria-live="polite"
+      >
         {/* マイクアイコン */}
-        <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -91,7 +100,7 @@ export function VoiceIndicator({
         </span>
 
         {/* パルスアニメーション */}
-        <div className="flex gap-1">
+        <div className="flex gap-1" aria-hidden="true">
           <div
             className="w-1 h-4 bg-white rounded-full animate-pulse"
             style={{ animationDelay: "0ms" }}
@@ -107,9 +116,13 @@ export function VoiceIndicator({
         </div>
       </div>
 
-      {/* デバッグモード時のテキスト表示 */}
+      {/* デバッグモード時のテキスト表示（スクリーンリーダー対応） */}
       {debug && transcript && (
-        <div className="mt-2 bg-black/70 backdrop-blur-sm rounded-lg px-4 py-2 text-white text-sm text-center">
+        <div
+          className="mt-2 bg-black/70 backdrop-blur-sm rounded-lg px-4 py-2 text-white text-sm text-center"
+          role="status"
+          aria-live="polite"
+        >
           {transcript}
         </div>
       )}

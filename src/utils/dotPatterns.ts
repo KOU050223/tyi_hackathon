@@ -13,7 +13,7 @@ import type { Expression, DotPattern, ExpressionPatterns } from "@/types/express
 // パターンキャッシュ
 let patternsCache: ExpressionPatterns | null = null;
 let isLoading = false;
-const loadPromise: Promise<ExpressionPatterns> | null = null;
+let loadPromise: Promise<ExpressionPatterns> | null = null;
 
 /**
  * public/patterns/ から全ての表情パターンをJSONで読み込む
@@ -72,14 +72,15 @@ async function getPatterns(): Promise<ExpressionPatterns> {
 
   // ロード開始
   isLoading = true;
-  const promise = loadPatternsFromJSON();
+  loadPromise = loadPatternsFromJSON();
 
   try {
-    const patterns = await promise;
+    const patterns = await loadPromise;
     patternsCache = patterns;
     return patterns;
   } finally {
     isLoading = false;
+    loadPromise = null;
   }
 }
 
@@ -88,7 +89,7 @@ async function getPatterns(): Promise<ExpressionPatterns> {
  */
 const fallbackPattern: DotPattern = {
   color: "#E66CBC",
-  grid: Array(26).fill(Array(21).fill(0)),
+  grid: Array.from({ length: 26 }, () => Array(21).fill(0)),
 };
 
 /**
@@ -141,4 +142,6 @@ export const getFullPattern = async (expression: Expression): Promise<DotPattern
  */
 export const clearPatternCache = () => {
   patternsCache = null;
+  isLoading = false;
+  loadPromise = null;
 };

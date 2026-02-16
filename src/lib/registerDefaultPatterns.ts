@@ -1,5 +1,5 @@
 import { auth } from "@/lib/firebase";
-import { createPattern, updatePattern } from "@/lib/patterns";
+import { createPattern, updatePattern, findPatternByKey } from "@/lib/patterns";
 import { uploadPreviewImage } from "@/lib/storage";
 import { CanvasRenderer } from "@/engines/renderer/CanvasRenderer";
 import { getFullPattern } from "@/utils/dotPatterns";
@@ -26,7 +26,7 @@ export async function registerDefaultPatterns(): Promise<{
   const errors: Array<{ expression: Expression; error: string }> = [];
 
   console.log(`🚀 デフォルトパターンの一括登録を開始します（全${expressions.length}件）`);
-  console.log(`ユーザーID: ${user.uid}\n`);
+  console.log(`ユーザーID: [REDACTED]\n`);
 
   for (let i = 0; i < expressions.length; i++) {
     const expression = expressions[i];
@@ -46,27 +46,48 @@ export async function registerDefaultPatterns(): Promise<{
       // パターンを描画
       renderer.renderPattern(pattern);
 
-      // Firestoreにパターンを保存（previewImageUrlは後で更新）
-      const patternId = await createPattern({
-        userId: user.uid,
-        name: metadata.nameJa,
-        expressionType: expression,
-        deviceType: "tablet",
-        color: pattern.color,
-        gridData: pattern.grid,
-        isPublic: true,
-        tags: metadata.tags,
-      });
+      // 既存パターンを検索（重複チェック）
+      const existingPattern = await findPatternByKey(user.uid, expression, "tablet");
 
-      // Storageにプレビュー画像をアップロード
-      const previewUrl = await uploadPreviewImage(patternId, canvas);
+      let patternId: string;
 
-      // FirestoreのパターンにpreviewImageUrlを更新
-      await updatePattern(patternId, { previewImageUrl: previewUrl });
+      if (existingPattern) {
+        // 既存パターンを更新
+        console.log(`  既存パターンを更新: ${existingPattern.id}`);
+        patternId = existingPattern.id;
+
+        // Storageにプレビュー画像をアップロード
+        const previewUrl = await uploadPreviewImage(patternId, canvas);
+
+        // Firestoreのパターンを更新
+        await updatePattern(patternId, {
+          color: pattern.color,
+          gridData: pattern.grid,
+          tags: metadata.tags,
+          previewImageUrl: previewUrl,
+        });
+      } else {
+        // 新規パターンを作成
+        patternId = await createPattern({
+          userId: user.uid,
+          name: metadata.nameJa,
+          expressionType: expression,
+          deviceType: "tablet",
+          color: pattern.color,
+          gridData: pattern.grid,
+          isPublic: true,
+          tags: metadata.tags,
+        });
+
+        // Storageにプレビュー画像をアップロード
+        const previewUrl = await uploadPreviewImage(patternId, canvas);
+
+        // FirestoreのパターンにpreviewImageUrlを更新
+        await updatePattern(patternId, { previewImageUrl: previewUrl });
+      }
 
       console.log(`✓ [${index}/${expressions.length}] 完了: ${metadata.nameJa} (${expression})`);
-      console.log(`  パターンID: ${patternId}`);
-      console.log(`  プレビューURL: ${previewUrl}\n`);
+      console.log(`  パターンID: ${patternId}\n`);
 
       successCount++;
     } catch (error) {

@@ -33,11 +33,6 @@ export interface SpeechRecognitionError {
 }
 
 /**
- * 音声コマンドのアクション型
- */
-export type VoiceCommandActionType = "navigate" | "callback";
-
-/**
  * ナビゲーションアクション
  */
 export interface NavigateAction {

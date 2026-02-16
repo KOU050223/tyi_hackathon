@@ -109,6 +109,39 @@ export function useSpeechRecognition(
   const commandTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const countdownIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
+  // クロージャ問題を回避するため、最新の値をrefsで保持
+  const enabledRef = useRef(enabled);
+  const stateRef = useRef(state);
+  const isWaitingForCommandRef = useRef(isWaitingForCommand);
+  const wakeWordEnabledRef = useRef(wakeWordEnabled);
+  const wakeWordConfigRef = useRef(wakeWordConfig);
+  const onWakeWordDetectedRef = useRef(onWakeWordDetected);
+
+  // refs を常に最新の値で更新
+  useEffect(() => {
+    enabledRef.current = enabled;
+  }, [enabled]);
+
+  useEffect(() => {
+    stateRef.current = state;
+  }, [state]);
+
+  useEffect(() => {
+    isWaitingForCommandRef.current = isWaitingForCommand;
+  }, [isWaitingForCommand]);
+
+  useEffect(() => {
+    wakeWordEnabledRef.current = wakeWordEnabled;
+  }, [wakeWordEnabled]);
+
+  useEffect(() => {
+    wakeWordConfigRef.current = wakeWordConfig;
+  }, [wakeWordConfig]);
+
+  useEffect(() => {
+    onWakeWordDetectedRef.current = onWakeWordDetected;
+  }, [onWakeWordDetected]);
+
   // ブラウザサポートチェック
   const SpeechRecognitionConstructor = getSpeechRecognition();
   const isSupported = SpeechRecognitionConstructor !== null;
@@ -147,7 +180,9 @@ export function useSpeechRecognition(
     }
 
     if (isListeningRef.current) {
-      console.warn("Already listening");
+      if (process.env.NODE_ENV === "development") {
+        console.warn("Already listening");
+      }
       return;
     }
 
@@ -168,14 +203,15 @@ export function useSpeechRecognition(
 
         recognition.onend = () => {
           isListeningRef.current = false;
-          if (state !== "error") {
+          // refsから最新の状態を読み取る
+          if (stateRef.current !== "error") {
             updateState("idle");
           }
 
           // 継続的リスニングが有効で、enabledがtrueなら自動再開
-          if (continuous && enabled && state !== "error") {
+          if (continuous && enabledRef.current && stateRef.current !== "error") {
             setTimeout(() => {
-              if (enabled && !isListeningRef.current) {
+              if (enabledRef.current && !isListeningRef.current) {
                 startListening();
               }
             }, 100);
@@ -193,9 +229,9 @@ export function useSpeechRecognition(
             case "no-speech":
               handleError("no-speech", "音声が検出されませんでした");
               // no-speechエラーは自動再開
-              if (continuous && enabled) {
+              if (continuous && enabledRef.current) {
                 setTimeout(() => {
-                  if (enabled && !isListeningRef.current) {
+                  if (enabledRef.current && !isListeningRef.current) {
                     startListening();
                   }
                 }, 1000);
@@ -229,32 +265,38 @@ export function useSpeechRecognition(
 
           setTranscript(currentTranscript);
 
-          // デバッグログ: 認識結果を常に出力
-          console.log(
-            `[音声認識] テキスト: "${currentTranscript}" | 信頼度: ${confidence.toFixed(2)} | 確定: ${isFinal ? "✓" : "×"}`,
-          );
+          // デバッグログ（開発環境のみ）
+          if (process.env.NODE_ENV === "development") {
+            console.log(
+              `[音声認識] テキスト: "${currentTranscript}" | 信頼度: ${confidence.toFixed(2)} | 確定: ${isFinal ? "✓" : "×"}`,
+            );
+          }
 
-          // ウェイクワードモードが有効な場合
-          if (wakeWordEnabled) {
+          // ウェイクワードモードが有効な場合（refから読み取る）
+          if (wakeWordEnabledRef.current) {
             // まだウェイクワードを待っている状態
-            if (!isWaitingForCommand) {
-              const wakeWordResult = detectWakeWord(currentTranscript, wakeWordConfig);
+            if (!isWaitingForCommandRef.current) {
+              const wakeWordResult = detectWakeWord(currentTranscript, wakeWordConfigRef.current);
 
-              // デバッグログ: ウェイクワード判定結果
-              console.log(
-                `[ウェイクワード判定] 検出: ${wakeWordResult.detected ? "✓" : "×"} | 信頼度: ${wakeWordResult.confidence.toFixed(2)}`,
-              );
+              // デバッグログ（開発環境のみ）
+              if (process.env.NODE_ENV === "development") {
+                console.log(
+                  `[ウェイクワード判定] 検出: ${wakeWordResult.detected ? "✓" : "×"} | 信頼度: ${wakeWordResult.confidence.toFixed(2)}`,
+                );
+              }
 
               // ウェイクワード検出（isFinalでなくても反応するように変更）
               if (wakeWordResult.detected) {
                 // ウェイクワード検出！
-                console.log("🎯 ウェイクワード検出成功!", currentTranscript);
+                if (process.env.NODE_ENV === "development") {
+                  console.log("🎯 ウェイクワード検出成功!", currentTranscript);
+                }
                 setIsWaitingForCommand(true);
                 updateState("wake-word-detected");
-                onWakeWordDetected?.();
+                onWakeWordDetectedRef.current?.();
 
                 // カウントダウン開始
-                const timeout = wakeWordConfig?.commandTimeout || 3000;
+                const timeout = wakeWordConfigRef.current?.commandTimeout || 3000;
                 setCommandTimeRemaining(timeout);
 
                 // 100ms毎にカウントダウン更新
@@ -269,7 +311,9 @@ export function useSpeechRecognition(
 
                 // タイムアウトを設定（3秒後に自動リセット）
                 commandTimeoutRef.current = setTimeout(() => {
-                  console.log("コマンド受付タイムアウト");
+                  if (process.env.NODE_ENV === "development") {
+                    console.log("コマンド受付タイムアウト");
+                  }
                   setIsWaitingForCommand(false);
                   setCommandTimeRemaining(null);
                   updateState("listening");
@@ -285,18 +329,22 @@ export function useSpeechRecognition(
               // ウェイクワード検出済み、コマンド待機中
               const matchResult = matchVoiceCommand(currentTranscript, minCommandConfidence);
 
-              // デバッグログ: コマンド判定結果
-              if (matchResult) {
-                console.log(
-                  `[コマンド判定] マッチ: ✓ "${matchResult.command.id}" | 信頼度: ${matchResult.confidence.toFixed(2)}`,
-                );
-              } else {
-                console.log(`[コマンド判定] マッチ: × | テキスト: "${currentTranscript}"`);
+              // デバッグログ（開発環境のみ）
+              if (process.env.NODE_ENV === "development") {
+                if (matchResult) {
+                  console.log(
+                    `[コマンド判定] マッチ: ✓ "${matchResult.command.id}" | 信頼度: ${matchResult.confidence.toFixed(2)}`,
+                  );
+                } else {
+                  console.log(`[コマンド判定] マッチ: × | テキスト: "${currentTranscript}"`);
+                }
               }
 
               if (matchResult && isFinal) {
                 // コマンド検出！タイマーをクリア
-                console.log("🚀 コマンド実行:", matchResult.command.id, "→", currentTranscript);
+                if (process.env.NODE_ENV === "development") {
+                  console.log("🚀 コマンド実行:", matchResult.command.id, "→", currentTranscript);
+                }
                 if (commandTimeoutRef.current) {
                   clearTimeout(commandTimeoutRef.current);
                   commandTimeoutRef.current = null;
@@ -325,7 +373,7 @@ export function useSpeechRecognition(
 
             // 最終結果でない場合は現在の状態を維持
             if (!isFinal) {
-              if (isWaitingForCommand) {
+              if (isWaitingForCommandRef.current) {
                 updateState("wake-word-detected");
               } else {
                 updateState("listening");
@@ -367,8 +415,6 @@ export function useSpeechRecognition(
     interimResults,
     lang,
     maxAlternatives,
-    enabled,
-    state,
     onResult,
     minCommandConfidence,
     updateState,
@@ -389,12 +435,12 @@ export function useSpeechRecognition(
    * enabledフラグによる自動開始/停止
    */
   useEffect(() => {
-    if (enabled && !isListeningRef.current && state === "idle") {
+    if (enabled && !isListeningRef.current && stateRef.current === "idle") {
       startListening();
     } else if (!enabled && isListeningRef.current) {
       stopListening();
     }
-  }, [enabled, state, startListening, stopListening]);
+  }, [enabled, startListening, stopListening]);
 
   /**
    * クリーンアップ
@@ -419,7 +465,7 @@ export function useSpeechRecognition(
   return {
     state,
     transcript,
-    isListening: isListeningRef.current,
+    isListening: state === "listening" || state === "wake-word-detected" || state === "processing",
     isSupported,
     error,
     startListening,

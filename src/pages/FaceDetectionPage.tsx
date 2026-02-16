@@ -23,8 +23,19 @@ export default function FaceDetectionPage() {
   const [voiceEnabled, setVoiceEnabled] = useState<boolean>(false);
   const [isRegistering, setIsRegistering] = useState<boolean>(false);
 
+  // 音声認識デバッグモード（開発環境のみ有効）
+  const isVoiceIndicatorDebug = process.env.NODE_ENV === "development";
+
+  // 許可されたナビゲーションパス
+  const ALLOWED_PATHS = ["/", "/gallery", "/editor", "/settings"];
+
   // デフォルトパターン登録関数
   const handleRegisterPatterns = async () => {
+    // TODO: 本番環境では管理者チェックを追加
+    // if (!isAdmin(auth.currentUser)) {
+    //   alert("管理者権限が必要です");
+    //   return;
+    // }
     if (!confirm("デフォルトパターン（9種類）をFirestoreに一括登録します。よろしいですか？")) {
       return;
     }
@@ -73,7 +84,7 @@ export default function FaceDetectionPage() {
     isWaitingForCommand,
     commandTimeRemaining,
     startListening: _startListening,
-    stopListening: _stopListening,
+    stopListening,
   } = useSpeechRecognition({
     enabled: voiceEnabled && isReady,
     continuous: true,
@@ -81,14 +92,28 @@ export default function FaceDetectionPage() {
     lang: "ja-JP",
     wakeWordEnabled: true, // ウェイクワードモードを有効化
     onWakeWordDetected: () => {
-      console.log("ウェイクワード検出！コマンド待機中...");
+      if (process.env.NODE_ENV === "development") {
+        console.log("ウェイクワード検出！コマンド待機中...");
+      }
     },
     onResult: (result) => {
-      console.log("Voice recognition result:", result);
+      if (process.env.NODE_ENV === "development") {
+        console.log("Voice recognition result:", result);
+      }
       if (result.matchedCommand && result.isFinal) {
-        console.log("Command matched:", result.matchedCommand);
+        if (process.env.NODE_ENV === "development") {
+          console.log("Command matched:", result.matchedCommand);
+        }
         if (result.matchedCommand.action.type === "navigate") {
-          navigate(result.matchedCommand.action.path);
+          const targetPath = result.matchedCommand.action.path;
+          // パスホワイトリストで検証
+          if (ALLOWED_PATHS.includes(targetPath)) {
+            navigate(targetPath);
+          } else {
+            if (process.env.NODE_ENV === "development") {
+              console.warn(`不正なナビゲーションパス: ${targetPath}`);
+            }
+          }
         }
       }
     },
@@ -181,7 +206,7 @@ export default function FaceDetectionPage() {
         show={isListening}
         isWaitingForCommand={isWaitingForCommand}
         commandTimeRemaining={commandTimeRemaining}
-        debug={true}
+        debug={isVoiceIndicatorDebug}
       />
 
       {/* 右下のコントロール */}
@@ -239,7 +264,10 @@ export default function FaceDetectionPage() {
               isSupported={isSupported}
               state={voiceState}
               onStart={() => setVoiceEnabled(true)}
-              onStop={() => setVoiceEnabled(false)}
+              onStop={() => {
+                setVoiceEnabled(false);
+                stopListening();
+              }}
             />
           )}
           {error && (

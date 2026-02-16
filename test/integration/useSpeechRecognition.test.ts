@@ -6,7 +6,7 @@
  * 実際の音声認識機能は実機でのE2Eテストで確認する必要があります。
  */
 
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import { renderHook } from "@testing-library/react";
 import { useSpeechRecognition } from "@/hooks/useSpeechRecognition";
 
@@ -35,10 +35,16 @@ describe("useSpeechRecognition", () => {
     expect(result.current).toHaveProperty("error");
     expect(result.current).toHaveProperty("startListening");
     expect(result.current).toHaveProperty("stopListening");
+    expect(result.current).toHaveProperty("isWaitingForCommand");
+    expect(result.current).toHaveProperty("commandTimeRemaining");
 
     // 関数型であることを確認
     expect(typeof result.current.startListening).toBe("function");
     expect(typeof result.current.stopListening).toBe("function");
+
+    // 型のチェック
+    expect(typeof result.current.isWaitingForCommand).toBe("boolean");
+    expect(typeof result.current.commandTimeRemaining === "number" || result.current.commandTimeRemaining === null).toBe(true);
   });
 
   it("オプションが正しく受け入れられる", () => {

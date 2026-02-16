@@ -50,7 +50,7 @@ export function ExpressionCard({
       smartphoneRendererRef.current = null;
       tabletRendererRef.current = null;
     };
-  }, [showBothDeviceTypes, deviceType, expression]);
+  }, [showBothDeviceTypes, deviceType]);
 
   useEffect(() => {
     const updatePatterns = async () => {
@@ -68,7 +68,7 @@ export function ExpressionCard({
     updatePatterns().catch((err) => {
       console.error("Failed to update patterns:", err);
     });
-  }, [expression, deviceType, showBothDeviceTypes]);
+  }, [expression]);
 
   return (
     <div className="bg-[#231834] border border-[#E66CBC]/30 rounded-lg p-4 hover:border-[#E66CBC]/60 transition-colors">

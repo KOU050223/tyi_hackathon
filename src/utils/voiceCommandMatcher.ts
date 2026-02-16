@@ -187,6 +187,11 @@ export function matchVoiceCommand(
   // テキストを正規化
   const normalizedTranscript = normalizeText(transcript);
 
+  // 早期リターン: 空または短すぎるテキスト
+  if (!normalizedTranscript || normalizedTranscript.length < 2) {
+    return null;
+  }
+
   let bestMatch: { command: VoiceCommand; confidence: number } | null = null;
 
   // 各コマンドとマッチング
