@@ -5,6 +5,7 @@ import { useAuthInit } from '@/hooks/useAuthInit'
 import { AuthGuard } from '@/components/auth/AuthGuard'
 
 const FaceDetectionPage = lazy(() => import('@/pages/FaceDetectionPage'))
+const ExpressionsPage = lazy(() => import('@/pages/ExpressionsPage'))
 const DotEditorPage = lazy(() => import('@/pages/DotEditorPage'))
 const GalleryPage = lazy(() => import('@/pages/GalleryPage'))
 const ProfilePage = lazy(() => import('@/pages/ProfilePage'))
@@ -17,6 +18,7 @@ function App() {
       <Suspense fallback={<div className="loading-page">読み込み中...</div>}>
         <Routes>
           <Route path="/" element={<FaceDetectionPage />} />
+          <Route path="/expressions" element={<ExpressionsPage />} />
           <Route path="/editor" element={<DotEditorPage />} />
           <Route path="/editor/:id" element={<DotEditorPage />} />
           <Route path="/gallery" element={<GalleryPage />} />

@@ -26,7 +26,7 @@ export interface ExpressionResult {
 /**
  * 表情判定の優先度定義（高い順）
  */
-const EXPRESSION_PRIORITY: Expression[] = [
+export const EXPRESSION_PRIORITY: Expression[] = [
   'blink', // まばたきは最優先
   'surprised', // 驚きは強い表情
   'angry', // 怒りも強い表情
@@ -37,6 +37,22 @@ const EXPRESSION_PRIORITY: Expression[] = [
   'confused', // 困惑
   'embarrassed', // 照れ
   'neutral', // デフォルト
+]
+
+/**
+ * すべての表情の配列（表示順）
+ */
+export const ALL_EXPRESSIONS: Expression[] = [
+  'neutral',
+  'smile',
+  'surprised',
+  'blink',
+  'sad',
+  'angry',
+  'confused',
+  'smug',
+  'questioning',
+  'embarrassed',
 ]
 
 /**
