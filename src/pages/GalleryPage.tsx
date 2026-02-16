@@ -1,12 +1,15 @@
-import { useEffect, useCallback } from 'react'
-import { Link } from 'react-router-dom'
-import { usePatternStore } from '@/stores/patternStore'
-import { getPublicPatterns } from '@/lib/patterns'
-import { PatternCard } from '@/components/gallery/PatternCard'
-import { PatternCardSkeleton } from '@/components/gallery/PatternCardSkeleton'
-import { getExpressionLabel, ALL_EXPRESSIONS } from '@/utils/expressionDetector'
-import type { Expression } from '@/types/expression'
-import type { DeviceType } from '@/types/device'
+import { useEffect, useCallback } from "react";
+import { Link } from "react-router-dom";
+import { usePatternStore } from "@/stores/patternStore";
+import { getPublicPatterns } from "@/lib/patterns";
+import { PatternCard } from "@/components/gallery/PatternCard";
+import { PatternCardSkeleton } from "@/components/gallery/PatternCardSkeleton";
+import {
+  getExpressionLabel,
+  ALL_EXPRESSIONS,
+} from "@/utils/expressionDetector";
+import type { Expression } from "@/types/expression";
+import type { DeviceType } from "@/types/device";
 
 export default function GalleryPage() {
   const {
@@ -23,11 +26,11 @@ export default function GalleryPage() {
     setLoading,
     appendPatterns,
     reset,
-  } = usePatternStore()
+  } = usePatternStore();
 
   const fetchPatterns = useCallback(
     async (append = false) => {
-      setLoading(true)
+      setLoading(true);
       try {
         const result = await getPublicPatterns({
           sortBy,
@@ -35,18 +38,18 @@ export default function GalleryPage() {
           deviceType: filterDevice ?? undefined,
           limit: 12,
           startAfter: append ? (lastDoc ?? undefined) : undefined,
-        })
+        });
         if (append) {
-          appendPatterns(result.patterns, result.lastDoc)
+          appendPatterns(result.patterns, result.lastDoc);
         } else {
           // appendPatterns sets both patterns array and lastDoc/hasMore together
           // Reset first then append to empty array
-          appendPatterns(result.patterns, result.lastDoc)
+          appendPatterns(result.patterns, result.lastDoc);
         }
       } catch {
         // Fetch failed
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
     },
     [
@@ -56,33 +59,33 @@ export default function GalleryPage() {
       lastDoc,
       setLoading,
       appendPatterns,
-    ]
-  )
+    ],
+  );
 
   useEffect(() => {
-    reset()
-  }, [sortBy, filterExpression, filterDevice, reset])
+    reset();
+  }, [sortBy, filterExpression, filterDevice, reset]);
 
   useEffect(() => {
     if (patterns.length === 0 && hasMore) {
-      fetchPatterns(false)
+      fetchPatterns(false);
     }
-  }, [patterns.length, hasMore, fetchPatterns])
+  }, [patterns.length, hasMore, fetchPatterns]);
 
   const handleLoadMore = () => {
     if (!loading && hasMore) {
-      fetchPatterns(true)
+      fetchPatterns(true);
     }
-  }
+  };
 
   return (
-    <div className="min-h-screen bg-black text-white font-mono">
+    <div className="min-h-screen text-[#F5F0FF] font-mono">
       <div className="max-w-6xl mx-auto px-4 py-8">
         <div className="flex items-center justify-between mb-6">
-          <h1 className="text-2xl font-bold text-[#00FF00]">Gallery</h1>
+          <h1 className="text-2xl font-bold text-[#E66CBC]">Gallery</h1>
           <Link
             to="/editor"
-            className="text-sm px-3 py-1.5 border border-[#00FF00]/30 text-[#00FF00] rounded hover:bg-[#00FF00]/10 transition-colors"
+            className="text-sm px-3 py-1.5 border border-[#E66CBC]/30 text-[#E66CBC] rounded hover:bg-[#E66CBC]/10 transition-colors"
           >
             + 新規作成
           </Link>
@@ -90,14 +93,14 @@ export default function GalleryPage() {
 
         <div className="flex flex-wrap gap-3 mb-6">
           <select
-            value={filterExpression ?? ''}
-            onChange={e =>
+            value={filterExpression ?? ""}
+            onChange={(e) =>
               setFilterExpression((e.target.value || null) as Expression | null)
             }
-            className="bg-black border border-[#00FF00]/30 text-white text-sm rounded px-2 py-1.5 focus:border-[#00FF00] focus:outline-none"
+            className="bg-[#231834] border border-[#E66CBC]/30 text-[#F5F0FF] text-sm rounded px-2 py-1.5 focus:border-[#E66CBC] focus:outline-none"
           >
             <option value="">すべての表情</option>
-            {ALL_EXPRESSIONS.map(expr => (
+            {ALL_EXPRESSIONS.map((expr) => (
               <option key={expr} value={expr}>
                 {getExpressionLabel(expr)}
               </option>
@@ -105,11 +108,11 @@ export default function GalleryPage() {
           </select>
 
           <select
-            value={filterDevice ?? ''}
-            onChange={e =>
+            value={filterDevice ?? ""}
+            onChange={(e) =>
               setFilterDevice((e.target.value || null) as DeviceType | null)
             }
-            className="bg-black border border-[#00FF00]/30 text-white text-sm rounded px-2 py-1.5 focus:border-[#00FF00] focus:outline-none"
+            className="bg-[#231834] border border-[#E66CBC]/30 text-[#F5F0FF] text-sm rounded px-2 py-1.5 focus:border-[#E66CBC] focus:outline-none"
           >
             <option value="">すべてのデバイス</option>
             <option value="smartphone">スマートフォン</option>
@@ -118,10 +121,10 @@ export default function GalleryPage() {
 
           <select
             value={sortBy}
-            onChange={e =>
-              setSortBy(e.target.value as 'latest' | 'popular' | 'downloads')
+            onChange={(e) =>
+              setSortBy(e.target.value as "latest" | "popular" | "downloads")
             }
-            className="bg-black border border-[#00FF00]/30 text-white text-sm rounded px-2 py-1.5 focus:border-[#00FF00] focus:outline-none"
+            className="bg-[#231834] border border-[#E66CBC]/30 text-[#F5F0FF] text-sm rounded px-2 py-1.5 focus:border-[#E66CBC] focus:outline-none"
           >
             <option value="latest">新着順</option>
             <option value="popular">人気順</option>
@@ -138,14 +141,14 @@ export default function GalleryPage() {
         ) : patterns.length === 0 ? (
           <div className="text-center py-20">
             <p className="text-gray-400 mb-4">パターンが見つかりません</p>
-            <Link to="/editor" className="text-[#00FF00] hover:underline">
+            <Link to="/editor" className="text-[#E66CBC] hover:underline">
               最初のパターンを作成する
             </Link>
           </div>
         ) : (
           <>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {patterns.map(pattern => (
+              {patterns.map((pattern) => (
                 <PatternCard key={pattern.id} pattern={pattern} />
               ))}
               {loading &&
@@ -158,7 +161,7 @@ export default function GalleryPage() {
               <div className="text-center mt-8">
                 <button
                   onClick={handleLoadMore}
-                  className="px-6 py-2 border border-[#00FF00]/30 text-[#00FF00] rounded hover:bg-[#00FF00]/10 transition-colors font-mono cursor-pointer"
+                  className="px-6 py-2 border border-[#E66CBC]/30 text-[#E66CBC] rounded hover:bg-[#E66CBC]/10 transition-colors font-mono cursor-pointer"
                 >
                   もっと見る
                 </button>
@@ -168,5 +171,5 @@ export default function GalleryPage() {
         )}
       </div>
     </div>
-  )
+  );
 }
