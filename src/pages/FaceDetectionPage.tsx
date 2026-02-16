@@ -10,6 +10,7 @@ import { convertBlendshapes } from "@/utils/blendshapeConverter";
 import { VoiceControl } from "@/components/voice/VoiceControl";
 import { VoiceIndicator } from "@/components/voice/VoiceIndicator";
 import type { Expression } from "@/types/expression";
+import { registerDefaultPatterns } from "../../scripts/registerDefaultPatterns";
 
 export default function FaceDetectionPage() {
   const navigate = useNavigate();
@@ -20,6 +21,25 @@ export default function FaceDetectionPage() {
   const [currentExpression, setCurrentExpression] = useState<Expression>("neutral");
   const [_confidence, setConfidence] = useState<number>(0);
   const [voiceEnabled, setVoiceEnabled] = useState<boolean>(false);
+  const [isRegistering, setIsRegistering] = useState<boolean>(false);
+
+  // デフォルトパターン登録関数
+  const handleRegisterPatterns = async () => {
+    if (!confirm("デフォルトパターン（9種類）をFirestoreに一括登録します。よろしいですか？")) {
+      return;
+    }
+    setIsRegistering(true);
+    try {
+      const result = await registerDefaultPatterns();
+      alert(`登録完了！\n成功: ${result.success}件\n失敗: ${result.failed}件`);
+      console.log("登録結果:", result);
+    } catch (error) {
+      alert(`登録失敗: ${error instanceof Error ? error.message : String(error)}`);
+      console.error("登録エラー:", error);
+    } finally {
+      setIsRegistering(false);
+    }
+  };
 
   const {
     result: _faceResult,
@@ -85,7 +105,10 @@ export default function FaceDetectionPage() {
 
   useEffect(() => {
     if (rendererRef.current) {
-      rendererRef.current.render(currentExpression, deviceType);
+      // renderが非同期になったため、awaitして実行
+      rendererRef.current.render(currentExpression, deviceType).catch((err) => {
+        console.error("Failed to render expression:", err);
+      });
     }
   }, [currentExpression, deviceType]);
 
@@ -171,7 +194,27 @@ export default function FaceDetectionPage() {
           zIndex: 10,
         }}
       >
-        <div style={{ display: "flex", flexDirection: "column", gap: "12px", alignItems: "flex-end" }}>
+        <div
+          style={{ display: "flex", flexDirection: "column", gap: "12px", alignItems: "flex-end" }}
+        >
+          {/* デフォルトパターン登録ボタン（一時的） */}
+          <button
+            onClick={handleRegisterPatterns}
+            disabled={isRegistering}
+            style={{
+              padding: "12px 24px",
+              fontSize: "14px",
+              backgroundColor: isRegistering ? "#999" : "#4CAF50",
+              color: "white",
+              border: "none",
+              cursor: isRegistering ? "not-allowed" : "pointer",
+              borderRadius: "8px",
+              fontWeight: "bold",
+              boxShadow: "0 2px 4px rgba(0, 0, 0, 0.2)",
+            }}
+          >
+            {isRegistering ? "登録中..." : "🔧 デフォルトパターン登録"}
+          </button>
           {!isReady && (
             <button
               onClick={startCamera}
@@ -199,7 +242,9 @@ export default function FaceDetectionPage() {
               onStop={() => setVoiceEnabled(false)}
             />
           )}
-          {error && <p style={{ color: "#FF5A7E", fontSize: "14px", maxWidth: "300px" }}>{error}</p>}
+          {error && (
+            <p style={{ color: "#FF5A7E", fontSize: "14px", maxWidth: "300px" }}>{error}</p>
+          )}
           {isInitializing && (
             <p style={{ color: "#7DD3E8", fontSize: "14px" }}>MediaPipe初期化中...</p>
           )}

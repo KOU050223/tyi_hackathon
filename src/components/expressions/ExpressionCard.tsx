@@ -22,23 +22,29 @@ export function ExpressionCard({
   const tabletRendererRef = useRef<CanvasRenderer | null>(null);
 
   useEffect(() => {
-    if (showBothDeviceTypes || deviceType === "smartphone") {
-      if (smartphoneCanvasRef.current && !smartphoneRendererRef.current) {
-        smartphoneRendererRef.current = new CanvasRenderer(smartphoneCanvasRef.current);
-        smartphoneRendererRef.current.setDotSize(15);
-        const pattern = getDotPattern(expression, "smartphone");
-        smartphoneRendererRef.current.renderPattern(pattern);
+    const initializeRenderers = async () => {
+      if (showBothDeviceTypes || deviceType === "smartphone") {
+        if (smartphoneCanvasRef.current && !smartphoneRendererRef.current) {
+          smartphoneRendererRef.current = new CanvasRenderer(smartphoneCanvasRef.current);
+          smartphoneRendererRef.current.setDotSize(15);
+          const pattern = await getDotPattern(expression, "smartphone");
+          smartphoneRendererRef.current.renderPattern(pattern);
+        }
       }
-    }
 
-    if (showBothDeviceTypes || deviceType === "tablet") {
-      if (tabletCanvasRef.current && !tabletRendererRef.current) {
-        tabletRendererRef.current = new CanvasRenderer(tabletCanvasRef.current);
-        tabletRendererRef.current.setDotSize(15);
-        const pattern = getDotPattern(expression, "tablet");
-        tabletRendererRef.current.renderPattern(pattern);
+      if (showBothDeviceTypes || deviceType === "tablet") {
+        if (tabletCanvasRef.current && !tabletRendererRef.current) {
+          tabletRendererRef.current = new CanvasRenderer(tabletCanvasRef.current);
+          tabletRendererRef.current.setDotSize(15);
+          const pattern = await getDotPattern(expression, "tablet");
+          tabletRendererRef.current.renderPattern(pattern);
+        }
       }
-    }
+    };
+
+    initializeRenderers().catch((err) => {
+      console.error("Failed to initialize renderers:", err);
+    });
 
     return () => {
       smartphoneRendererRef.current = null;
@@ -47,15 +53,21 @@ export function ExpressionCard({
   }, [showBothDeviceTypes, deviceType, expression]);
 
   useEffect(() => {
-    if (smartphoneRendererRef.current) {
-      const pattern = getDotPattern(expression, "smartphone");
-      smartphoneRendererRef.current.renderPattern(pattern);
-    }
+    const updatePatterns = async () => {
+      if (smartphoneRendererRef.current) {
+        const pattern = await getDotPattern(expression, "smartphone");
+        smartphoneRendererRef.current.renderPattern(pattern);
+      }
 
-    if (tabletRendererRef.current) {
-      const pattern = getDotPattern(expression, "tablet");
-      tabletRendererRef.current.renderPattern(pattern);
-    }
+      if (tabletRendererRef.current) {
+        const pattern = await getDotPattern(expression, "tablet");
+        tabletRendererRef.current.renderPattern(pattern);
+      }
+    };
+
+    updatePatterns().catch((err) => {
+      console.error("Failed to update patterns:", err);
+    });
   }, [expression, deviceType, showBothDeviceTypes]);
 
   return (

@@ -82,17 +82,17 @@ export class CanvasRenderer {
   }
 
   /**
-   * 表情をレンダリング
+   * 表情をレンダリング（非同期）
    * @param expression 表情
    * @param deviceType デバイスタイプ（スマホ/タブレット）
    */
-  render(expression: Expression, deviceType: "smartphone" | "tablet") {
+  async render(expression: Expression, deviceType: "smartphone" | "tablet") {
     // 差分レンダリング: 表情が変わった時のみ再描画
     if (expression === this.currentExpression) {
       return;
     }
 
-    const pattern = getDotPattern(expression, deviceType);
+    const pattern = await getDotPattern(expression, deviceType);
     this.drawDotPattern(pattern);
     this.currentExpression = expression;
   }
