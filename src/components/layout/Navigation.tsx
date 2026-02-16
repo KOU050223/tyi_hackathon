@@ -6,6 +6,7 @@ import { UserMenu } from '@/components/auth/UserMenu'
 
 const navLinks = [
   { to: '/', label: 'ホーム' },
+  { to: '/expressions', label: '表情一覧' },
   { to: '/editor', label: 'エディタ' },
   { to: '/gallery', label: 'ギャラリー' },
 ]

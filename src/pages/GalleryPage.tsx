@@ -4,22 +4,9 @@ import { usePatternStore } from '@/stores/patternStore'
 import { getPublicPatterns } from '@/lib/patterns'
 import { PatternCard } from '@/components/gallery/PatternCard'
 import { PatternCardSkeleton } from '@/components/gallery/PatternCardSkeleton'
-import { getExpressionLabel } from '@/utils/expressionDetector'
+import { getExpressionLabel, ALL_EXPRESSIONS } from '@/utils/expressionDetector'
 import type { Expression } from '@/types/expression'
 import type { DeviceType } from '@/types/device'
-
-const ALL_EXPRESSIONS: Expression[] = [
-  'neutral',
-  'smile',
-  'sad',
-  'angry',
-  'surprised',
-  'blink',
-  'confused',
-  'smug',
-  'questioning',
-  'embarrassed',
-]
 
 export default function GalleryPage() {
   const {
