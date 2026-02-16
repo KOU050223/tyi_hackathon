@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { ExpressionCard } from "@/components/expressions/ExpressionCard";
-import { ALL_EXPRESSIONS } from "@/utils/expressionDetector";
+import { ALL_DETECTABLE_EXPRESSIONS } from "@/utils/expressionDetector";
 import type { DeviceType } from "@/types/device";
 
 type ViewMode = "smartphone" | "tablet" | "both";
@@ -50,7 +50,7 @@ export default function ExpressionsPage() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {ALL_EXPRESSIONS.map((expression) => (
+          {ALL_DETECTABLE_EXPRESSIONS.map((expression) => (
             <ExpressionCard
               key={expression}
               expression={expression}

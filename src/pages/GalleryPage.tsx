@@ -4,7 +4,7 @@ import { usePatternStore } from "@/stores/patternStore";
 import { getPublicPatterns } from "@/lib/patterns";
 import { PatternCard } from "@/components/gallery/PatternCard";
 import { PatternCardSkeleton } from "@/components/gallery/PatternCardSkeleton";
-import { getExpressionLabel, ALL_EXPRESSIONS } from "@/utils/expressionDetector";
+import { getExpressionLabel, ALL_DETECTABLE_EXPRESSIONS } from "@/utils/expressionDetector";
 import type { Expression } from "@/types/expression";
 import type { DeviceType } from "@/types/device";
 
@@ -88,7 +88,7 @@ export default function GalleryPage() {
             className="bg-[#231834] border border-[#E66CBC]/30 text-[#F5F0FF] text-sm rounded px-2 py-1.5 focus:border-[#E66CBC] focus:outline-none"
           >
             <option value="">すべての表情</option>
-            {ALL_EXPRESSIONS.map((expr) => (
+            {ALL_DETECTABLE_EXPRESSIONS.map((expr) => (
               <option key={expr} value={expr}>
                 {getExpressionLabel(expr)}
               </option>

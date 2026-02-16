@@ -1,9 +1,10 @@
 import type { BlendShapes } from "@/types/face";
+import type { Expression } from "@/types/expression";
 
 /**
- * 表情の種類
+ * MediaPipeで検出可能な基本10種類の表情
  */
-export type Expression =
+type DetectableExpression =
   | "neutral"
   | "smile"
   | "surprised"
@@ -26,7 +27,7 @@ export interface ExpressionResult {
 /**
  * 表情判定の優先度定義（高い順）
  */
-export const EXPRESSION_PRIORITY: Expression[] = [
+export const EXPRESSION_PRIORITY: DetectableExpression[] = [
   "blink", // まばたきは最優先
   "surprised", // 驚きは強い表情
   "angry", // 怒りも強い表情
@@ -40,9 +41,9 @@ export const EXPRESSION_PRIORITY: Expression[] = [
 ];
 
 /**
- * すべての表情の配列（表示順）
+ * すべての検出可能な表情の配列（表示順）
  */
-export const ALL_EXPRESSIONS: Expression[] = [
+export const ALL_DETECTABLE_EXPRESSIONS: DetectableExpression[] = [
   "neutral",
   "smile",
   "surprised",
@@ -83,7 +84,7 @@ export function detectExpression(
  * 各表情の判定関数
  * 信頼度（0.0 - 1.0）を返す
  */
-const expressionDetectors: Record<Expression, (blendShapes: BlendShapes) => number> = {
+const expressionDetectors: Record<DetectableExpression, (blendShapes: BlendShapes) => number> = {
   /**
    * まばたき: 両目が閉じている
    */
@@ -231,7 +232,7 @@ const expressionDetectors: Record<Expression, (blendShapes: BlendShapes) => numb
  * 表情の日本語名を取得
  */
 export function getExpressionLabel(expression: Expression): string {
-  const labels: Record<Expression, string> = {
+  const labels: Partial<Record<Expression, string>> = {
     neutral: "通常",
     smile: "笑顔",
     surprised: "驚き",
@@ -242,6 +243,18 @@ export function getExpressionLabel(expression: Expression): string {
     smug: "得意気",
     questioning: "疑問",
     embarrassed: "照れ",
+    // pattern_11以降は"パターン11"のような形式で表示
   };
-  return labels[expression];
+
+  if (labels[expression]) {
+    return labels[expression]!;
+  }
+
+  // pattern_XX形式の場合は数値部分を抽出
+  const match = expression.match(/^pattern_(\d+)$/);
+  if (match) {
+    return `パターン${match[1]}`;
+  }
+
+  return expression;
 }
