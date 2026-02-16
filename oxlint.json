@@ -1,7 +1,7 @@
 {
-  "rules": {
-    "typescript": "error",
-    "react": "error",
-    "react-hooks": "error"
+  "categories": {
+    "correctness": "error",
+    "suspicious": "warn",
+    "pedantic": "warn"
   }
 }

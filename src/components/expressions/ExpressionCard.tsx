@@ -28,6 +28,8 @@ export function ExpressionCard({
           smartphoneCanvasRef.current
         )
         smartphoneRendererRef.current.setDotSize(15)
+        const pattern = getDotPattern(expression, 'smartphone')
+        smartphoneRendererRef.current.renderPattern(pattern)
       }
     }
 
@@ -35,9 +37,16 @@ export function ExpressionCard({
       if (tabletCanvasRef.current && !tabletRendererRef.current) {
         tabletRendererRef.current = new CanvasRenderer(tabletCanvasRef.current)
         tabletRendererRef.current.setDotSize(15)
+        const pattern = getDotPattern(expression, 'tablet')
+        tabletRendererRef.current.renderPattern(pattern)
       }
     }
-  }, [showBothDeviceTypes, deviceType])
+
+    return () => {
+      smartphoneRendererRef.current = null
+      tabletRendererRef.current = null
+    }
+  }, [showBothDeviceTypes, deviceType, expression])
 
   useEffect(() => {
     if (smartphoneRendererRef.current) {
@@ -49,7 +58,7 @@ export function ExpressionCard({
       const pattern = getDotPattern(expression, 'tablet')
       tabletRendererRef.current.renderPattern(pattern)
     }
-  }, [expression])
+  }, [expression, deviceType, showBothDeviceTypes])
 
   return (
     <div className="bg-black border border-[#00FF00]/30 rounded-lg p-4 hover:border-[#00FF00]/60 transition-colors">
