@@ -1,19 +1,19 @@
-import { useState } from 'react'
-import { NavLink } from 'react-router-dom'
-import { useAuthStore } from '@/stores/authStore'
-import { LoginButton } from '@/components/auth/LoginButton'
-import { UserMenu } from '@/components/auth/UserMenu'
+import { useState } from "react";
+import { NavLink } from "react-router-dom";
+import { useAuthStore } from "@/stores/authStore";
+import { LoginButton } from "@/components/auth/LoginButton";
+import { UserMenu } from "@/components/auth/UserMenu";
 
 const navLinks = [
-  { to: '/', label: 'ホーム' },
-  { to: '/expressions', label: '表情一覧' },
-  { to: '/editor', label: 'エディタ' },
-  { to: '/gallery', label: 'ギャラリー' },
-]
+  { to: "/", label: "ホーム" },
+  { to: "/expressions", label: "表情一覧" },
+  { to: "/editor", label: "エディタ" },
+  { to: "/gallery", label: "ギャラリー" },
+];
 
 export function Navigation() {
-  const { user } = useAuthStore()
-  const [menuOpen, setMenuOpen] = useState(false)
+  const { user } = useAuthStore();
+  const [menuOpen, setMenuOpen] = useState(false);
 
   return (
     <nav className="neon-nav">
@@ -32,15 +32,13 @@ export function Navigation() {
           <span />
         </button>
 
-        <div className={`nav-links ${menuOpen ? 'open' : ''}`}>
+        <div className={`nav-links ${menuOpen ? "open" : ""}`}>
           {navLinks.map(({ to, label }) => (
             <NavLink
               key={to}
               to={to}
-              end={to === '/'}
-              className={({ isActive }) =>
-                `nav-link ${isActive ? 'active' : ''}`
-              }
+              end={to === "/"}
+              className={({ isActive }) => `nav-link ${isActive ? "active" : ""}`}
               onClick={() => setMenuOpen(false)}
             >
               {label}
@@ -51,5 +49,5 @@ export function Navigation() {
         <div className="nav-auth">{user ? <UserMenu /> : <LoginButton />}</div>
       </div>
     </nav>
-  )
+  );
 }

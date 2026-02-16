@@ -2,7 +2,7 @@ import type {
   Expression,
   DotPattern,
   ExpressionPatterns,
-} from '@/types/expression'
+} from "@/types/expression";
 
 /**
  * 各表情に対応するドット絵パターン定義
@@ -12,7 +12,7 @@ import type {
 // 目のみのパターン（スマートフォン用）
 const eyeOnlyPatterns: ExpressionPatterns = {
   neutral: {
-    color: '#00FF00',
+    color: "#E66CBC",
     grid: [
       [0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0],
       [0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0],
@@ -23,7 +23,7 @@ const eyeOnlyPatterns: ExpressionPatterns = {
     ],
   },
   smile: {
-    color: '#FFFF00',
+    color: "#FFFF00",
     grid: [
       [1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1],
       [1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1],
@@ -32,7 +32,7 @@ const eyeOnlyPatterns: ExpressionPatterns = {
     ],
   },
   surprised: {
-    color: '#FF6600',
+    color: "#FF6600",
     grid: [
       [0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0],
       [0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0],
@@ -44,14 +44,14 @@ const eyeOnlyPatterns: ExpressionPatterns = {
     ],
   },
   blink: {
-    color: '#00FF00',
+    color: "#E66CBC",
     grid: [
       [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
       [0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0],
     ],
   },
   sad: {
-    color: '#4444FF',
+    color: "#4444FF",
     grid: [
       [0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0],
       [0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0],
@@ -61,7 +61,7 @@ const eyeOnlyPatterns: ExpressionPatterns = {
     ],
   },
   angry: {
-    color: '#FF0000',
+    color: "#FF0000",
     grid: [
       [1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1],
       [0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0],
@@ -71,7 +71,7 @@ const eyeOnlyPatterns: ExpressionPatterns = {
     ],
   },
   confused: {
-    color: '#FFAA00',
+    color: "#FFAA00",
     grid: [
       [0, 1, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0],
       [1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0],
@@ -82,7 +82,7 @@ const eyeOnlyPatterns: ExpressionPatterns = {
     ],
   },
   smug: {
-    color: '#FF00FF',
+    color: "#FF00FF",
     grid: [
       // 左目閉じ（ウインク）、右目開く
       [1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0],
@@ -94,7 +94,7 @@ const eyeOnlyPatterns: ExpressionPatterns = {
     ],
   },
   questioning: {
-    color: '#00FFFF',
+    color: "#00FFFF",
     grid: [
       // 片眉上昇
       [0, 1, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0],
@@ -106,7 +106,7 @@ const eyeOnlyPatterns: ExpressionPatterns = {
     ],
   },
   embarrassed: {
-    color: '#FFAAAA',
+    color: "#FFAAAA",
     grid: [
       // 目が点
       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -115,12 +115,12 @@ const eyeOnlyPatterns: ExpressionPatterns = {
       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     ],
   },
-}
+};
 
 // 目 + 口のパターン（タブレット用）
 const fullPatterns: ExpressionPatterns = {
   neutral: {
-    color: '#00FF00',
+    color: "#E66CBC",
     grid: [
       // 目
       [0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0],
@@ -137,7 +137,7 @@ const fullPatterns: ExpressionPatterns = {
     ],
   },
   smile: {
-    color: '#FFFF00',
+    color: "#FFFF00",
     grid: [
       // 目
       [1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1],
@@ -152,7 +152,7 @@ const fullPatterns: ExpressionPatterns = {
     ],
   },
   surprised: {
-    color: '#FF6600',
+    color: "#FF6600",
     grid: [
       // 目（大きく開いた）
       [0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0],
@@ -170,7 +170,7 @@ const fullPatterns: ExpressionPatterns = {
     ],
   },
   sad: {
-    color: '#4444FF',
+    color: "#4444FF",
     grid: [
       // 目（下がった）
       [0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0],
@@ -186,7 +186,7 @@ const fullPatterns: ExpressionPatterns = {
     ],
   },
   angry: {
-    color: '#FF0000',
+    color: "#FF0000",
     grid: [
       // 目（眉が下がっている）
       [1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1],
@@ -201,7 +201,7 @@ const fullPatterns: ExpressionPatterns = {
     ],
   },
   confused: {
-    color: '#FFAA00',
+    color: "#FFAA00",
     grid: [
       // 目（困惑）
       [0, 1, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0],
@@ -217,7 +217,7 @@ const fullPatterns: ExpressionPatterns = {
     ],
   },
   smug: {
-    color: '#FF00FF',
+    color: "#FF00FF",
     grid: [
       // 左目閉じ（ウインク）、右目開く
       [1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 0, 0],
@@ -233,7 +233,7 @@ const fullPatterns: ExpressionPatterns = {
     ],
   },
   questioning: {
-    color: '#00FFFF',
+    color: "#00FFFF",
     grid: [
       // 片眉上昇
       [0, 1, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0],
@@ -250,7 +250,7 @@ const fullPatterns: ExpressionPatterns = {
     ],
   },
   embarrassed: {
-    color: '#FFAAAA',
+    color: "#FFAAAA",
     grid: [
       // 目が点
       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -266,29 +266,29 @@ const fullPatterns: ExpressionPatterns = {
       [0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0],
     ],
   },
-}
+};
 
 /**
  * デバイスタイプに応じた表情パターンを取得
  */
 export const getDotPattern = (
   expression: Expression,
-  deviceType: 'smartphone' | 'tablet'
+  deviceType: "smartphone" | "tablet",
 ): DotPattern => {
-  const patterns = deviceType === 'smartphone' ? eyeOnlyPatterns : fullPatterns
-  return patterns[expression] || patterns.neutral
-}
+  const patterns = deviceType === "smartphone" ? eyeOnlyPatterns : fullPatterns;
+  return patterns[expression] || patterns.neutral;
+};
 
 /**
  * 目のみのパターンを取得（スマートフォン用）
  */
 export const getEyeOnlyPattern = (expression: Expression): DotPattern => {
-  return eyeOnlyPatterns[expression] || eyeOnlyPatterns.neutral
-}
+  return eyeOnlyPatterns[expression] || eyeOnlyPatterns.neutral;
+};
 
 /**
  * 目 + 口のパターンを取得（タブレット用）
  */
 export const getFullPattern = (expression: Expression): DotPattern => {
-  return fullPatterns[expression] || fullPatterns.neutral
-}
+  return fullPatterns[expression] || fullPatterns.neutral;
+};
