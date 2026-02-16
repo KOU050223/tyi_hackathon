@@ -54,103 +54,107 @@ export default function FaceDetectionPage() {
   return (
     <div
       style={{
+        position: "fixed",
+        top: 0,
+        left: 0,
+        width: "100vw",
+        height: "100vh",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        minHeight: "calc(100vh - 60px)",
-        padding: "20px",
-        gap: "20px",
+        overflow: "hidden",
       }}
     >
-      <h1 style={{ color: "#E66CBC", fontSize: "24px", marginBottom: "20px" }}>
-        璃奈ちゃんボード風 デジタルお面
-      </h1>
+      {/* 非表示のカメラプレビュー */}
+      <video
+        ref={videoRef}
+        style={{
+          position: "absolute",
+          width: "1px",
+          height: "1px",
+          opacity: 0,
+          pointerEvents: "none",
+        }}
+      />
 
+      {/* 璃奈ちゃんボード（メイン表示） */}
       <div
         style={{
+          position: "relative",
+          width: "100vw",
+          height: "100vh",
           display: "flex",
-          gap: "20px",
-          alignItems: "flex-start",
-          flexWrap: "wrap",
+          alignItems: "center",
           justifyContent: "center",
         }}
       >
-        <div>
-          <h2 style={{ fontSize: "18px", marginBottom: "10px" }}>カメラプレビュー</h2>
-          <video
-            ref={videoRef}
-            style={{
-              width: "320px",
-              height: "240px",
-              border: "2px solid #E66CBC",
-              display: isReady ? "block" : "none",
-            }}
-          />
-          {!isReady && (
-            <button
-              onClick={startCamera}
-              style={{
-                padding: "10px 20px",
-                fontSize: "16px",
-                backgroundColor: "#E66CBC",
-                color: "#1A1225",
-                border: "none",
-                cursor: "pointer",
-                borderRadius: "4px",
-              }}
-            >
-              カメラを起動
-            </button>
-          )}
-          {error && <p style={{ color: "#FF5A7E", marginTop: "10px" }}>{error}</p>}
-          {isInitializing && (
-            <p style={{ color: "#7DD3E8", marginTop: "10px" }}>MediaPipe初期化中...</p>
-          )}
-        </div>
-
-        <div>
-          <h2 style={{ fontSize: "18px", marginBottom: "10px" }}>
-            現在の表情: {getExpressionLabel(currentExpression)}
-            {confidence > 0 && (
-              <span
-                style={{
-                  fontSize: "14px",
-                  color: "#7B6B96",
-                  marginLeft: "10px",
-                }}
-              >
-                ({Math.round(confidence * 100)}%)
-              </span>
-            )}
-          </h2>
-          <canvas
-            ref={canvasRef}
-            style={{
-              border: "2px solid #E66CBC",
-              imageRendering: "pixelated",
-            }}
-            className="pixel-art"
-          />
-        </div>
+        <img
+          src="/rina-chan-back.png"
+          alt="璃奈ちゃんボード"
+          style={{
+            display: "block",
+            width: "100%",
+            height: "100%",
+            objectFit: "contain",
+          }}
+        />
+        <canvas
+          ref={canvasRef}
+          style={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            imageRendering: "pixelated",
+          }}
+          className="pixel-art"
+        />
       </div>
 
-      <div style={{ marginTop: "20px", textAlign: "center" }}>
-        <p style={{ fontSize: "14px", color: "#A89BBE" }}>
-          デバイス:{" "}
-          {deviceType === "smartphone" ? "スマートフォン（目のみ表示）" : "タブレット（目+口表示）"}
-        </p>
-        <p style={{ fontSize: "12px", color: "#7B6B96" }}>
-          {isDetecting ? (
-            <>リアルタイム表情認識中</>
-          ) : isInitialized ? (
-            <>検出待機中</>
-          ) : (
-            <>カメラを起動して表情認識を開始</>
-          )}
-        </p>
-        {faceResult && !faceResult.detected && isReady && (
-          <p style={{ fontSize: "12px", color: "#FFCC4D" }}>顔が検出されていません</p>
+      {/* 下部のコントロール */}
+      <div
+        style={{
+          position: "fixed",
+          bottom: "20px",
+          left: "50%",
+          transform: "translateX(-50%)",
+          textAlign: "center",
+          zIndex: 10,
+        }}
+      >
+        {!isReady && (
+          <button
+            onClick={startCamera}
+            style={{
+              padding: "15px 30px",
+              fontSize: "18px",
+              backgroundColor: "#E66CBC",
+              color: "#1A1225",
+              border: "none",
+              cursor: "pointer",
+              borderRadius: "8px",
+              fontWeight: "bold",
+              boxShadow: "0 4px 8px rgba(230, 108, 188, 0.4)",
+            }}
+          >
+            カメラを起動
+          </button>
+        )}
+        {error && <p style={{ color: "#FF5A7E", marginTop: "10px" }}>{error}</p>}
+        {isInitializing && (
+          <p style={{ color: "#7DD3E8", fontSize: "14px" }}>MediaPipe初期化中...</p>
+        )}
+        {isReady && (
+          <p style={{ fontSize: "12px", color: "#A89BBE" }}>
+            {isDetecting ? (
+              <>リアルタイム表情認識中</>
+            ) : isInitialized ? (
+              <>検出待機中</>
+            ) : (
+              <>初期化中...</>
+            )}
+          </p>
         )}
       </div>
     </div>
