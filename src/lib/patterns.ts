@@ -26,7 +26,7 @@ function toPatternData(id: string, data: DocumentData): PatternData {
   // gridDataSerializedから2次元配列に変換
   const gridData = data.gridDataSerialized
     ? JSON.parse(data.gridDataSerialized)
-    : data.gridData ?? []
+    : (data.gridData ?? [])
 
   return {
     id,
@@ -169,7 +169,7 @@ export async function updatePattern(
   if (gridData) {
     data.gridDataSerialized = JSON.stringify(gridData)
   }
-  
+
   await updateDoc(doc(db, 'patterns', id), {
     ...data,
     updatedAt: serverTimestamp(),
