@@ -3,7 +3,7 @@ import { useCamera } from "@/hooks/useCamera";
 import { useDeviceType } from "@/hooks/useDeviceType";
 import { useFaceDetection } from "@/hooks/useFaceDetection";
 import { CanvasRenderer } from "@/engines/renderer/CanvasRenderer";
-import { detectExpression, getExpressionLabel } from "@/utils/expressionDetector";
+import { detectExpression } from "@/utils/expressionDetector";
 import { convertBlendshapes } from "@/utils/blendshapeConverter";
 import type { Expression } from "@/types/expression";
 
@@ -13,10 +13,10 @@ export default function FaceDetectionPage() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const rendererRef = useRef<CanvasRenderer | null>(null);
   const [currentExpression, setCurrentExpression] = useState<Expression>("neutral");
-  const [confidence, setConfidence] = useState<number>(0);
+  const [_confidence, setConfidence] = useState<number>(0);
 
   const {
-    result: faceResult,
+    result: _faceResult,
     isInitializing,
     isInitialized,
     error: faceError,
