@@ -81,7 +81,7 @@ function getSpeechRecognition(): ISpeechRecognitionConstructor | null {
  * 音声認識フック
  */
 export function useSpeechRecognition(
-  options: UseSpeechRecognitionOptions = {}
+  options: UseSpeechRecognitionOptions = {},
 ): UseSpeechRecognitionReturn {
   const {
     enabled = false,
@@ -121,7 +121,7 @@ export function useSpeechRecognition(
       setState(newState);
       onStateChange?.(newState);
     },
-    [onStateChange]
+    [onStateChange],
   );
 
   /**
@@ -134,7 +134,7 @@ export function useSpeechRecognition(
       updateState("error");
       onError?.(errorObj);
     },
-    [onError, updateState]
+    [onError, updateState],
   );
 
   /**
@@ -230,7 +230,9 @@ export function useSpeechRecognition(
           setTranscript(currentTranscript);
 
           // デバッグログ: 認識結果を常に出力
-          console.log(`[音声認識] テキスト: "${currentTranscript}" | 信頼度: ${confidence.toFixed(2)} | 確定: ${isFinal ? "✓" : "×"}`);
+          console.log(
+            `[音声認識] テキスト: "${currentTranscript}" | 信頼度: ${confidence.toFixed(2)} | 確定: ${isFinal ? "✓" : "×"}`,
+          );
 
           // ウェイクワードモードが有効な場合
           if (wakeWordEnabled) {
@@ -239,7 +241,9 @@ export function useSpeechRecognition(
               const wakeWordResult = detectWakeWord(currentTranscript, wakeWordConfig);
 
               // デバッグログ: ウェイクワード判定結果
-              console.log(`[ウェイクワード判定] 検出: ${wakeWordResult.detected ? "✓" : "×"} | 信頼度: ${wakeWordResult.confidence.toFixed(2)}`);
+              console.log(
+                `[ウェイクワード判定] 検出: ${wakeWordResult.detected ? "✓" : "×"} | 信頼度: ${wakeWordResult.confidence.toFixed(2)}`,
+              );
 
               // ウェイクワード検出（isFinalでなくても反応するように変更）
               if (wakeWordResult.detected) {
@@ -283,7 +287,9 @@ export function useSpeechRecognition(
 
               // デバッグログ: コマンド判定結果
               if (matchResult) {
-                console.log(`[コマンド判定] マッチ: ✓ "${matchResult.command.id}" | 信頼度: ${matchResult.confidence.toFixed(2)}`);
+                console.log(
+                  `[コマンド判定] マッチ: ✓ "${matchResult.command.id}" | 信頼度: ${matchResult.confidence.toFixed(2)}`,
+                );
               } else {
                 console.log(`[コマンド判定] マッチ: × | テキスト: "${currentTranscript}"`);
               }

@@ -88,12 +88,7 @@ export function VoiceControl({
         className={`w-16 h-16 rounded-full transition-all duration-200 flex items-center justify-center ${getButtonStyle()}`}
         title={isListening ? "音声認識を停止" : "音声認識を開始"}
       >
-        <svg
-          className="w-8 h-8 text-white"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
+        <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           {isListening ? (
             // 停止アイコン
             <rect x="6" y="6" width="12" height="12" strokeWidth={2} />

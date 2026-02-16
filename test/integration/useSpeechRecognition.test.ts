@@ -55,7 +55,7 @@ describe("useSpeechRecognition", () => {
         onResult,
         onError,
         onStateChange,
-      })
+      }),
     );
 
     // フックが初期化されることを確認
@@ -66,7 +66,7 @@ describe("useSpeechRecognition", () => {
     const { result } = renderHook(() =>
       useSpeechRecognition({
         enabled: false,
-      })
+      }),
     );
 
     expect(result.current.isListening).toBe(false);

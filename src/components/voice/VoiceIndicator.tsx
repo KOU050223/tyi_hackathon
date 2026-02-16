@@ -76,12 +76,7 @@ export function VoiceIndicator({
     <div className="fixed bottom-24 right-4 z-50">
       <div className="bg-[#E66CBC]/90 backdrop-blur-sm rounded-full px-6 py-3 shadow-lg flex items-center gap-3 animate-pulse">
         {/* マイクアイコン */}
-        <svg
-          className="w-5 h-5 text-white"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
+        <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -97,9 +92,18 @@ export function VoiceIndicator({
 
         {/* パルスアニメーション */}
         <div className="flex gap-1">
-          <div className="w-1 h-4 bg-white rounded-full animate-pulse" style={{ animationDelay: "0ms" }} />
-          <div className="w-1 h-4 bg-white rounded-full animate-pulse" style={{ animationDelay: "150ms" }} />
-          <div className="w-1 h-4 bg-white rounded-full animate-pulse" style={{ animationDelay: "300ms" }} />
+          <div
+            className="w-1 h-4 bg-white rounded-full animate-pulse"
+            style={{ animationDelay: "0ms" }}
+          />
+          <div
+            className="w-1 h-4 bg-white rounded-full animate-pulse"
+            style={{ animationDelay: "150ms" }}
+          />
+          <div
+            className="w-1 h-4 bg-white rounded-full animate-pulse"
+            style={{ animationDelay: "300ms" }}
+          />
         </div>
       </div>
 

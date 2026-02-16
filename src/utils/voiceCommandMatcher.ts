@@ -111,7 +111,7 @@ export function calculateSimilarity(text1: string, text2: string): number {
       matrix[i][j] = Math.min(
         matrix[i - 1][j] + 1, // 削除
         matrix[i][j - 1] + 1, // 挿入
-        matrix[i - 1][j - 1] + cost // 置換
+        matrix[i - 1][j - 1] + cost, // 置換
       );
     }
   }
@@ -131,7 +131,7 @@ export function calculateSimilarity(text1: string, text2: string): number {
  */
 export function detectWakeWord(
   transcript: string,
-  config: WakeWordConfig = WAKE_WORD_CONFIG
+  config: WakeWordConfig = WAKE_WORD_CONFIG,
 ): { detected: boolean; confidence: number } {
   const normalized = normalizeText(transcript);
 
@@ -182,7 +182,7 @@ export function detectWakeWord(
  */
 export function matchVoiceCommand(
   transcript: string,
-  minConfidence: number = 0.7
+  minConfidence: number = 0.7,
 ): { command: VoiceCommand; confidence: number } | null {
   // テキストを正規化
   const normalizedTranscript = normalizeText(transcript);
