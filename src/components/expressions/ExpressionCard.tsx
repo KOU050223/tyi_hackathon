@@ -22,41 +22,53 @@ export function ExpressionCard({
   const tabletRendererRef = useRef<CanvasRenderer | null>(null);
 
   useEffect(() => {
-    if (showBothDeviceTypes || deviceType === "smartphone") {
-      if (smartphoneCanvasRef.current && !smartphoneRendererRef.current) {
-        smartphoneRendererRef.current = new CanvasRenderer(smartphoneCanvasRef.current);
-        smartphoneRendererRef.current.setDotSize(15);
-        const pattern = getDotPattern(expression, "smartphone");
-        smartphoneRendererRef.current.renderPattern(pattern);
+    const initializeRenderers = async () => {
+      if (showBothDeviceTypes || deviceType === "smartphone") {
+        if (smartphoneCanvasRef.current && !smartphoneRendererRef.current) {
+          smartphoneRendererRef.current = new CanvasRenderer(smartphoneCanvasRef.current);
+          smartphoneRendererRef.current.setDotSize(15);
+          const pattern = await getDotPattern(expression, "smartphone");
+          smartphoneRendererRef.current.renderPattern(pattern);
+        }
       }
-    }
 
-    if (showBothDeviceTypes || deviceType === "tablet") {
-      if (tabletCanvasRef.current && !tabletRendererRef.current) {
-        tabletRendererRef.current = new CanvasRenderer(tabletCanvasRef.current);
-        tabletRendererRef.current.setDotSize(15);
-        const pattern = getDotPattern(expression, "tablet");
-        tabletRendererRef.current.renderPattern(pattern);
+      if (showBothDeviceTypes || deviceType === "tablet") {
+        if (tabletCanvasRef.current && !tabletRendererRef.current) {
+          tabletRendererRef.current = new CanvasRenderer(tabletCanvasRef.current);
+          tabletRendererRef.current.setDotSize(15);
+          const pattern = await getDotPattern(expression, "tablet");
+          tabletRendererRef.current.renderPattern(pattern);
+        }
       }
-    }
+    };
+
+    initializeRenderers().catch((err) => {
+      console.error("Failed to initialize renderers:", err);
+    });
 
     return () => {
       smartphoneRendererRef.current = null;
       tabletRendererRef.current = null;
     };
-  }, [showBothDeviceTypes, deviceType, expression]);
+  }, [showBothDeviceTypes, deviceType]);
 
   useEffect(() => {
-    if (smartphoneRendererRef.current) {
-      const pattern = getDotPattern(expression, "smartphone");
-      smartphoneRendererRef.current.renderPattern(pattern);
-    }
+    const updatePatterns = async () => {
+      if (smartphoneRendererRef.current) {
+        const pattern = await getDotPattern(expression, "smartphone");
+        smartphoneRendererRef.current.renderPattern(pattern);
+      }
 
-    if (tabletRendererRef.current) {
-      const pattern = getDotPattern(expression, "tablet");
-      tabletRendererRef.current.renderPattern(pattern);
-    }
-  }, [expression, deviceType, showBothDeviceTypes]);
+      if (tabletRendererRef.current) {
+        const pattern = await getDotPattern(expression, "tablet");
+        tabletRendererRef.current.renderPattern(pattern);
+      }
+    };
+
+    updatePatterns().catch((err) => {
+      console.error("Failed to update patterns:", err);
+    });
+  }, [expression]);
 
   return (
     <div className="bg-[#231834] border border-[#E66CBC]/30 rounded-lg p-4 hover:border-[#E66CBC]/60 transition-colors">
