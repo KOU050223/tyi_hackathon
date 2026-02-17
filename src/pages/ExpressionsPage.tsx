@@ -9,9 +9,7 @@ type ViewMode = "smartphone" | "tablet" | "both";
 
 export default function ExpressionsPage() {
   const [viewMode, setViewMode] = useState<ViewMode>("both");
-  const [editingExpression, setEditingExpression] = useState<Expression | null>(
-    null,
-  );
+  const [editingExpression, setEditingExpression] = useState<Expression | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleEdit = (expression: Expression) => {

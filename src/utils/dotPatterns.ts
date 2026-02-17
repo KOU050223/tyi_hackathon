@@ -37,6 +37,17 @@ async function loadPatternsFromJSON(): Promise<ExpressionPatterns> {
   await Promise.all(
     expressions.map(async (expression) => {
       try {
+        // ローカルストレージに保存済みのパターンがあれば優先使用
+        const savedJson = localStorage.getItem(`localPattern:${expression}`);
+        if (savedJson) {
+          const data = JSON.parse(savedJson);
+          patterns[expression] = {
+            color: data.color,
+            grid: data.grid,
+          };
+          return;
+        }
+
         const response = await fetch(`/patterns/${expression}.json`);
         if (!response.ok) {
           console.warn(`Failed to load pattern: ${expression}`);
