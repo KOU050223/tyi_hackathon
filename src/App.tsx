@@ -3,6 +3,7 @@ import { Routes, Route } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
 import { useAuthInit } from "@/hooks/useAuthInit";
 import { AuthGuard } from "@/components/auth/AuthGuard";
+import { useAsciiArt } from "./hooks/useAsciiArt";
 
 const FaceDetectionPage = lazy(() => import("@/pages/FaceDetectionPage"));
 const ExpressionsPage = lazy(() => import("@/pages/ExpressionsPage"));
@@ -12,6 +13,7 @@ const ProfilePage = lazy(() => import("@/pages/ProfilePage"));
 
 function App() {
   useAuthInit();
+  useAsciiArt();
 
   return (
     <Layout>
