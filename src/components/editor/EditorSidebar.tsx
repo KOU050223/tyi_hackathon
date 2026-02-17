@@ -38,7 +38,6 @@ export function EditorSidebar() {
   const setIsPublic = useEditorStore((s) => s.setIsPublic);
   const setTags = useEditorStore((s) => s.setTags);
   const setGridSize = useEditorStore((s) => s.setGridSize);
-  const cols = useEditorStore((s) => s.cols);
 
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -46,8 +45,7 @@ export function EditorSidebar() {
 
   const handleDeviceChange = (dt: DeviceType) => {
     setDeviceType(dt);
-    const defaultRows = dt === "smartphone" ? 6 : 10;
-    setGridSize(defaultRows, cols);
+    setGridSize(26, 21);
   };
 
   const handleTagInputChange = (value: string) => {

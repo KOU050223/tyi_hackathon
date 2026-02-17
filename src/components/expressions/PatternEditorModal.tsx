@@ -22,6 +22,7 @@ export function PatternEditorModal({ expression, isOpen, onClose }: PatternEdito
   const [showCenterLineH, setShowCenterLineH] = useState(false);
   const [showCenterLineV, setShowCenterLineV] = useState(false);
   const [showEyeOnlyLine, setShowEyeOnlyLine] = useState(false);
+  const [showEyeMouthGuide, setShowEyeMouthGuide] = useState(true);
   const previewCanvasRef = useRef<HTMLCanvasElement>(null);
 
   const { loadPattern, resetEditor, gridData, color, setColor, rows, cols } = useEditorStore();
@@ -249,6 +250,19 @@ export function PatternEditorModal({ expression, isOpen, onClose }: PatternEdito
                       <span className="text-cyan-400 ml-1">━</span>
                     </span>
                   </label>
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={showEyeMouthGuide}
+                      onChange={(e) => setShowEyeMouthGuide(e.target.checked)}
+                      className="w-4 h-4 accent-[#E66CBC]"
+                    />
+                    <span className="text-sm">
+                      目・口の位置ガイド
+                      <span className="text-[#64C8FF] ml-1">■目</span>
+                      <span className="text-[#FF78B4] ml-1">■口</span>
+                    </span>
+                  </label>
                 </div>
               </div>
 
@@ -259,6 +273,7 @@ export function PatternEditorModal({ expression, isOpen, onClose }: PatternEdito
                   showCenterLineV={showCenterLineV}
                   showEyeOnlyLine={showEyeOnlyLine}
                   eyeOnlyRows={patternData?.metadata.eyeOnlyRows ?? 14}
+                  showEyeMouthGuide={showEyeMouthGuide}
                 />
               </div>
             </div>

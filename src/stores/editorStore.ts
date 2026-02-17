@@ -19,8 +19,8 @@ function resizeGrid(oldGrid: number[][], newRows: number, newCols: number): numb
   return newGrid;
 }
 
-const DEFAULT_ROWS = 6;
-const DEFAULT_COLS = 12;
+const DEFAULT_ROWS = 26;
+const DEFAULT_COLS = 21;
 
 interface EditorState {
   gridData: number[][];
