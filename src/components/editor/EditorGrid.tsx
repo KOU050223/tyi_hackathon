@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { useEditorStore } from "@/stores/editorStore";
-import { GUIDE_CONFIG } from "@/types/face"
-
+import { GUIDE_CONFIG } from "@/types/face";
 
 function getCellGuideStyle(
   rowIdx: number,
@@ -114,8 +113,7 @@ export function EditorGrid() {
   }, [setIsDrawing]);
 
   const cellSize = Math.min(30, Math.floor((window.innerWidth - 40) / cols));
-  const isStandardGrid =
-    rows === GUIDE_CONFIG.standardRows && cols === GUIDE_CONFIG.standardCols;
+  const isStandardGrid = rows === GUIDE_CONFIG.standardRows && cols === GUIDE_CONFIG.standardCols;
 
   return (
     <div className="flex flex-col items-center gap-2">
@@ -123,10 +121,11 @@ export function EditorGrid() {
         <div className="flex items-center gap-3 text-xs font-mono">
           <button
             onClick={() => setShowGuides((v) => !v)}
-            className={`px-2 py-1 border transition-colors ${showGuides
+            className={`px-2 py-1 border transition-colors ${
+              showGuides
                 ? "border-[#E66CBC]/60 text-[#E66CBC] bg-[#E66CBC]/10"
                 : "border-[#3D2A55] text-[#7B6B96] hover:border-[#E66CBC]/40"
-              }`}
+            }`}
           >
             補助線 {showGuides ? "ON" : "OFF"}
           </button>

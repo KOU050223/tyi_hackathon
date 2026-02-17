@@ -56,14 +56,20 @@ export function EditorGridWithGuides({
     ) {
       const { leftEye, rightEye, mouth } = GUIDE_CONFIG;
       const inLeftEye =
-        rowIdx >= leftEye.rowStart && rowIdx <= leftEye.rowEnd &&
-        colIdx >= leftEye.colStart && colIdx <= leftEye.colEnd;
+        rowIdx >= leftEye.rowStart &&
+        rowIdx <= leftEye.rowEnd &&
+        colIdx >= leftEye.colStart &&
+        colIdx <= leftEye.colEnd;
       const inRightEye =
-        rowIdx >= rightEye.rowStart && rowIdx <= rightEye.rowEnd &&
-        colIdx >= rightEye.colStart && colIdx <= rightEye.colEnd;
+        rowIdx >= rightEye.rowStart &&
+        rowIdx <= rightEye.rowEnd &&
+        colIdx >= rightEye.colStart &&
+        colIdx <= rightEye.colEnd;
       const inMouth =
-        rowIdx >= mouth.rowStart && rowIdx <= mouth.rowEnd &&
-        colIdx >= mouth.colStart && colIdx <= mouth.colEnd;
+        rowIdx >= mouth.rowStart &&
+        rowIdx <= mouth.rowEnd &&
+        colIdx >= mouth.colStart &&
+        colIdx <= mouth.colEnd;
 
       if (inLeftEye || inRightEye) {
         parts.push("inset 0 0 0 1px rgba(100, 200, 255, 0.6)");
