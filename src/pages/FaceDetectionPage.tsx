@@ -10,7 +10,6 @@ import { convertBlendshapes } from "@/utils/blendshapeConverter";
 import { VoiceControl } from "@/components/voice/VoiceControl";
 import { VoiceIndicator } from "@/components/voice/VoiceIndicator";
 import type { Expression } from "@/types/expression";
-import { registerDefaultPatterns } from "@/lib/registerDefaultPatterns";
 
 export default function FaceDetectionPage() {
   const navigate = useNavigate();
@@ -21,7 +20,6 @@ export default function FaceDetectionPage() {
   const [currentExpression, setCurrentExpression] = useState<Expression>("neutral");
   const [_confidence, setConfidence] = useState<number>(0);
   const [voiceEnabled, setVoiceEnabled] = useState<boolean>(false);
-  const [isRegistering, setIsRegistering] = useState<boolean>(false);
 
   // 音声認識デバッグモード（開発環境のみ有効）
   const isVoiceIndicatorDebug = import.meta.env.DEV;
