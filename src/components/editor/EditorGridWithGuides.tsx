@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 import { useEditorStore } from "@/stores/editorStore";
-import { GUIDE_CONFIG } from "@/types/face";
+import { GUIDE_CONFIG } from "@/constants/grid";
 
 interface EditorGridWithGuidesProps {
   showCenterLineH?: boolean;

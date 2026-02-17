@@ -4,7 +4,8 @@ import { usePatternStore } from "@/stores/patternStore";
 import { getPublicPatterns } from "@/lib/patterns";
 import { PatternCard } from "@/components/gallery/PatternCard";
 import { PatternCardSkeleton } from "@/components/gallery/PatternCardSkeleton";
-import { getExpressionLabel, ALL_DETECTABLE_EXPRESSIONS } from "@/utils/expressionDetector";
+import { getExpressionLabel } from "@/utils/expressionDetector";
+import { ALL_DETECTABLE_EXPRESSIONS } from "@/constants/expression";
 import type { Expression } from "@/types/expression";
 import type { DeviceType } from "@/types/device";
 

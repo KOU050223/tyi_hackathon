@@ -1,20 +1,12 @@
 import type { BlendShapes } from "@/types/face";
 import type { Expression } from "@/types/expression";
+import {
+  EXPRESSION_PRIORITY,
+  ALL_DETECTABLE_EXPRESSIONS,
+  EXPRESSION_LABELS,
+} from "@/constants/expression";
 
-/**
- * MediaPipeで検出可能な基本10種類の表情
- */
-type DetectableExpression =
-  | "neutral"
-  | "smile"
-  | "surprised"
-  | "blink"
-  | "sad"
-  | "angry"
-  | "confused"
-  | "smug"
-  | "questioning"
-  | "embarrassed";
+export type { Expression };
 
 /**
  * 表情判定結果
@@ -24,37 +16,7 @@ export interface ExpressionResult {
   confidence: number;
 }
 
-/**
- * 表情判定の優先度定義（高い順）
- */
-export const EXPRESSION_PRIORITY: DetectableExpression[] = [
-  "blink", // まばたきは最優先
-  "surprised", // 驚きは強い表情
-  "angry", // 怒りも強い表情
-  "smug", // ウインクは特徴的
-  "smile", // 笑顔
-  "sad", // 悲しみ
-  "questioning", // 疑問
-  "confused", // 困惑
-  "embarrassed", // 照れ
-  "neutral", // デフォルト
-];
-
-/**
- * すべての検出可能な表情の配列（表示順）
- */
-export const ALL_DETECTABLE_EXPRESSIONS: DetectableExpression[] = [
-  "neutral",
-  "smile",
-  "surprised",
-  "blink",
-  "sad",
-  "angry",
-  "confused",
-  "smug",
-  "questioning",
-  "embarrassed",
-];
+export { EXPRESSION_PRIORITY, ALL_DETECTABLE_EXPRESSIONS };
 
 /**
  * Blendshapesから表情を判定する
@@ -84,7 +46,7 @@ export function detectExpression(
  * 各表情の判定関数
  * 信頼度（0.0 - 1.0）を返す
  */
-const expressionDetectors: Record<DetectableExpression, (blendShapes: BlendShapes) => number> = {
+const expressionDetectors: Record<Expression, (blendShapes: BlendShapes) => number> = {
   /**
    * まばたき: 両目が閉じている
    */
@@ -232,22 +194,8 @@ const expressionDetectors: Record<DetectableExpression, (blendShapes: BlendShape
  * 表情の日本語名を取得
  */
 export function getExpressionLabel(expression: Expression): string {
-  const labels: Partial<Record<Expression, string>> = {
-    neutral: "通常",
-    smile: "笑顔",
-    surprised: "驚き",
-    blink: "まばたき",
-    sad: "悲しみ",
-    angry: "怒り",
-    confused: "困惑",
-    smug: "得意気",
-    questioning: "疑問",
-    embarrassed: "照れ",
-    // pattern_11以降は"パターン11"のような形式で表示
-  };
-
-  if (labels[expression]) {
-    return labels[expression]!;
+  if (EXPRESSION_LABELS[expression]) {
+    return EXPRESSION_LABELS[expression];
   }
 
   // pattern_XX形式の場合は数値部分を抽出

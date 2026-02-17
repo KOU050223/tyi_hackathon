@@ -29,29 +29,6 @@ export default function FaceDetectionPage() {
   // 許可されたナビゲーションパス
   const ALLOWED_PATHS = ["/", "/gallery", "/editor", "/settings"];
 
-  // デフォルトパターン登録関数
-  const handleRegisterPatterns = async () => {
-    // TODO: 本番環境では管理者チェックを追加
-    // if (!isAdmin(auth.currentUser)) {
-    //   alert("管理者権限が必要です");
-    //   return;
-    // }
-    if (!confirm("デフォルトパターン（9種類）をFirestoreに一括登録します。よろしいですか？")) {
-      return;
-    }
-    setIsRegistering(true);
-    try {
-      const result = await registerDefaultPatterns();
-      alert(`登録完了！\n成功: ${result.success}件\n失敗: ${result.failed}件`);
-      console.log("登録結果:", result);
-    } catch (error) {
-      alert(`登録失敗: ${error instanceof Error ? error.message : String(error)}`);
-      console.error("登録エラー:", error);
-    } finally {
-      setIsRegistering(false);
-    }
-  };
-
   const {
     result: _faceResult,
     isInitializing,
@@ -222,24 +199,6 @@ export default function FaceDetectionPage() {
         <div
           style={{ display: "flex", flexDirection: "column", gap: "12px", alignItems: "flex-end" }}
         >
-          {/* デフォルトパターン登録ボタン（一時的） */}
-          <button
-            onClick={handleRegisterPatterns}
-            disabled={isRegistering}
-            style={{
-              padding: "12px 24px",
-              fontSize: "14px",
-              backgroundColor: isRegistering ? "#999" : "#4CAF50",
-              color: "white",
-              border: "none",
-              cursor: isRegistering ? "not-allowed" : "pointer",
-              borderRadius: "8px",
-              fontWeight: "bold",
-              boxShadow: "0 2px 4px rgba(0, 0, 0, 0.2)",
-            }}
-          >
-            {isRegistering ? "登録中..." : "🔧 デフォルトパターン登録"}
-          </button>
           {!isReady && (
             <button
               onClick={startCamera}

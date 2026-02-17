@@ -6,19 +6,7 @@ import { uploadPreviewImage } from "@/lib/storage";
 import { useNavigate, useParams } from "react-router-dom";
 import type { Expression } from "@/types/expression";
 import type { DeviceType } from "@/types/device";
-
-const EXPRESSIONS: { value: Expression; label: string }[] = [
-  { value: "neutral", label: "ニュートラル" },
-  { value: "smile", label: "笑顔" },
-  { value: "sad", label: "悲しみ" },
-  { value: "angry", label: "怒り" },
-  { value: "surprised", label: "驚き" },
-  { value: "blink", label: "まばたき" },
-  { value: "confused", label: "困惑" },
-  { value: "smug", label: "ドヤ顔" },
-  { value: "questioning", label: "疑問" },
-  { value: "embarrassed", label: "照れ" },
-];
+import { EXPRESSION_LABELS, ALL_DETECTABLE_EXPRESSIONS } from "@/constants/expression";
 
 export function EditorSidebar() {
   const { user } = useAuth();
@@ -130,9 +118,9 @@ export function EditorSidebar() {
           onChange={(e) => setExpressionType(e.target.value as Expression)}
           className="w-full px-3 py-2 bg-[#1A1225] border border-[#3D2A55] text-[#E66CBC] font-mono text-sm focus:border-[#E66CBC] focus:outline-none"
         >
-          {EXPRESSIONS.map((exp) => (
-            <option key={exp.value} value={exp.value}>
-              {exp.label}
+          {ALL_DETECTABLE_EXPRESSIONS.map((value) => (
+            <option key={value} value={value}>
+              {EXPRESSION_LABELS[value]}
             </option>
           ))}
         </select>

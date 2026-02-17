@@ -1,17 +1,5 @@
 import { useEditorStore } from "@/stores/editorStore";
-
-const PRESET_COLORS = [
-  "#E66CBC",
-  "#FFFF00",
-  "#FF0000",
-  "#4444FF",
-  "#FF6600",
-  "#FF00FF",
-  "#00FFFF",
-  "#FFAAAA",
-  "#FFAA00",
-  "#FFFFFF",
-];
+import { PRESET_COLORS } from "@/constants/editor";
 
 export function EditorToolbar() {
   const tool = useEditorStore((s) => s.tool);

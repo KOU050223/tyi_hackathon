@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { useEditorStore } from "@/stores/editorStore";
-import { GUIDE_CONFIG } from "@/types/face";
+import { GUIDE_CONFIG } from "@/constants/grid";
 
 function getCellGuideStyle(
   rowIdx: number,
