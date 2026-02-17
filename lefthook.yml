@@ -22,4 +22,4 @@ pre-commit:
       run: npm run format
 
     - name: re-stage
-      run: git add -u
+      run: git diff --cached --name-only | xargs -r git add

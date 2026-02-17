@@ -135,6 +135,12 @@ export function PatternEditorModal({ expression, isOpen, onClose }: PatternEdito
     localStorage.setItem(`localPattern:${expression}`, JSON.stringify(saveData));
     clearPatternCache();
 
+    void fetch("/api/save-pattern", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ expression, json: saveData }),
+    });
+
     setSavedMessage(true);
     setTimeout(() => setSavedMessage(false), 2000);
   };
