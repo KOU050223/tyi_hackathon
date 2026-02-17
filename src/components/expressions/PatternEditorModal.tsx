@@ -44,9 +44,21 @@ export function PatternEditorModal({ expression, isOpen, onClose }: PatternEdito
     setIsLoading(true);
 
     const savedJson = localStorage.getItem(`localPattern:${expression}`);
-    const loadPromise = savedJson
-      ? Promise.resolve(JSON.parse(savedJson) as PatternJson)
-      : loadPatternJson(expression);
+    let loadPromise: Promise<PatternJson>;
+    if (savedJson) {
+      try {
+        loadPromise = Promise.resolve(JSON.parse(savedJson) as PatternJson);
+      } catch (e) {
+        console.warn(
+          `localPattern:${expression} のJSONが壊れています。デフォルトパターンを読み込みます。`,
+          e,
+        );
+        localStorage.removeItem(`localPattern:${expression}`);
+        loadPromise = loadPatternJson(expression);
+      }
+    } else {
+      loadPromise = loadPatternJson(expression);
+    }
 
     loadPromise
       .then((data) => {

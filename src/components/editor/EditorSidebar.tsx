@@ -7,6 +7,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import type { Expression } from "@/types/expression";
 import type { DeviceType } from "@/types/device";
 import { EXPRESSION_LABELS, ALL_DETECTABLE_EXPRESSIONS } from "@/constants/expression";
+import { DEFAULT_ROWS, DEFAULT_COLS } from "@/constants/grid";
 
 export function EditorSidebar() {
   const { user } = useAuth();
@@ -33,7 +34,7 @@ export function EditorSidebar() {
 
   const handleDeviceChange = (dt: DeviceType) => {
     setDeviceType(dt);
-    setGridSize(26, 21);
+    setGridSize(DEFAULT_ROWS, DEFAULT_COLS);
   };
 
   const handleTagInputChange = (value: string) => {
