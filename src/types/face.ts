@@ -30,9 +30,3 @@ export interface BlendShapes {
   // その他の表情要素
   [key: string]: number;
 }
-
-export interface FaceDetectionResult {
-  faceLandmarks: Landmark[];
-  faceBlendshapes: BlendShapes;
-  confidence: number;
-}

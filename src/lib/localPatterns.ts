@@ -18,15 +18,11 @@ export interface PatternJson {
 /**
  * public/patterns/からパターンJSONを読み込む
  */
-export async function loadPatternJson(
-  expression: Expression,
-): Promise<PatternJson> {
+export async function loadPatternJson(expression: Expression): Promise<PatternJson> {
   const response = await fetch(`/patterns/${expression}.json`);
 
   if (!response.ok) {
-    throw new Error(
-      `Failed to load pattern: ${expression} (${response.status})`,
-    );
+    throw new Error(`Failed to load pattern: ${expression} (${response.status})`);
   }
 
   const data = await response.json();
@@ -93,9 +89,7 @@ export function validatePatternJson(data: unknown): {
         const row = grid[i] as unknown[];
         for (let j = 0; j < row.length; j++) {
           if (row[j] !== 0 && row[j] !== 1) {
-            errors.push(
-              `grid[${i}][${j}]の値が0または1ではありません: ${row[j]}`,
-            );
+            errors.push(`grid[${i}][${j}]の値が0または1ではありません: ${row[j]}`);
             break;
           }
         }
@@ -119,9 +113,7 @@ export function validatePatternJson(data: unknown): {
     if (Array.isArray(pattern.grid) && pattern.grid.length > 0) {
       const grid = pattern.grid;
       if (typeof size.height === "number" && grid.length !== size.height) {
-        errors.push(
-          `gridの行数(${grid.length})がsize.height(${size.height})と一致しません`,
-        );
+        errors.push(`gridの行数(${grid.length})がsize.height(${size.height})と一致しません`);
       }
       if (
         typeof size.width === "number" &&

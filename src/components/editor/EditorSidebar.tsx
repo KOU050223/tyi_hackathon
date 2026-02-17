@@ -6,19 +6,8 @@ import { uploadPreviewImage } from "@/lib/storage";
 import { useNavigate, useParams } from "react-router-dom";
 import type { Expression } from "@/types/expression";
 import type { DeviceType } from "@/types/device";
-
-const EXPRESSIONS: { value: Expression; label: string }[] = [
-  { value: "neutral", label: "ニュートラル" },
-  { value: "smile", label: "笑顔" },
-  { value: "sad", label: "悲しみ" },
-  { value: "angry", label: "怒り" },
-  { value: "surprised", label: "驚き" },
-  { value: "blink", label: "まばたき" },
-  { value: "confused", label: "困惑" },
-  { value: "smug", label: "ドヤ顔" },
-  { value: "questioning", label: "疑問" },
-  { value: "embarrassed", label: "照れ" },
-];
+import { EXPRESSION_LABELS, ALL_DETECTABLE_EXPRESSIONS } from "@/constants/expression";
+import { DEFAULT_ROWS, DEFAULT_COLS } from "@/constants/grid";
 
 export function EditorSidebar() {
   const { user } = useAuth();
@@ -38,7 +27,6 @@ export function EditorSidebar() {
   const setIsPublic = useEditorStore((s) => s.setIsPublic);
   const setTags = useEditorStore((s) => s.setTags);
   const setGridSize = useEditorStore((s) => s.setGridSize);
-  const cols = useEditorStore((s) => s.cols);
 
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -46,8 +34,7 @@ export function EditorSidebar() {
 
   const handleDeviceChange = (dt: DeviceType) => {
     setDeviceType(dt);
-    const defaultRows = dt === "smartphone" ? 6 : 10;
-    setGridSize(defaultRows, cols);
+    setGridSize(DEFAULT_ROWS, DEFAULT_COLS);
   };
 
   const handleTagInputChange = (value: string) => {
@@ -132,9 +119,9 @@ export function EditorSidebar() {
           onChange={(e) => setExpressionType(e.target.value as Expression)}
           className="w-full px-3 py-2 bg-[#1A1225] border border-[#3D2A55] text-[#E66CBC] font-mono text-sm focus:border-[#E66CBC] focus:outline-none"
         >
-          {EXPRESSIONS.map((exp) => (
-            <option key={exp.value} value={exp.value}>
-              {exp.label}
+          {ALL_DETECTABLE_EXPRESSIONS.map((value) => (
+            <option key={value} value={value}>
+              {EXPRESSION_LABELS[value]}
             </option>
           ))}
         </select>

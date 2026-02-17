@@ -2,6 +2,8 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import type { Expression } from "@/types/expression";
 import type { DeviceType } from "@/types/device";
+import { DEFAULT_ROWS, DEFAULT_COLS } from "@/constants/grid";
+import { DEFAULT_COLOR } from "@/constants/editor";
 
 function createEmptyGrid(rows: number, cols: number): number[][] {
   return Array.from({ length: rows }, () => Array(cols).fill(0) as number[]);
@@ -18,9 +20,6 @@ function resizeGrid(oldGrid: number[][], newRows: number, newCols: number): numb
   }
   return newGrid;
 }
-
-const DEFAULT_ROWS = 6;
-const DEFAULT_COLS = 12;
 
 interface EditorState {
   gridData: number[][];
@@ -61,7 +60,7 @@ interface EditorState {
 
 const initialState = {
   gridData: createEmptyGrid(DEFAULT_ROWS, DEFAULT_COLS),
-  color: "#E66CBC",
+  color: DEFAULT_COLOR,
   name: "",
   expressionType: "neutral" as Expression,
   deviceType: "smartphone" as DeviceType,

@@ -1,9 +1,10 @@
 import { useEffect, useState, useRef } from "react";
 import type { Expression } from "@/types/expression";
 import type { PatternJson } from "@/lib/localPatterns";
-import { loadPatternJson, validatePatternJson } from "@/lib/localPatterns";
+import { loadPatternJson } from "@/lib/localPatterns";
 import { useEditorStore } from "@/stores/editorStore";
-import { EditorGrid } from "@/components/editor/EditorGrid";
+import { EditorGridWithGuides } from "@/components/editor/EditorGridWithGuides";
+import { clearPatternCache } from "@/utils/dotPatterns";
 
 interface PatternEditorModalProps {
   expression: Expression | null;
@@ -11,65 +12,57 @@ interface PatternEditorModalProps {
   onClose: () => void;
 }
 
-type TabType = "visual" | "json" | "preview";
+type TabType = "visual" | "preview";
 
-export function PatternEditorModal({
-  expression,
-  isOpen,
-  onClose,
-}: PatternEditorModalProps) {
+export function PatternEditorModal({ expression, isOpen, onClose }: PatternEditorModalProps) {
   const [activeTab, setActiveTab] = useState<TabType>("visual");
   const [patternData, setPatternData] = useState<PatternJson | null>(null);
-  const [jsonText, setJsonText] = useState("");
-  const [jsonError, setJsonError] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const dialogRef = useRef<HTMLDialogElement>(null);
+  const [savedMessage, setSavedMessage] = useState(false);
+  const [showCenterLineH, setShowCenterLineH] = useState(false);
+  const [showCenterLineV, setShowCenterLineV] = useState(false);
+  const [showEyeOnlyLine, setShowEyeOnlyLine] = useState(false);
+  const [showEyeMouthGuide, setShowEyeMouthGuide] = useState(true);
   const previewCanvasRef = useRef<HTMLCanvasElement>(null);
 
-  const {
-    loadPattern,
-    resetEditor,
-    gridData,
-    color,
-    setColor,
-    rows,
-    cols,
-  } = useEditorStore();
+  const { loadPattern, resetEditor, gridData, color, setColor, rows, cols } = useEditorStore();
 
-  // モーダルの開閉制御
+  // ESCキーで閉じる
   useEffect(() => {
-    const dialog = dialogRef.current;
-    if (!dialog) return;
-
-    if (isOpen) {
-      dialog.showModal();
-      // ESCキーでのクローズを無効化（明示的なボタンでのみ閉じる）
-      dialog.addEventListener("cancel", handleCancel);
-    } else {
-      dialog.close();
-    }
-
-    return () => {
-      dialog.removeEventListener("cancel", handleCancel);
+    if (!isOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") handleClose();
     };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
   }, [isOpen]);
-
-  const handleCancel = (e: Event) => {
-    e.preventDefault();
-    handleClose();
-  };
 
   // パターンデータの読み込み
   useEffect(() => {
     if (!expression || !isOpen) return;
 
     setIsLoading(true);
-    loadPatternJson(expression)
+
+    const savedJson = localStorage.getItem(`localPattern:${expression}`);
+    let loadPromise: Promise<PatternJson>;
+    if (savedJson) {
+      try {
+        loadPromise = Promise.resolve(JSON.parse(savedJson) as PatternJson);
+      } catch (e) {
+        console.warn(
+          `localPattern:${expression} のJSONが壊れています。デフォルトパターンを読み込みます。`,
+          e,
+        );
+        localStorage.removeItem(`localPattern:${expression}`);
+        loadPromise = loadPatternJson(expression);
+      }
+    } else {
+      loadPromise = loadPatternJson(expression);
+    }
+
+    loadPromise
       .then((data) => {
         setPatternData(data);
-        setJsonText(JSON.stringify(data, null, 2));
-
-        // editorStoreにロード
         loadPattern({
           gridData: data.grid,
           color: data.color,
@@ -80,9 +73,8 @@ export function PatternEditorModal({
           tags: [],
         });
       })
-      .catch((error) => {
+      .catch((error: unknown) => {
         console.error("Failed to load pattern:", error);
-        setJsonError([`パターンの読み込みに失敗しました: ${error.message}`]);
       })
       .finally(() => {
         setIsLoading(false);
@@ -91,33 +83,23 @@ export function PatternEditorModal({
 
   // プレビュー描画
   useEffect(() => {
-    if (activeTab !== "preview" || !previewCanvasRef.current || !patternData) {
-      return;
-    }
+    if (activeTab !== "preview" || !previewCanvasRef.current || !patternData) return;
 
     const canvas = previewCanvasRef.current;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    const grid = gridData;
     const dotSize = 20;
-    const canvasWidth = cols * dotSize;
-    const canvasHeight = rows * dotSize;
-
-    canvas.width = canvasWidth;
-    canvas.height = canvasHeight;
+    canvas.width = cols * dotSize;
+    canvas.height = rows * dotSize;
 
     ctx.imageSmoothingEnabled = false;
-    ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-
-    // 背景を暗い色で塗りつぶす
     ctx.fillStyle = "#231834";
-    ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // ドット絵を描画
-    for (let r = 0; r < grid.length; r++) {
-      for (let c = 0; c < grid[r].length; c++) {
-        if (grid[r][c] === 1) {
+    for (let r = 0; r < gridData.length; r++) {
+      for (let c = 0; c < gridData[r].length; c++) {
+        if (gridData[r][c] === 1) {
           ctx.fillStyle = color;
           ctx.fillRect(c * dotSize, r * dotSize, dotSize, dotSize);
         }
@@ -128,70 +110,46 @@ export function PatternEditorModal({
   const handleClose = () => {
     resetEditor();
     setPatternData(null);
-    setJsonText("");
-    setJsonError([]);
+    setSavedMessage(false);
     setActiveTab("visual");
     onClose();
-  };
-
-  const handleJsonChange = (text: string) => {
-    setJsonText(text);
-    setJsonError([]);
-
-    try {
-      const parsed = JSON.parse(text);
-      const validation = validatePatternJson(parsed);
-
-      if (validation.valid) {
-        const data = parsed as PatternJson;
-        setPatternData(data);
-
-        // editorStoreを更新
-        loadPattern({
-          gridData: data.grid,
-          color: data.color,
-          name: data.expression,
-          expressionType: expression || "neutral",
-          deviceType: "smartphone",
-          isPublic: true,
-          tags: [],
-        });
-      } else {
-        setJsonError(validation.errors);
-      }
-    } catch (error) {
-      if (error instanceof Error) {
-        setJsonError([`JSON解析エラー: ${error.message}`]);
-      }
-    }
   };
 
   const handleColorChange = (newColor: string) => {
     setColor(newColor);
     if (patternData) {
-      const updated = { ...patternData, color: newColor };
-      setPatternData(updated);
-      setJsonText(JSON.stringify(updated, null, 2));
+      setPatternData({ ...patternData, color: newColor });
     }
+  };
+
+  const handleSave = () => {
+    if (!patternData || !expression) return;
+
+    const saveData: PatternJson = {
+      ...patternData,
+      grid: gridData,
+      color,
+      size: { width: cols, height: rows },
+    };
+
+    localStorage.setItem(`localPattern:${expression}`, JSON.stringify(saveData));
+    clearPatternCache();
+
+    setSavedMessage(true);
+    setTimeout(() => setSavedMessage(false), 2000);
   };
 
   const handleDownload = () => {
     if (!patternData || !expression) return;
 
-    // 最新のgridDataとcolorでPatternJsonを更新
     const downloadData: PatternJson = {
       ...patternData,
       grid: gridData,
-      color: color,
-      size: {
-        width: cols,
-        height: rows,
-      },
+      color,
+      size: { width: cols, height: rows },
     };
 
-    const blob = new Blob([JSON.stringify(downloadData, null, 2)], {
-      type: "application/json",
-    });
+    const blob = new Blob([JSON.stringify(downloadData, null, 2)], { type: "application/json" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
@@ -200,73 +158,48 @@ export function PatternEditorModal({
     URL.revokeObjectURL(url);
   };
 
-  // editorStoreのgridDataが変わったらJSONも更新
+  // gridData/colorが変わったらpatternDataも同期
   useEffect(() => {
-    if (patternData && activeTab === "visual") {
-      const updated: PatternJson = {
-        ...patternData,
-        grid: gridData,
-        color: color,
-        size: {
-          width: cols,
-          height: rows,
-        },
-      };
-      setPatternData(updated);
-      setJsonText(JSON.stringify(updated, null, 2));
-    }
+    if (!patternData) return;
+    setPatternData((prev) =>
+      prev ? { ...prev, grid: gridData, color, size: { width: cols, height: rows } } : prev,
+    );
   }, [gridData, color, rows, cols]);
 
-  if (!expression) return null;
+  if (!isOpen || !expression) return null;
 
   return (
-    <dialog
-      ref={dialogRef}
-      className="rounded-lg bg-[#231834] text-white p-0 backdrop:bg-black/80 max-w-4xl w-full"
-      style={{ border: "2px solid #E66CBC" }}
-    >
-      <div className="flex flex-col h-[90vh]">
+    <div className="fixed inset-0 z-50 flex items-center justify-center">
+      {/* オーバーレイ（クリックで閉じる） */}
+      <div className="absolute inset-0 bg-black/80" onClick={handleClose} />
+
+      {/* モーダル本体 */}
+      <div
+        className="relative z-10 flex flex-col bg-[#231834] text-white rounded-lg max-w-4xl w-full mx-4 max-h-[90vh]"
+        style={{ border: "2px solid #E66CBC" }}
+      >
         {/* ヘッダー */}
         <div className="flex items-center justify-between p-4 border-b border-[#E66CBC]/30">
-          <h2 className="text-xl font-bold">
-            パターン編集: {expression}
-          </h2>
-          <button
-            onClick={handleClose}
-            className="text-2xl hover:text-[#E66CBC] transition-colors"
-          >
+          <h2 className="text-xl font-bold">パターン編集: {expression}</h2>
+          <button onClick={handleClose} className="text-2xl hover:text-[#E66CBC] transition-colors">
             ×
           </button>
         </div>
 
         {/* タブ */}
-        <div className="flex border-b border-[#E66CBC]/30">
+        <div className="flex border-b border-[#E66CBC]/30 shrink-0">
           <button
             onClick={() => setActiveTab("visual")}
             className={`px-6 py-3 font-medium transition-colors ${
-              activeTab === "visual"
-                ? "bg-[#E66CBC] text-white"
-                : "text-gray-400 hover:text-white"
+              activeTab === "visual" ? "bg-[#E66CBC] text-white" : "text-gray-400 hover:text-white"
             }`}
           >
             ビジュアルエディタ
           </button>
           <button
-            onClick={() => setActiveTab("json")}
-            className={`px-6 py-3 font-medium transition-colors ${
-              activeTab === "json"
-                ? "bg-[#E66CBC] text-white"
-                : "text-gray-400 hover:text-white"
-            }`}
-          >
-            JSONビュー
-          </button>
-          <button
             onClick={() => setActiveTab("preview")}
             className={`px-6 py-3 font-medium transition-colors ${
-              activeTab === "preview"
-                ? "bg-[#E66CBC] text-white"
-                : "text-gray-400 hover:text-white"
+              activeTab === "preview" ? "bg-[#E66CBC] text-white" : "text-gray-400 hover:text-white"
             }`}
           >
             プレビュー
@@ -274,13 +207,12 @@ export function PatternEditorModal({
         </div>
 
         {/* コンテンツ */}
-        <div className="flex-1 overflow-auto p-6">
-          {isLoading && (
-            <div className="text-center">読み込み中...</div>
-          )}
+        <div className="flex-1 overflow-y-auto p-6 min-h-0">
+          {isLoading && <div className="text-center">読み込み中...</div>}
 
           {!isLoading && activeTab === "visual" && (
             <div className="space-y-4">
+              {/* カラー */}
               <div className="flex items-center gap-4">
                 <label className="font-medium">カラー:</label>
                 <input
@@ -291,38 +223,77 @@ export function PatternEditorModal({
                 />
                 <span className="text-sm text-gray-400">{color}</span>
               </div>
-              <div className="flex justify-center">
-                <EditorGrid />
-              </div>
-            </div>
-          )}
 
-          {!isLoading && activeTab === "json" && (
-            <div className="space-y-4">
-              {jsonError.length > 0 && (
-                <div className="bg-red-900/30 border border-red-500 rounded p-3">
-                  <div className="font-bold mb-1">エラー:</div>
-                  <ul className="list-disc list-inside text-sm">
-                    {jsonError.map((err, i) => (
-                      <li key={i}>{err}</li>
-                    ))}
-                  </ul>
+              {/* 補助線トグル */}
+              <div className="flex flex-col gap-2 p-4 bg-[#1a1324] rounded border border-[#E66CBC]/30">
+                <div className="font-medium text-sm mb-2">補助線:</div>
+                <div className="flex flex-wrap gap-4">
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={showCenterLineH}
+                      onChange={(e) => setShowCenterLineH(e.target.checked)}
+                      className="w-4 h-4 accent-[#E66CBC]"
+                    />
+                    <span className="text-sm">
+                      中央線（横）<span className="text-yellow-400 ml-1">━</span>
+                    </span>
+                  </label>
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={showCenterLineV}
+                      onChange={(e) => setShowCenterLineV(e.target.checked)}
+                      className="w-4 h-4 accent-[#E66CBC]"
+                    />
+                    <span className="text-sm">
+                      中央線（縦）<span className="text-yellow-400 ml-1">┃</span>
+                    </span>
+                  </label>
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={showEyeOnlyLine}
+                      onChange={(e) => setShowEyeOnlyLine(e.target.checked)}
+                      className="w-4 h-4 accent-[#E66CBC]"
+                    />
+                    <span className="text-sm">
+                      スマホ区切り（{patternData?.metadata.eyeOnlyRows ?? 14}行目）
+                      <span className="text-cyan-400 ml-1">━</span>
+                    </span>
+                  </label>
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={showEyeMouthGuide}
+                      onChange={(e) => setShowEyeMouthGuide(e.target.checked)}
+                      className="w-4 h-4 accent-[#E66CBC]"
+                    />
+                    <span className="text-sm">
+                      目・口の位置ガイド
+                      <span className="text-[#64C8FF] ml-1">■目</span>
+                      <span className="text-[#FF78B4] ml-1">■口</span>
+                    </span>
+                  </label>
                 </div>
-              )}
-              <textarea
-                value={jsonText}
-                onChange={(e) => handleJsonChange(e.target.value)}
-                className="w-full h-[500px] bg-[#1a1324] text-white font-mono text-sm p-4 rounded border border-[#E66CBC]/30 focus:border-[#E66CBC] outline-none"
-                spellCheck={false}
-              />
+              </div>
+
+              {/* グリッド */}
+              <div className="flex justify-center">
+                <EditorGridWithGuides
+                  showCenterLineH={showCenterLineH}
+                  showCenterLineV={showCenterLineV}
+                  showEyeOnlyLine={showEyeOnlyLine}
+                  eyeOnlyRows={patternData?.metadata.eyeOnlyRows ?? 14}
+                  showEyeMouthGuide={showEyeMouthGuide}
+                />
+              </div>
             </div>
           )}
 
           {!isLoading && activeTab === "preview" && (
             <div className="flex flex-col items-center gap-4">
-              <div className="text-sm text-gray-400">
-                現在の編集結果のプレビュー
-              </div>
+              <div className="text-sm text-gray-400">現在の編集結果のプレビュー</div>
               <canvas
                 ref={previewCanvasRef}
                 className="border border-[#E66CBC]/30 rounded"
@@ -333,22 +304,28 @@ export function PatternEditorModal({
         </div>
 
         {/* フッター */}
-        <div className="flex justify-end gap-3 p-4 border-t border-[#E66CBC]/30">
+        <div className="flex items-center justify-end gap-3 p-4 border-t border-[#E66CBC]/30 shrink-0">
+          {savedMessage && <span className="text-green-400 text-sm mr-auto">保存しました！</span>}
           <button
             onClick={handleClose}
             className="px-6 py-2 rounded bg-gray-700 hover:bg-gray-600 transition-colors"
           >
-            キャンセル
+            閉じる
           </button>
           <button
             onClick={handleDownload}
-            disabled={jsonError.length > 0}
-            className="px-6 py-2 rounded bg-[#E66CBC] hover:bg-[#d55bab] disabled:bg-gray-600 disabled:cursor-not-allowed transition-colors"
+            className="px-6 py-2 rounded border border-[#E66CBC] text-[#E66CBC] hover:bg-[#E66CBC]/10 transition-colors"
           >
-            JSONをダウンロード
+            JSONダウンロード
+          </button>
+          <button
+            onClick={handleSave}
+            className="px-6 py-2 rounded bg-[#E66CBC] hover:bg-[#d55bab] transition-colors"
+          >
+            保存
           </button>
         </div>
       </div>
-    </dialog>
+    </div>
   );
 }

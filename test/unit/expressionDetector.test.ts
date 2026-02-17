@@ -279,7 +279,7 @@ describe("expressionDetector", () => {
     it("正しい日本語ラベルを返す", () => {
       expect(getExpressionLabel("smile")).toBe("笑顔");
       expect(getExpressionLabel("angry")).toBe("怒り");
-      expect(getExpressionLabel("neutral")).toBe("通常");
+      expect(getExpressionLabel("neutral")).toBe("ニュートラル");
     });
   });
 

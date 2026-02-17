@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { ExpressionCard } from "@/components/expressions/ExpressionCard";
 import { PatternEditorModal } from "@/components/expressions/PatternEditorModal";
-import { ALL_DETECTABLE_EXPRESSIONS } from "@/utils/expressionDetector";
+import { ALL_DETECTABLE_EXPRESSIONS } from "@/constants/expression";
 import type { DeviceType } from "@/types/device";
 import type { Expression } from "@/types/expression";
 
@@ -9,9 +9,7 @@ type ViewMode = "smartphone" | "tablet" | "both";
 
 export default function ExpressionsPage() {
   const [viewMode, setViewMode] = useState<ViewMode>("both");
-  const [editingExpression, setEditingExpression] = useState<Expression | null>(
-    null,
-  );
+  const [editingExpression, setEditingExpression] = useState<Expression | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleEdit = (expression: Expression) => {

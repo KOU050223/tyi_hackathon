@@ -8,9 +8,8 @@ import {
   calculateSimilarity,
   matchVoiceCommand,
   detectWakeWord,
-  VOICE_COMMANDS,
-  WAKE_WORD_CONFIG,
 } from "@/utils/voiceCommandMatcher";
+import { VOICE_COMMANDS, WAKE_WORD_CONFIG } from "@/constants/voice";
 
 describe("voiceCommandMatcher", () => {
   describe("normalizeText", () => {
