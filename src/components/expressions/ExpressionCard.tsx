@@ -9,12 +9,14 @@ interface ExpressionCardProps {
   expression: Expression;
   deviceType?: DeviceType;
   showBothDeviceTypes?: boolean;
+  onEdit?: (expression: Expression) => void;
 }
 
 export function ExpressionCard({
   expression,
   deviceType = "smartphone",
   showBothDeviceTypes = false,
+  onEdit,
 }: ExpressionCardProps) {
   const smartphoneCanvasRef = useRef<HTMLCanvasElement>(null);
   const tabletCanvasRef = useRef<HTMLCanvasElement>(null);
@@ -71,10 +73,21 @@ export function ExpressionCard({
   }, [expression]);
 
   return (
-    <div className="bg-[#231834] border border-[#E66CBC]/30 rounded-lg p-4 hover:border-[#E66CBC]/60 transition-colors">
-      <h3 className="text-[#E66CBC] text-lg font-bold mb-3 text-center">
-        {getExpressionLabel(expression)}
-      </h3>
+    <div className="bg-[#231834] border border-[#E66CBC]/30 rounded-lg p-4 hover:border-[#E66CBC]/60 transition-colors relative">
+      <div className="flex items-center justify-between mb-3">
+        <h3 className="text-[#E66CBC] text-lg font-bold flex-1 text-center">
+          {getExpressionLabel(expression)}
+        </h3>
+        {onEdit && (
+          <button
+            onClick={() => onEdit(expression)}
+            className="absolute top-2 right-2 px-3 py-1 text-xs bg-[#E66CBC] hover:bg-[#d55bab] rounded transition-colors"
+            aria-label="編集"
+          >
+            編集
+          </button>
+        )}
+      </div>
 
       <div className="flex flex-col gap-3">
         {showBothDeviceTypes ? (

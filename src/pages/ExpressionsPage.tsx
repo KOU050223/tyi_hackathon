@@ -1,12 +1,28 @@
 import { useState } from "react";
 import { ExpressionCard } from "@/components/expressions/ExpressionCard";
+import { PatternEditorModal } from "@/components/expressions/PatternEditorModal";
 import { ALL_DETECTABLE_EXPRESSIONS } from "@/utils/expressionDetector";
 import type { DeviceType } from "@/types/device";
+import type { Expression } from "@/types/expression";
 
 type ViewMode = "smartphone" | "tablet" | "both";
 
 export default function ExpressionsPage() {
   const [viewMode, setViewMode] = useState<ViewMode>("both");
+  const [editingExpression, setEditingExpression] = useState<Expression | null>(
+    null,
+  );
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleEdit = (expression: Expression) => {
+    setEditingExpression(expression);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setEditingExpression(null);
+  };
 
   return (
     <div className="min-h-screen text-[#F5F0FF] font-mono">
@@ -56,9 +72,16 @@ export default function ExpressionsPage() {
               expression={expression}
               deviceType={viewMode === "both" ? "smartphone" : (viewMode as DeviceType)}
               showBothDeviceTypes={viewMode === "both"}
+              onEdit={handleEdit}
             />
           ))}
         </div>
+
+        <PatternEditorModal
+          expression={editingExpression}
+          isOpen={isModalOpen}
+          onClose={handleCloseModal}
+        />
 
         <div className="mt-8 p-4 border border-[#E66CBC]/30 rounded">
           <h2 className="text-[#E66CBC] text-lg mb-2">使い方</h2>
