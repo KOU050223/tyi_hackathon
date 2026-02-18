@@ -59,8 +59,25 @@ npm run test:watch
 
 ```
 src/
+├── components/        # UIコンポーネント
+│   ├── board/        # 璃奈ちゃんボード共通表示 (RinaBoardView)
+│   ├── voice/        # 音声関連UI
+│   ├── gallery/      # ギャラリー関連UI
+│   ├── editor/       # エディタ関連UI
+│   ├── layout/       # レイアウト・ナビゲーション
+│   └── auth/         # 認証関連UI
+├── pages/             # ページコンポーネント
+│   ├── HomePage.tsx          # モード選択画面 (/)
+│   ├── FaceDetectionPage.tsx # 表情認識モード (/face)
+│   ├── VoiceEmotionPage.tsx  # 音声感情モード (/voice)
+│   ├── DisplayPage.tsx       # パターン全面表示 (/display/:id)
+│   ├── GalleryPage.tsx       # ギャラリー (/gallery)
+│   ├── DotEditorPage.tsx     # エディタ (/editor)
+│   ├── ExpressionsPage.tsx   # 表情一覧 (/expressions)
+│   └── ProfilePage.tsx       # プロフィール (/profile)
 ├── engines/           # コア機能の実装
 │   ├── mediapipe/    # MediaPipe Face Landmarker統合
+│   ├── hume/         # Hume AI 音声感情解析
 │   └── renderer/     # Canvas 2Dドット絵レンダリング
 ├── hooks/            # Reactカスタムフック
 ├── types/            # TypeScript型定義

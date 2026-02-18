@@ -62,7 +62,7 @@ export default defineConfig({
   server: {
     proxy: {
       "/api/hume": {
-        target: "http://localhost:8787",
+        target: "https://tyi-hackathon-api.uozumi05.workers.dev",
         changeOrigin: true,
       },
     },
