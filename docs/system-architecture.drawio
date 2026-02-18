@@ -1,0 +1,455 @@
+<mxfile host="Claude Code" modified="2026-02-18T00:00:00.000Z" agent="Claude" version="21.0.0" type="device">
+  <diagram id="system-architecture" name="システムアーキテクチャ">
+    <mxGraphModel dx="1422" dy="762" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1654" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- ==============================
+             タイトル
+        ============================== -->
+        <mxCell id="title" value="璃奈ちゃんボード風 デジタルお面 - システムアーキテクチャ" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=20;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="200" y="20" width="1200" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- ==============================
+             ユーザーデバイス領域
+        ============================== -->
+        <mxCell id="device-group" value="ユーザーデバイス（スマートフォン / タブレット）" style="points=[[0,0],[0.25,0],[0.5,0],[0.75,0],[1,0],[1,0.25],[1,0.5],[1,0.75],[1,1],[0.75,1],[0.5,1],[0.25,1],[0,1],[0,0.75],[0,0.5],[0,0.25]];shape=mxgraph.lean_mapping.electronic_info_sys_it;whiteSpace=wrap;html=1;strokeColor=#006EAF;fillColor=#dae8fc;fontSize=12;fontStyle=1;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="40" y="80" width="1000" height="920" as="geometry" />
+        </mxCell>
+
+        <!-- Camera -->
+        <mxCell id="camera" value="カメラ&#xa;(navigator.mediaDevices)" style="shape=mxgraph.cisco.computers_and_peripherals.pc_video_camera;sketch=0;html=1;pointerEvents=1;dashed=0;fillColor=#dae8fc;strokeColor=#6c8ebf;strokeWidth=2;verticalLabelPosition=bottom;verticalAlign=top;align=center;outlineConnect=0;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="80" y="150" width="80" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- Microphone -->
+        <mxCell id="mic" value="マイク&#xa;(Web Audio API)" style="shape=mxgraph.cisco.computers_and_peripherals.microphone;sketch=0;html=1;pointerEvents=1;dashed=0;fillColor=#dae8fc;strokeColor=#6c8ebf;strokeWidth=2;verticalLabelPosition=bottom;verticalAlign=top;align=center;outlineConnect=0;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="200" y="150" width="50" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- Canvas Display -->
+        <mxCell id="canvas-display" value="Canvas表示&#xa;(ドット絵お面)" style="shape=mxgraph.cisco.computers_and_peripherals.monitor;sketch=0;html=1;pointerEvents=1;dashed=0;fillColor=#d5e8d4;strokeColor=#82b366;strokeWidth=2;verticalLabelPosition=bottom;verticalAlign=top;align=center;outlineConnect=0;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="80" y="820" width="80" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- ==============================
+             ブラウザ / React アプリ領域
+        ============================== -->
+        <mxCell id="browser-group" value="ブラウザ（React App / Vite + TypeScript）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;fontSize=12;fontStyle=1;verticalAlign=top;arcSize=3;" vertex="1" parent="1">
+          <mxGeometry x="70" y="260" width="930" height="560" as="geometry" />
+        </mxCell>
+
+        <!-- ---- Pages ---- -->
+        <mxCell id="pages-group" value="Pages" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d6b656;fontSize=11;fontStyle=1;verticalAlign=top;arcSize=5;" vertex="1" parent="1">
+          <mxGeometry x="90" y="300" width="880" height="120" as="geometry" />
+        </mxCell>
+
+        <mxCell id="page-face" value="FaceDetectionPage&#xa;（メイン）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="110" y="330" width="140" height="70" as="geometry" />
+        </mxCell>
+
+        <mxCell id="page-editor" value="DotEditorPage&#xa;（パターン編集）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="270" y="330" width="140" height="70" as="geometry" />
+        </mxCell>
+
+        <mxCell id="page-gallery" value="GalleryPage&#xa;（ギャラリー）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="430" y="330" width="140" height="70" as="geometry" />
+        </mxCell>
+
+        <mxCell id="page-expressions" value="ExpressionsPage&#xa;（表情一覧）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="590" y="330" width="140" height="70" as="geometry" />
+        </mxCell>
+
+        <mxCell id="page-profile" value="ProfilePage&#xa;（プロフィール）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="750" y="330" width="140" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- ---- Hooks ---- -->
+        <mxCell id="hooks-group" value="React Hooks" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=11;fontStyle=1;verticalAlign=top;arcSize=5;" vertex="1" parent="1">
+          <mxGeometry x="90" y="440" width="880" height="120" as="geometry" />
+        </mxCell>
+
+        <mxCell id="hook-camera" value="useCamera&#xa;カメラ管理" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f3e8ff;strokeColor=#9673a6;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="110" y="470" width="120" height="70" as="geometry" />
+        </mxCell>
+
+        <mxCell id="hook-face" value="useFaceDetection&#xa;顔検出ループ" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f3e8ff;strokeColor=#9673a6;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="250" y="470" width="130" height="70" as="geometry" />
+        </mxCell>
+
+        <mxCell id="hook-hume" value="useHumeEmotion&#xa;音声感情解析" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f3e8ff;strokeColor=#9673a6;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="400" y="470" width="130" height="70" as="geometry" />
+        </mxCell>
+
+        <mxCell id="hook-speech" value="useSpeechRecognition&#xa;音声コマンド" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f3e8ff;strokeColor=#9673a6;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="550" y="470" width="130" height="70" as="geometry" />
+        </mxCell>
+
+        <mxCell id="hook-device" value="useDeviceType&#xa;デバイス判定" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f3e8ff;strokeColor=#9673a6;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="700" y="470" width="120" height="70" as="geometry" />
+        </mxCell>
+
+        <mxCell id="hook-auth" value="useAuth&#xa;認証管理" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f3e8ff;strokeColor=#9673a6;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="840" y="470" width="110" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- ---- Engines + Utils ---- -->
+        <mxCell id="engines-group" value="Engines / Utils" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;fontStyle=1;verticalAlign=top;arcSize=5;" vertex="1" parent="1">
+          <mxGeometry x="90" y="580" width="550" height="210" as="geometry" />
+        </mxCell>
+
+        <!-- FaceLandmarker -->
+        <mxCell id="engine-mediapipe" value="FaceLandmarker&#xa;(MediaPipe Engine)&#xa;&#xa;• 478個の3Dランドマーク&#xa;• 52種類のBlendshapes&#xa;• GPU Delegate (WebGL/WebGPU)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="110" y="610" width="190" height="160" as="geometry" />
+        </mxCell>
+
+        <!-- Utils -->
+        <mxCell id="utils-group" value="変換・判定層 (utils)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#cce5ff;strokeColor=#6c8ebf;fontSize=10;fontStyle=1;verticalAlign=top;arcSize=5;" vertex="1" parent="1">
+          <mxGeometry x="320" y="610" width="300" height="160" as="geometry" />
+        </mxCell>
+
+        <mxCell id="util-blendshape" value="blendshapeConverter&#xa;MediaPipe→内部形式変換" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e8f4ff;strokeColor=#6c8ebf;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="340" y="635" width="120" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="util-expression" value="expressionDetector&#xa;優先度ベース表情判定&#xa;（10種類）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e8f4ff;strokeColor=#6c8ebf;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="470" y="635" width="130" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="util-hume-mapper" value="humeEmotionMapper&#xa;Hume感情→表情変換" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e8f4ff;strokeColor=#6c8ebf;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="340" y="700" width="120" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="util-smoother" value="expressionSmoother&#xa;スムージング処理" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e8f4ff;strokeColor=#6c8ebf;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="470" y="700" width="130" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Hume Engines -->
+        <mxCell id="engines-hume-group" value="Hume Engines" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;fontStyle=1;verticalAlign=top;arcSize=5;" vertex="1" parent="1">
+          <mxGeometry x="660" y="580" width="310" height="210" as="geometry" />
+        </mxCell>
+
+        <mxCell id="engine-hume-client" value="HumeStreamClient&#xa;&#xa;• WebSocket管理&#xa;• 自動再接続 (Exponential Backoff)&#xa;• Prosody感情解析" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="680" y="610" width="130" height="160" as="geometry" />
+        </mxCell>
+
+        <mxCell id="engine-mic" value="MicrophoneCapture&#xa;&#xa;• AudioContext&#xa;• Base64エンコード&#xa;• 発話検出" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="830" y="610" width="120" height="160" as="geometry" />
+        </mxCell>
+
+        <!-- ---- Stores + Lib ---- -->
+        <mxCell id="stores-group" value="State (Zustand)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;fontStyle=1;verticalAlign=top;arcSize=5;" vertex="1" parent="1">
+          <mxGeometry x="90" y="810" width="400" height="80" as="geometry" />
+        </mxCell>
+
+        <mxCell id="store-editor" value="editorStore&#xa;(persist→localStorage)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e8f8e8;strokeColor=#82b366;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="110" y="835" width="150" height="40" as="geometry" />
+        </mxCell>
+
+        <mxCell id="store-auth" value="authStore" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e8f8e8;strokeColor=#82b366;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="280" y="835" width="100" height="40" as="geometry" />
+        </mxCell>
+
+        <mxCell id="store-pattern" value="patternStore" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e8f8e8;strokeColor=#82b366;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="390" y="835" width="90" height="40" as="geometry" />
+        </mxCell>
+
+        <!-- CanvasRenderer -->
+        <mxCell id="canvas-renderer" value="CanvasRenderer&#xa;&#xa;• ドット絵描画&#xa;• 差分レンダリング&#xa;• imageSmoothingEnabled: false" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="510" y="810" width="180" height="100" as="geometry" />
+        </mxCell>
+
+        <!-- DotPatterns -->
+        <mxCell id="dot-patterns" value="dotPatterns (public/)&#xa;• neutral.json 等12種&#xa;• スマホ: 上14行（目のみ）&#xa;• タブレット: 全26行（目+口）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="710" y="810" width="180" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- Web Speech API -->
+        <mxCell id="web-speech" value="Web Speech API&#xa;（ブラウザ標準）" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f0f0f0;strokeColor=#666666;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="710" y="900" width="150" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- localStorage -->
+        <mxCell id="local-storage" value="localStorage&#xa;editor-draft" style="shape=mxgraph.cisco.storage.disk;sketch=0;html=1;pointerEvents=1;dashed=0;fillColor=#f5f5f5;strokeColor=#666666;strokeWidth=2;verticalLabelPosition=bottom;verticalAlign=top;align=center;outlineConnect=0;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="150" y="910" width="50" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- ==============================
+             外部サービス領域
+        ============================== -->
+        <mxCell id="external-group" value="外部サービス" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=12;fontStyle=1;verticalAlign=top;arcSize=3;" vertex="1" parent="1">
+          <mxGeometry x="1080" y="80" width="530" height="920" as="geometry" />
+        </mxCell>
+
+        <!-- MediaPipe CDN -->
+        <mxCell id="mediapipe-cdn" value="MediaPipe CDN&#xa;(jsdelivr.net)&#xa;&#xa;• WASM バイナリ&#xa;• 顔認識モデル&#xa;(初期化時のみ)" style="shape=mxgraph.cisco.servers.www_server;sketch=0;html=1;pointerEvents=1;dashed=0;fillColor=#ffe6cc;strokeColor=#d6b656;strokeWidth=2;verticalLabelPosition=bottom;verticalAlign=top;align=center;outlineConnect=0;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="1110" y="130" width="130" height="130" as="geometry" />
+        </mxCell>
+
+        <!-- Cloudflare Workers -->
+        <mxCell id="cf-workers" value="Cloudflare Workers&#xa;(tyi-hackathon-api)&#xa;&#xa;Hono フレームワーク&#xa;POST /api/hume/token&#xa;→ APIキー配布" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d6b656;fontSize=10;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="1300" y="110" width="180" height="130" as="geometry" />
+        </mxCell>
+
+        <!-- Cloudflare Pages -->
+        <mxCell id="cf-pages" value="Cloudflare Pages&#xa;&#xa;フロントエンド&#xa;ホスティング&#xa;(静的ファイル配信)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d6b656;fontSize=10;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="1110" y="290" width="150" height="100" as="geometry" />
+        </mxCell>
+
+        <!-- Hume AI -->
+        <mxCell id="hume-ai" value="Hume AI&#xa;Expression Measurement API&#xa;&#xa;wss://api.hume.ai/v0/stream/models&#xa;&#xa;• Prosody感情解析&#xa;• WebSocket Streaming&#xa;• 48種類の感情スコア" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="1300" y="290" width="190" height="150" as="geometry" />
+        </mxCell>
+
+        <!-- Firebase Auth -->
+        <mxCell id="firebase-auth" value="Firebase Authentication&#xa;&#xa;• Google ログイン&#xa;• JWT トークン管理" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#FF6D00;fontSize=10;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="1110" y="470" width="170" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- Firestore -->
+        <mxCell id="firestore" value="Cloud Firestore&#xa;&#xa;patterns コレクション:&#xa;• userId, name&#xa;• expressionType, deviceType&#xa;• gridData (JSON)&#xa;• isPublic, likes, downloads" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#FF6D00;fontSize=10;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="1110" y="590" width="190" height="160" as="geometry" />
+        </mxCell>
+
+        <!-- Firebase Storage -->
+        <mxCell id="firebase-storage" value="Firebase Storage&#xa;&#xa;• プレビュー画像&#xa;• previewImageUrl" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#FF6D00;fontSize=10;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="1330" y="590" width="150" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- Firebase Label -->
+        <mxCell id="firebase-label" value="Firebase" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=12;fontStyle=1;fontColor=#FF6D00;" vertex="1" parent="1">
+          <mxGeometry x="1110" y="460" width="370" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- ==============================
+             矢印・接続
+        ============================== -->
+
+        <!-- カメラ → useCamera -->
+        <mxCell id="arrow-camera-hook" value="VideoStream" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=#6c8ebf;fontColor=#6c8ebf;fontSize=9;" edge="1" source="camera" target="hook-camera" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- マイク → MicrophoneCapture (エンジン経由) -->
+        <mxCell id="arrow-mic-engine" value="AudioStream" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#6c8ebf;fontColor=#6c8ebf;fontSize=9;" edge="1" source="mic" target="engine-mic" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- useCamera → FaceLandmarker -->
+        <mxCell id="arrow-camera-mediapipe" value="HTMLVideoElement" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=#9673a6;fontColor=#9673a6;fontSize=9;" edge="1" source="hook-camera" target="engine-mediapipe" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- useFaceDetection → FaceLandmarker (uses) -->
+        <mxCell id="arrow-face-mediapipe" value="uses" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.3;entryDx=0;entryDy=0;strokeColor=#9673a6;fontColor=#9673a6;fontSize=9;dashed=1;" edge="1" source="hook-face" target="engine-mediapipe" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- FaceLandmarker → blendshapeConverter -->
+        <mxCell id="arrow-mediapipe-convert" value="52 Blendshapes" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#6c8ebf;fontColor=#6c8ebf;fontSize=9;" edge="1" source="engine-mediapipe" target="util-blendshape" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- blendshapeConverter → expressionDetector -->
+        <mxCell id="arrow-convert-detect" value="BlendShapes" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#6c8ebf;fontColor=#6c8ebf;fontSize=9;" edge="1" source="util-blendshape" target="util-expression" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- MicrophoneCapture → HumeStreamClient -->
+        <mxCell id="arrow-mic-hume-client" value="Base64 Audio" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#6c8ebf;fontColor=#6c8ebf;fontSize=9;" edge="1" source="engine-mic" target="engine-hume-client" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- HumeStreamClient → humeEmotionMapper -->
+        <mxCell id="arrow-hume-client-mapper" value="Hume感情スコア" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;exitX=0;exitY=1;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#6c8ebf;fontColor=#6c8ebf;fontSize=9;" edge="1" source="engine-hume-client" target="util-hume-mapper" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="745" y="810" />
+              <mxPoint x="460" y="810" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- humeEmotionMapper → expressionSmoother -->
+        <mxCell id="arrow-mapper-smoother" value="Expression" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#6c8ebf;fontColor=#6c8ebf;fontSize=9;" edge="1" source="util-hume-mapper" target="util-smoother" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- expressionDetector → CanvasRenderer -->
+        <mxCell id="arrow-detect-canvas" value="Expression" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#82b366;fontColor=#82b366;fontSize=9;" edge="1" source="util-expression" target="canvas-renderer" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="535" y="790" />
+              <mxPoint x="535" y="860" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- expressionSmoother → CanvasRenderer -->
+        <mxCell id="arrow-smoother-canvas" value="Smoothed Expression" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=#82b366;fontColor=#82b366;fontSize=9;" edge="1" source="util-smoother" target="canvas-renderer" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="535" y="790" />
+              <mxPoint x="535" y="810" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- CanvasRenderer → Canvas表示 -->
+        <mxCell id="arrow-canvas-display" value="描画" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;exitX=0;exitY=1;exitDx=0;exitDy=0;entryX=1;entryY=0;entryDx=0;entryDy=0;strokeColor=#82b366;fontColor=#82b366;fontSize=9;" edge="1" source="canvas-renderer" target="canvas-display" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- dotPatterns → CanvasRenderer -->
+        <mxCell id="arrow-patterns-canvas" value="DotPattern JSON" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#d6b656;fontColor=#d6b656;fontSize=9;" edge="1" source="dot-patterns" target="canvas-renderer" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- editorStore → localStorage -->
+        <mxCell id="arrow-store-local" value="persist" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=#82b366;fontColor=#82b366;fontSize=9;dashed=1;" edge="1" source="store-editor" target="local-storage" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- useSpeechRecognition → Web Speech API -->
+        <mxCell id="arrow-speech-api" value="uses" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#666666;fontColor=#666666;fontSize=9;dashed=1;" edge="1" source="hook-speech" target="web-speech" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ---- 外部サービスへの矢印 ---- -->
+
+        <!-- FaceLandmarker → MediaPipe CDN (初期化時) -->
+        <mxCell id="arrow-mediapipe-cdn" value="WASM + Model DL&#xa;(初期化時のみ)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;exitX=1;exitY=0;exitDx=0;exitDy=0;entryX=0;entryY=1;entryDx=0;entryDy=0;strokeColor=#d6b656;fontColor=#d6b656;fontSize=9;dashed=1;" edge="1" source="engine-mediapipe" target="mediapipe-cdn" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="300" y="640" />
+              <mxPoint x="1040" y="640" />
+              <mxPoint x="1040" y="260" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- useHumeEmotion → Cloudflare Workers (APIキー取得) -->
+        <mxCell id="arrow-hume-hook-workers" value="POST /api/hume/token&#xa;(APIキー取得)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=1;entryDx=0;entryDy=0;strokeColor=#b85450;fontColor=#b85450;fontSize=9;" edge="1" source="hook-hume" target="cf-workers" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1040" y="505" />
+              <mxPoint x="1040" y="240" />
+              <mxPoint x="1300" y="240" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- HumeStreamClient → Hume AI (WebSocket) -->
+        <mxCell id="arrow-hume-client-api" value="WebSocket&#xa;wss://api.hume.ai&#xa;(音声データ送信)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#b85450;fontColor=#b85450;fontSize=9;" edge="1" source="engine-hume-client" target="hume-ai" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1040" y="690" />
+              <mxPoint x="1300" y="690" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- useAuth → Firebase Auth -->
+        <mxCell id="arrow-auth-firebase" value="Google ログイン" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#FF6D00;fontColor=#FF6D00;fontSize=9;" edge="1" source="hook-auth" target="firebase-auth" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1040" y="505" />
+              <mxPoint x="1040" y="515" />
+              <mxPoint x="1110" y="515" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- lib/patterns → Firestore -->
+        <mxCell id="arrow-lib-firestore" value="CRUD (patterns)" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#FF6D00;fontColor=#FF6D00;fontSize=9;" edge="1" source="page-gallery" target="firestore" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1040" y="365" />
+              <mxPoint x="1060" y="365" />
+              <mxPoint x="1060" y="670" />
+              <mxPoint x="1110" y="670" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- DotEditorPage → Firestore (パターン保存) -->
+        <mxCell id="arrow-editor-firestore" value="パターン保存" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.3;entryDx=0;entryDy=0;strokeColor=#FF6D00;fontColor=#FF6D00;fontSize=9;" edge="1" source="page-editor" target="firestore" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1040" y="365" />
+              <mxPoint x="1060" y="365" />
+              <mxPoint x="1060" y="620" />
+              <mxPoint x="1110" y="620" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- lib/storage → Firebase Storage -->
+        <mxCell id="arrow-storage-firebase" value="プレビュー画像" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#FF6D00;fontColor=#FF6D00;fontSize=9;" edge="1" source="page-editor" target="firebase-storage" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1040" y="365" />
+              <mxPoint x="1070" y="365" />
+              <mxPoint x="1070" y="635" />
+              <mxPoint x="1330" y="635" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Cloudflare Pages label -->
+        <mxCell id="arrow-pages-note" value="ホスティング" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#d6b656;fontColor=#d6b656;fontSize=9;dashed=1;" edge="1" source="browser-group" target="cf-pages" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1000" y="540" />
+              <mxPoint x="1050" y="540" />
+              <mxPoint x="1050" y="340" />
+              <mxPoint x="1110" y="340" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- ==============================
+             凡例
+        ============================== -->
+        <mxCell id="legend-group" value="凡例" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;fontSize=11;fontStyle=1;verticalAlign=top;arcSize=5;" vertex="1" parent="1">
+          <mxGeometry x="40" y="1030" width="1570" height="100" as="geometry" />
+        </mxCell>
+
+        <mxCell id="legend-input" value="入力デバイス" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="60" y="1060" width="120" height="40" as="geometry" />
+        </mxCell>
+
+        <mxCell id="legend-page" value="Pages / Components" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="200" y="1060" width="150" height="40" as="geometry" />
+        </mxCell>
+
+        <mxCell id="legend-hook" value="React Hooks" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f3e8ff;strokeColor=#9673a6;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="370" y="1060" width="120" height="40" as="geometry" />
+        </mxCell>
+
+        <mxCell id="legend-engine" value="Engines / Utils" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="510" y="1060" width="120" height="40" as="geometry" />
+        </mxCell>
+
+        <mxCell id="legend-state" value="State / Renderer" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="650" y="1060" width="130" height="40" as="geometry" />
+        </mxCell>
+
+        <mxCell id="legend-external" value="外部サービス (Cloudflare)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d6b656;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="800" y="1060" width="180" height="40" as="geometry" />
+        </mxCell>
+
+        <mxCell id="legend-firebase" value="外部サービス (Firebase)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#FF6D00;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="1000" y="1060" width="170" height="40" as="geometry" />
+        </mxCell>
+
+        <mxCell id="legend-hume-ext" value="外部サービス (Hume AI)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;fontSize=10;" vertex="1" parent="1">
+          <mxGeometry x="1190" y="1060" width="170" height="40" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
