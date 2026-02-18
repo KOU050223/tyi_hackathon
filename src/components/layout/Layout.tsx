@@ -8,7 +8,8 @@ interface LayoutProps {
 
 export function Layout({ children }: LayoutProps) {
   const location = useLocation();
-  const isFullscreenPage = location.pathname === "/";
+  const isFullscreenPage =
+    ["/face", "/voice"].includes(location.pathname) || location.pathname.startsWith("/display/");
 
   if (isFullscreenPage) {
     return <>{children}</>;

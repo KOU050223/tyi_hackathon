@@ -26,6 +26,60 @@ export const WAKE_WORD_CONFIG: WakeWordConfig = {
  */
 export const VOICE_COMMANDS: VoiceCommand[] = [
   {
+    id: "go-home",
+    patterns: ["ホーム", "ほーむ", "ホームに戻る", "ほーむにもどる", "戻る", "もどる"],
+    action: {
+      type: "navigate",
+      path: "/",
+    },
+    matchType: "partial",
+    description: "ホーム画面に戻ります",
+  },
+  {
+    id: "face-mode",
+    patterns: [
+      "表情認識",
+      "ひょうじょうにんしき",
+      "カメラモード",
+      "かめらもーど",
+      "表情認識モード",
+      "ひょうじょうにんしきもーど",
+    ],
+    action: {
+      type: "navigate",
+      path: "/face",
+    },
+    matchType: "partial",
+    description: "表情認識モードを起動します",
+  },
+  {
+    id: "voice-mode",
+    patterns: [
+      "音声感情",
+      "おんせいかんじょう",
+      "ボイスモード",
+      "ぼいすもーど",
+      "音声感情モード",
+      "おんせいかんじょうもーど",
+    ],
+    action: {
+      type: "navigate",
+      path: "/voice",
+    },
+    matchType: "partial",
+    description: "音声感情モードを起動します",
+  },
+  {
+    id: "open-gallery",
+    patterns: ["ギャラリー", "ぎゃらりー", "ギャラリーを開く", "ぎゃらりーをひらく"],
+    action: {
+      type: "navigate",
+      path: "/gallery",
+    },
+    matchType: "partial",
+    description: "ギャラリーを開きます",
+  },
+  {
     id: "open-editor",
     patterns: [
       "エディターモード起動",

@@ -1,6 +1,9 @@
-import { useState } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { ExpressionCard } from "@/components/expressions/ExpressionCard";
 import { PatternEditorModal } from "@/components/expressions/PatternEditorModal";
+import { RinaBoardView } from "@/components/board/RinaBoardView";
+import { CanvasRenderer } from "@/engines/renderer/CanvasRenderer";
+import { useDeviceType } from "@/hooks/useDeviceType";
 import { ALL_DETECTABLE_EXPRESSIONS } from "@/constants/expression";
 import type { DeviceType } from "@/types/device";
 import type { Expression } from "@/types/expression";
@@ -11,6 +14,10 @@ export default function ExpressionsPage() {
   const [viewMode, setViewMode] = useState<ViewMode>("both");
   const [editingExpression, setEditingExpression] = useState<Expression | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [previewExpression, setPreviewExpression] = useState<Expression | null>(null);
+  const previewCanvasRef = useRef<HTMLCanvasElement>(null);
+  const previewRendererRef = useRef<CanvasRenderer | null>(null);
+  const actualDeviceType = useDeviceType();
 
   const handleEdit = (expression: Expression) => {
     setEditingExpression(expression);
@@ -21,6 +28,62 @@ export default function ExpressionsPage() {
     setIsModalOpen(false);
     setEditingExpression(null);
   };
+
+  const handlePreview = useCallback((expression: Expression) => {
+    setPreviewExpression(expression);
+  }, []);
+
+  const handleClosePreview = useCallback(() => {
+    setPreviewExpression(null);
+    previewRendererRef.current = null;
+  }, []);
+
+  // プレビュー表示時にレンダリング
+  useEffect(() => {
+    if (!previewExpression || !previewCanvasRef.current) return;
+
+    if (!previewRendererRef.current) {
+      previewRendererRef.current = new CanvasRenderer(previewCanvasRef.current);
+    }
+
+    const deviceType: DeviceType = actualDeviceType;
+    previewRendererRef.current.render(previewExpression, deviceType).catch((err) => {
+      console.error("Failed to render preview:", err);
+    });
+  }, [previewExpression, actualDeviceType]);
+
+  // 全面プレビュー表示
+  if (previewExpression) {
+    return (
+      <RinaBoardView canvasRef={previewCanvasRef}>
+        <div
+          style={{
+            position: "fixed",
+            bottom: "20px",
+            right: "20px",
+            zIndex: 10,
+          }}
+        >
+          <button
+            onClick={handleClosePreview}
+            style={{
+              padding: "10px 24px",
+              fontSize: "14px",
+              backgroundColor: "#E66CBC",
+              color: "#1A1225",
+              border: "none",
+              cursor: "pointer",
+              borderRadius: "8px",
+              fontWeight: "bold",
+              boxShadow: "0 4px 8px rgba(230, 108, 188, 0.4)",
+            }}
+          >
+            表情一覧に戻る
+          </button>
+        </div>
+      </RinaBoardView>
+    );
+  }
 
   return (
     <div className="min-h-screen text-[#F5F0FF] font-mono">
@@ -71,6 +134,7 @@ export default function ExpressionsPage() {
               deviceType={viewMode === "both" ? "smartphone" : (viewMode as DeviceType)}
               showBothDeviceTypes={viewMode === "both"}
               onEdit={handleEdit}
+              onPreview={handlePreview}
             />
           ))}
         </div>

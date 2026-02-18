@@ -112,6 +112,14 @@ export function PatternCard({ pattern, showDeleteButton, onDelete }: PatternCard
     [onDelete, pattern.id],
   );
 
+  const handlePreview = useCallback(
+    (e: React.MouseEvent) => {
+      e.stopPropagation();
+      navigate(`/display/${pattern.id}`);
+    },
+    [navigate, pattern.id],
+  );
+
   const handleCardClick = () => {
     if (isOwner) {
       navigate(`/editor/${pattern.id}`);
@@ -185,6 +193,15 @@ export function PatternCard({ pattern, showDeleteButton, onDelete }: PatternCard
           >
             <span>↓</span>
             <span>{pattern.downloads}</span>
+          </button>
+
+          <button
+            onClick={handlePreview}
+            className="flex items-center gap-1 text-[#A89BBE] hover:text-[#7DD3E8] transition-colors cursor-pointer"
+            title="全面表示で試す"
+          >
+            <span>▶</span>
+            <span>試す</span>
           </button>
 
           {showDeleteButton && onDelete && (
