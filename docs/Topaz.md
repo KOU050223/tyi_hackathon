@@ -3,6 +3,7 @@ title: "璃奈ちゃんボード（仮）"
 github: "https://github.com/KOU050223/tyi_hackathon"
 product_url: "https://rina-chan-board.uomi.dev"
 tags: [TypeScript, React, Firebase, Tailwind]
+image_url: "https://topaz.dev/_next/image?url=https%3A%2F%2Fptera-publish.topaz.dev%2Fproject%2F01KHN4TYQGQ76NAGCMATJMV077.jpeg&w=3840&q=75"
 description: "とあるアニメの表情を出すのが苦手な少女が表情を出すためのボード"
 推しアイデア: "スマホのときとタブレットの時で表現できる幅が変わる"
 作った背景: "璃奈ちゃんボードかっこかわいくて再現したかった"
