@@ -1,0 +1,7 @@
+name = "tyi-hackathon-api"
+main = "src/index.ts"
+compatibility_date = "2025-02-14"
+
+# Secrets (set via `wrangler secret put`):
+# - HUME_API_KEY
+# - HUME_SECRET

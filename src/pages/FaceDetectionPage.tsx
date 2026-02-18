@@ -4,11 +4,13 @@ import { useCamera } from "@/hooks/useCamera";
 import { useDeviceType } from "@/hooks/useDeviceType";
 import { useFaceDetection } from "@/hooks/useFaceDetection";
 import { useSpeechRecognition } from "@/hooks/useSpeechRecognition";
+import { useHumeEmotion } from "@/hooks/useHumeEmotion";
 import { CanvasRenderer } from "@/engines/renderer/CanvasRenderer";
 import { detectExpression } from "@/utils/expressionDetector";
 import { convertBlendshapes } from "@/utils/blendshapeConverter";
 import { VoiceControl } from "@/components/voice/VoiceControl";
 import { VoiceIndicator } from "@/components/voice/VoiceIndicator";
+import { VoiceEmotionToggle } from "@/components/voice/VoiceEmotionToggle";
 import type { Expression } from "@/types/expression";
 
 export default function FaceDetectionPage() {
@@ -20,12 +22,30 @@ export default function FaceDetectionPage() {
   const [currentExpression, setCurrentExpression] = useState<Expression>("neutral");
   const [_confidence, setConfidence] = useState<number>(0);
   const [voiceEnabled, setVoiceEnabled] = useState<boolean>(false);
+  const [voiceEmotionMode, setVoiceEmotionMode] = useState<boolean>(false);
 
   // 音声認識デバッグモード（開発環境のみ有効）
   const isVoiceIndicatorDebug = import.meta.env.DEV;
 
   // 許可されたナビゲーションパス
   const ALLOWED_PATHS = ["/", "/gallery", "/editor", "/settings"];
+
+  // Hume AI 音声感情解析
+  const {
+    isConnected: isHumeConnected,
+    isInitializing: isHumeInitializing,
+    isSpeaking: isHumeSpeaking,
+    error: humeError,
+  } = useHumeEmotion({
+    enabled: voiceEmotionMode && isReady,
+    onExpressionChange: (expression, confidence) => {
+      setCurrentExpression(expression);
+      setConfidence(confidence);
+    },
+    onError: (err) => {
+      console.error("Hume emotion error:", err);
+    },
+  });
 
   const {
     result: _faceResult,
@@ -35,7 +55,7 @@ export default function FaceDetectionPage() {
     isDetecting,
   } = useFaceDetection({
     videoRef,
-    enabled: isReady,
+    enabled: isReady && !voiceEmotionMode,
     onDetection: (result) => {
       if (result.detected && result.blendshapes) {
         const blendshapes = convertBlendshapes(result.blendshapes);
@@ -112,7 +132,7 @@ export default function FaceDetectionPage() {
     }
   }, [currentExpression, deviceType]);
 
-  const error = cameraError || faceError?.message || voiceError?.message;
+  const error = cameraError || faceError?.message || voiceError?.message || humeError?.message;
 
   return (
     <div
@@ -216,16 +236,25 @@ export default function FaceDetectionPage() {
             </button>
           )}
           {isReady && (
-            <VoiceControl
-              isListening={isListening}
-              isSupported={isSupported}
-              state={voiceState}
-              onStart={() => setVoiceEnabled(true)}
-              onStop={() => {
-                setVoiceEnabled(false);
-                stopListening();
-              }}
-            />
+            <div style={{ display: "flex", gap: "12px", alignItems: "flex-start" }}>
+              <VoiceEmotionToggle
+                isActive={voiceEmotionMode}
+                isConnected={isHumeConnected}
+                isInitializing={isHumeInitializing}
+                isSpeaking={isHumeSpeaking}
+                onToggle={setVoiceEmotionMode}
+              />
+              <VoiceControl
+                isListening={isListening}
+                isSupported={isSupported}
+                state={voiceState}
+                onStart={() => setVoiceEnabled(true)}
+                onStop={() => {
+                  setVoiceEnabled(false);
+                  stopListening();
+                }}
+              />
+            </div>
           )}
           {error && (
             <p style={{ color: "#FF5A7E", fontSize: "14px", maxWidth: "300px" }}>{error}</p>
@@ -235,7 +264,19 @@ export default function FaceDetectionPage() {
           )}
           {isReady && (
             <p style={{ fontSize: "12px", color: "#A89BBE" }}>
-              {isDetecting ? (
+              {voiceEmotionMode ? (
+                isHumeConnected ? (
+                  isHumeSpeaking ? (
+                    <>音声感情解析中</>
+                  ) : (
+                    <>音声待機中</>
+                  )
+                ) : isHumeInitializing ? (
+                  <>Hume AI接続中...</>
+                ) : (
+                  <>音声感情モード</>
+                )
+              ) : isDetecting ? (
                 <>リアルタイム表情認識中</>
               ) : isInitialized ? (
                 <>検出待機中</>
