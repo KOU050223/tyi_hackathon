@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router";
 import { useCamera } from "@/hooks/useCamera";
 import { useDeviceType } from "@/hooks/useDeviceType";
@@ -140,7 +140,7 @@ export default function FaceDetectionPage() {
     }
   }, [voiceEmotionMode, voiceEnabled, stopListening]);
 
-  const getStatusText = () => {
+  const statusText = useMemo(() => {
     if (voiceEmotionMode) {
       if (isHumeConnected) {
         return isHumeSpeaking ? "音声感情解析中" : "音声待機中";
@@ -150,7 +150,14 @@ export default function FaceDetectionPage() {
     if (isDetecting) return "リアルタイム表情認識中";
     if (isInitialized) return "検出待機中";
     return "初期化中...";
-  };
+  }, [
+    voiceEmotionMode,
+    isHumeConnected,
+    isHumeSpeaking,
+    isHumeInitializing,
+    isDetecting,
+    isInitialized,
+  ]);
 
   const error = cameraError || faceError?.message || voiceError?.message || humeError?.message;
 
@@ -282,7 +289,7 @@ export default function FaceDetectionPage() {
           {isInitializing && (
             <p style={{ color: "#7DD3E8", fontSize: "14px" }}>MediaPipe初期化中...</p>
           )}
-          {isReady && <p style={{ fontSize: "12px", color: "#A89BBE" }}>{getStatusText()}</p>}
+          {isReady && <p style={{ fontSize: "12px", color: "#A89BBE" }}>{statusText}</p>}
         </div>
       </div>
     </div>

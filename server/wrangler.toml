@@ -6,6 +6,10 @@ compatibility_date = "2025-02-14"
 # NOTE: 本番デプロイ時は `wrangler secret put ALLOWED_ORIGIN` で本番ドメインを設定
 # ALLOWED_ORIGIN = "https://rina-chan-board.uomi.dev"
 
-# Secrets (set via `wrangler secret put`):
+# ローカル開発用: server/.dev.vars に以下を記載（.gitignore済み）
+# HUME_API_KEY=your_hume_api_key_here
+# ALLOWED_ORIGIN=http://localhost:5173
+#
+# 本番用 Secrets (set via `wrangler secret put`):
 # - HUME_API_KEY
-# - ALLOWED_ORIGIN (本番用)
+# - ALLOWED_ORIGIN

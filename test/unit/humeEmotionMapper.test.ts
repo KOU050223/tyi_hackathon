@@ -10,6 +10,12 @@ function makeEmotions(overrides: Record<string, number>): HumeEmotion[] {
 }
 
 describe("emotionsToMap", () => {
+  it("空配列の場合は空のMapを返す", () => {
+    const map = emotionsToMap([]);
+    expect(map.size).toBe(0);
+    expect(map.get("Joy")).toBeUndefined();
+  });
+
   it("配列をMapに変換する", () => {
     const emotions: HumeEmotion[] = [
       { name: "Joy", score: 0.8 },
@@ -77,12 +83,14 @@ describe("mapHumeEmotionsToExpression", () => {
   });
 
   it("Triumph高スコアでsmugを返す", () => {
-    const result = mapHumeEmotionsToExpression(makeEmotions({ Triumph: 0.05, Pride: 0.04 }));
+    // 閾値0.08に対して合算0.15で十分なマージンを確保
+    const result = mapHumeEmotionsToExpression(makeEmotions({ Triumph: 0.1, Pride: 0.05 }));
     expect(result.expression).toBe("smug");
   });
 
   it("Embarrassment高スコアでembarrassedを返す", () => {
-    const result = mapHumeEmotionsToExpression(makeEmotions({ Embarrassment: 0.06, Shame: 0.04 }));
+    // 閾値0.08に対して合算0.15で十分なマージンを確保
+    const result = mapHumeEmotionsToExpression(makeEmotions({ Embarrassment: 0.1, Shame: 0.05 }));
     expect(result.expression).toBe("embarrassed");
   });
 

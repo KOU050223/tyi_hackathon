@@ -25,10 +25,13 @@ const TOKEN_ENDPOINT = import.meta.env.VITE_HUME_TOKEN_ENDPOINT ?? "/api/hume/to
 
 async function fetchApiKey(): Promise<string> {
   const response = await fetch(TOKEN_ENDPOINT, { method: "POST" });
-  const data: unknown = await response.json();
   if (!response.ok) {
-    throw new Error(`Failed to fetch Hume API key: ${response.status} ${JSON.stringify(data)}`);
+    const body = await response.text();
+    throw new Error(
+      `Failed to fetch Hume API key: ${response.status} ${response.statusText} ${body}`,
+    );
   }
+  const data: unknown = await response.json();
   if (
     typeof data !== "object" ||
     data === null ||

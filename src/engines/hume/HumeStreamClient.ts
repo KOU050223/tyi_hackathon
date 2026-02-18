@@ -104,15 +104,11 @@ export class HumeStreamClient {
       if (import.meta.env.DEV) {
         console.error("[Hume] WebSocket error:", event);
       }
-      let message = "WebSocket error";
+      let message: string;
       if (event instanceof ErrorEvent) {
         message = `WebSocket error: ${event.message}`;
       } else {
-        try {
-          message = `WebSocket error (type: ${event.type})`;
-        } catch {
-          // ignore
-        }
+        message = `WebSocket error (type: ${event.type})`;
       }
       this.config.onError?.(new Error(message));
     };
@@ -122,6 +118,11 @@ export class HumeStreamClient {
         console.log("[Hume] WebSocket closed:", event.code, event.reason);
       }
       this.setConnected(false);
+      // RFC6455: 1000=正常終了, 1008=ポリシー違反(認証失敗等) は再接続不要
+      const nonRetryableCodes = [1000, 1008, 1011, 1003];
+      if (nonRetryableCodes.includes(event.code)) {
+        this.shouldReconnect = false;
+      }
       if (this.shouldReconnect) {
         this.scheduleReconnect();
       }

@@ -6,8 +6,6 @@
     "strict": true,
     "lib": ["ESNext"],
     "types": ["@cloudflare/workers-types"],
-    "jsx": "react-jsx",
-    "jsxImportSource": "hono/jsx",
     "verbatimModuleSyntax": true,
     "outDir": "dist",
     "rootDir": "src"
