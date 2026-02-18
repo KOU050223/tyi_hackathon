@@ -8,6 +8,7 @@ export class CanvasRenderer {
   private ctx: CanvasRenderingContext2D;
   private canvas: HTMLCanvasElement;
   private currentExpression: Expression | null = null;
+  private currentDeviceType: "smartphone" | "tablet" | null = null;
   private dotSize: number = 40; // 各ドットのサイズ（ピクセル）
   private _renderVersion: number = 0; // レンダリング競合防止用バージョントークン
 
@@ -90,8 +91,8 @@ export class CanvasRenderer {
    * @param deviceType デバイスタイプ（スマホ/タブレット）
    */
   async render(expression: Expression, deviceType: "smartphone" | "tablet") {
-    // 差分レンダリング: 表情が変わった時のみ再描画
-    if (expression === this.currentExpression) {
+    // 差分レンダリング: 表情またはデバイスタイプが変わった時のみ再描画
+    if (expression === this.currentExpression && deviceType === this.currentDeviceType) {
       return;
     }
 
@@ -108,6 +109,7 @@ export class CanvasRenderer {
 
     this.drawDotPattern(pattern);
     this.currentExpression = expression;
+    this.currentDeviceType = deviceType;
   }
 
   /**
@@ -131,5 +133,6 @@ export class CanvasRenderer {
   reset() {
     this.clear();
     this.currentExpression = null;
+    this.currentDeviceType = null;
   }
 }
