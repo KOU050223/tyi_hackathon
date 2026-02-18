@@ -36,9 +36,17 @@ export function VoiceEmotionToggle({
   return (
     <div className="flex flex-col items-center gap-2">
       <button
-        onClick={() => onToggle(!isActive)}
+        onClick={() => {
+          if (isInitializing) return;
+          onToggle(!isActive);
+        }}
+        disabled={isInitializing}
+        aria-pressed={isActive}
+        aria-disabled={isInitializing}
         className={`w-16 h-16 rounded-full transition-all duration-200 flex items-center justify-center ${getButtonStyle()}`}
-        title={isActive ? "音声感情モードを停止" : "音声感情モードを開始"}
+        title={
+          isInitializing ? "接続中..." : isActive ? "音声感情モードを停止" : "音声感情モードを開始"
+        }
       >
         <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           {isActive ? (

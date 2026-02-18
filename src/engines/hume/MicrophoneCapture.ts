@@ -73,7 +73,12 @@ export class MicrophoneCapture {
     };
 
     this.source.connect(this.processor);
-    this.processor.connect(this.audioContext.destination);
+    // TODO: ScriptProcessorNodeは非推奨。AudioWorkletNodeへの移行を検討
+    // destination直結は音声フィードバックのリスクがあるため、無音ノードを経由
+    const silentGain = this.audioContext.createGain();
+    silentGain.gain.value = 0;
+    this.processor.connect(silentGain);
+    silentGain.connect(this.audioContext.destination);
 
     console.log("[Mic] Microphone capture started, sampleRate:", this.audioContext.sampleRate);
 
@@ -83,7 +88,7 @@ export class MicrophoneCapture {
     }, this.chunkInterval);
   }
 
-  stop(): void {
+  async stop(): Promise<void> {
     if (this.intervalId !== null) {
       clearInterval(this.intervalId);
       this.intervalId = null;
@@ -97,7 +102,7 @@ export class MicrophoneCapture {
       this.source = null;
     }
     if (this.audioContext) {
-      this.audioContext.close();
+      await this.audioContext.close();
       this.audioContext = null;
     }
     if (this.stream) {
@@ -185,10 +190,12 @@ export class MicrophoneCapture {
 
   private arrayBufferToBase64(buffer: ArrayBuffer): string {
     const bytes = new Uint8Array(buffer);
-    let binary = "";
-    for (let i = 0; i < bytes.byteLength; i++) {
-      binary += String.fromCharCode(bytes[i]);
+    const blockSize = 0x8000;
+    const blocks: string[] = [];
+    for (let i = 0; i < bytes.length; i += blockSize) {
+      const block = bytes.subarray(i, Math.min(i + blockSize, bytes.length));
+      blocks.push(String.fromCharCode(...block));
     }
-    return btoa(binary);
+    return btoa(blocks.join(""));
   }
 }

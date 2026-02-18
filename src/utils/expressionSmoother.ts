@@ -7,6 +7,8 @@ export interface SmootherConfig {
   minDisplayTime?: number;
   /** 無音後neutralに戻るまでの時間(ms) デフォルト: 2000 */
   decayTimeout?: number;
+  /** NOTE: 最小表示時間中でも表情を上書きする信頼度閾値 デフォルト: 0.7 */
+  overrideConfidenceThreshold?: number;
 }
 
 export interface SmootherInput {
@@ -19,6 +21,8 @@ export interface SmootherInput {
 const DEFAULT_WINDOW_SIZE = 3;
 const DEFAULT_MIN_DISPLAY_TIME = 1500;
 const DEFAULT_DECAY_TIMEOUT = 2000;
+// NOTE: 閾値を調整して、最小表示時間中の表情上書き感度を変更
+const DEFAULT_OVERRIDE_CONFIDENCE_THRESHOLD = 0.7;
 
 /**
  * 表情のスムージング・Debounce・Decayを管理する。
@@ -35,11 +39,14 @@ export class ExpressionSmoother {
   private readonly windowSize: number;
   private readonly minDisplayTime: number;
   private readonly decayTimeout: number;
+  private readonly overrideConfidenceThreshold: number;
 
   constructor(config?: SmootherConfig) {
     this.windowSize = config?.windowSize ?? DEFAULT_WINDOW_SIZE;
     this.minDisplayTime = config?.minDisplayTime ?? DEFAULT_MIN_DISPLAY_TIME;
     this.decayTimeout = config?.decayTimeout ?? DEFAULT_DECAY_TIMEOUT;
+    this.overrideConfidenceThreshold =
+      config?.overrideConfidenceThreshold ?? DEFAULT_OVERRIDE_CONFIDENCE_THRESHOLD;
   }
 
   update(input: SmootherInput): Expression {
@@ -70,7 +77,10 @@ export class ExpressionSmoother {
     const timeSinceChange = input.timestamp - this.lastChangeTime;
     if (timeSinceChange < this.minDisplayTime) {
       // 表示時間内でも、より高い信頼度の別の強い感情なら上書き許可
-      if (candidate.expression !== this.currentExpression && candidate.confidence > 0.7) {
+      if (
+        candidate.expression !== this.currentExpression &&
+        candidate.confidence > this.overrideConfidenceThreshold
+      ) {
         this.currentExpression = candidate.expression;
         this.lastChangeTime = input.timestamp;
       }

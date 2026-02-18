@@ -25,11 +25,19 @@ const TOKEN_ENDPOINT = import.meta.env.VITE_HUME_TOKEN_ENDPOINT ?? "/api/hume/to
 
 async function fetchApiKey(): Promise<string> {
   const response = await fetch(TOKEN_ENDPOINT, { method: "POST" });
+  const data: unknown = await response.json();
   if (!response.ok) {
-    throw new Error(`Failed to fetch Hume API key: ${response.status}`);
+    throw new Error(`Failed to fetch Hume API key: ${response.status} ${JSON.stringify(data)}`);
   }
-  const data = (await response.json()) as { apiKey: string };
-  return data.apiKey;
+  if (
+    typeof data !== "object" ||
+    data === null ||
+    !("apiKey" in data) ||
+    typeof (data as { apiKey: unknown }).apiKey !== "string"
+  ) {
+    throw new Error(`Invalid API key response: ${JSON.stringify(data)}`);
+  }
+  return (data as { apiKey: string }).apiKey;
 }
 
 export function useHumeEmotion(options: UseHumeEmotionOptions): UseHumeEmotionReturn {
@@ -129,6 +137,10 @@ export function useHumeEmotion(options: UseHumeEmotionOptions): UseHumeEmotionRe
       client.connect();
       await mic.start();
     } catch (err) {
+      // mic.start()失敗時にclient.connect()済みのWebSocketをリークさせない
+      streamClientRef.current?.disconnect();
+      streamClientRef.current = null;
+      micCaptureRef.current = null;
       const error = err instanceof Error ? err : new Error(String(err));
       setError(error);
       onErrorRef.current?.(error);

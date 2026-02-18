@@ -19,7 +19,7 @@
     "firebase:emulators": "firebase emulators:start",
     "firebase:deploy": "firebase deploy",
     "export:patterns": "node scripts/export-patterns.js",
-    "dev:server": "npx wrangler dev --config server/wrangler.toml --port 8787"
+    "dev:server": "npm --prefix server run dev -- --port 8787"
   },
   "dependencies": {
     "@mediapipe/tasks-vision": "^0.10.32",

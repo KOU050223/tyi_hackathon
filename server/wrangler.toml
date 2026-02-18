@@ -2,6 +2,10 @@ name = "tyi-hackathon-api"
 main = "src/index.ts"
 compatibility_date = "2025-02-14"
 
+[vars]
+# NOTE: 本番デプロイ時は `wrangler secret put ALLOWED_ORIGIN` で本番ドメインを設定
+# ALLOWED_ORIGIN = "https://rina-chan-board.uomi.dev"
+
 # Secrets (set via `wrangler secret put`):
 # - HUME_API_KEY
-# - HUME_SECRET
+# - ALLOWED_ORIGIN (本番用)

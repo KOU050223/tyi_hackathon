@@ -104,7 +104,17 @@ export class HumeStreamClient {
       if (import.meta.env.DEV) {
         console.error("[Hume] WebSocket error:", event);
       }
-      this.config.onError?.(new Error(`WebSocket error: ${event}`));
+      let message = "WebSocket error";
+      if (event instanceof ErrorEvent) {
+        message = `WebSocket error: ${event.message}`;
+      } else {
+        try {
+          message = `WebSocket error (type: ${event.type})`;
+        } catch {
+          // ignore
+        }
+      }
+      this.config.onError?.(new Error(message));
     };
 
     this.socket.onclose = (event) => {
@@ -119,28 +129,30 @@ export class HumeStreamClient {
   }
 
   private handleResponse(data: HumeWSResponse): void {
-    if (data?.prosody && "warning" in data.prosody) return;
+    if (data?.prosody?.warning) return;
 
     const predictions = data?.prosody?.predictions;
     if (!predictions || predictions.length === 0) return;
 
-    const emotions: HumeEmotion[] = predictions[0].emotions.map((e) => ({
-      name: e.name,
-      score: e.score,
-    }));
+    for (const prediction of predictions) {
+      const emotions: HumeEmotion[] = prediction.emotions.map((e) => ({
+        name: e.name,
+        score: e.score,
+      }));
 
-    if (import.meta.env.DEV) {
-      const top5 = [...emotions].sort((a, b) => b.score - a.score).slice(0, 5);
-      console.log(
-        "[Hume] Top emotions:",
-        top5.map((e) => `${e.name}: ${e.score.toFixed(3)}`).join(", "),
-      );
+      if (import.meta.env.DEV) {
+        const top5 = [...emotions].sort((a, b) => b.score - a.score).slice(0, 5);
+        console.log(
+          "[Hume] Top emotions:",
+          top5.map((e) => `${e.name}: ${e.score.toFixed(3)}`).join(", "),
+        );
+      }
+
+      this.config.onResult({
+        emotions,
+        timestamp: Date.now(),
+      });
     }
-
-    this.config.onResult({
-      emotions,
-      timestamp: Date.now(),
-    });
   }
 
   private setConnected(connected: boolean): void {
@@ -164,8 +176,12 @@ export class HumeStreamClient {
 /** Hume WebSocketレスポンスの型定義 */
 interface HumeWSResponse {
   prosody?: {
-    predictions: {
+    predictions?: {
       emotions: { name: string; score: number }[];
     }[];
+    warning?: {
+      code?: string;
+      message?: string;
+    };
   };
 }

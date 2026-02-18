@@ -23,6 +23,12 @@ describe("emotionsToMap", () => {
 });
 
 describe("mapHumeEmotionsToExpression", () => {
+  it("空配列の場合はneutralを返す", () => {
+    const result = mapHumeEmotionsToExpression([]);
+    expect(result.expression).toBe("neutral");
+    expect(result.confidence).toBe(1.0);
+  });
+
   it("全スコア低い場合はneutralを返す", () => {
     const result = mapHumeEmotionsToExpression(
       makeEmotions({ Joy: 0.01, Anger: 0.01, Sadness: 0.01 }),
@@ -78,6 +84,14 @@ describe("mapHumeEmotionsToExpression", () => {
   it("Embarrassment高スコアでembarrassedを返す", () => {
     const result = mapHumeEmotionsToExpression(makeEmotions({ Embarrassment: 0.06, Shame: 0.04 }));
     expect(result.expression).toBe("embarrassed");
+  });
+
+  it("confidenceは1.0を超えない", () => {
+    const result = mapHumeEmotionsToExpression(
+      makeEmotions({ Joy: 0.5, Amusement: 0.4, Excitement: 0.3, Contentment: 0.2, Love: 0.1 }),
+    );
+    expect(result.expression).toBe("smile");
+    expect(result.confidence).toBeLessThanOrEqual(1.0);
   });
 
   it("実際のprosodyレスポンスに近いスコア分布で正しく判定する", () => {

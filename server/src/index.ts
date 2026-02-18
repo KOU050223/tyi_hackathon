@@ -3,19 +3,24 @@ import { cors } from "hono/cors";
 
 type Bindings = {
   HUME_API_KEY: string;
-  HUME_SECRET: string;
+  ALLOWED_ORIGIN?: string;
 };
 
 const app = new Hono<{ Bindings: Bindings }>();
 
-app.use(
-  "/api/*",
-  cors({
-    origin: ["http://localhost:5173", "http://localhost:4173"],
+const LOCAL_ORIGINS = ["http://localhost:5173", "http://localhost:4173"];
+
+app.use("/api/*", async (c, next) => {
+  const allowedOrigins = c.env.ALLOWED_ORIGIN
+    ? [...LOCAL_ORIGINS, c.env.ALLOWED_ORIGIN]
+    : LOCAL_ORIGINS;
+  const middleware = cors({
+    origin: allowedOrigins,
     allowMethods: ["POST", "OPTIONS"],
     allowHeaders: ["Content-Type"],
-  }),
-);
+  });
+  return middleware(c, next);
+});
 
 /**
  * Hume Expression Measurement APIのWebSocketはAPIキーで認証する。

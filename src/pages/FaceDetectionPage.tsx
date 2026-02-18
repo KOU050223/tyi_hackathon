@@ -132,6 +132,26 @@ export default function FaceDetectionPage() {
     }
   }, [currentExpression, deviceType]);
 
+  // voiceEmotionModeとvoiceEnabled（音声認識）の排他制御
+  useEffect(() => {
+    if (voiceEmotionMode && voiceEnabled) {
+      setVoiceEnabled(false);
+      stopListening();
+    }
+  }, [voiceEmotionMode, voiceEnabled, stopListening]);
+
+  const getStatusText = () => {
+    if (voiceEmotionMode) {
+      if (isHumeConnected) {
+        return isHumeSpeaking ? "音声感情解析中" : "音声待機中";
+      }
+      return isHumeInitializing ? "Hume AI接続中..." : "音声感情モード";
+    }
+    if (isDetecting) return "リアルタイム表情認識中";
+    if (isInitialized) return "検出待機中";
+    return "初期化中...";
+  };
+
   const error = cameraError || faceError?.message || voiceError?.message || humeError?.message;
 
   return (
@@ -262,29 +282,7 @@ export default function FaceDetectionPage() {
           {isInitializing && (
             <p style={{ color: "#7DD3E8", fontSize: "14px" }}>MediaPipe初期化中...</p>
           )}
-          {isReady && (
-            <p style={{ fontSize: "12px", color: "#A89BBE" }}>
-              {voiceEmotionMode ? (
-                isHumeConnected ? (
-                  isHumeSpeaking ? (
-                    <>音声感情解析中</>
-                  ) : (
-                    <>音声待機中</>
-                  )
-                ) : isHumeInitializing ? (
-                  <>Hume AI接続中...</>
-                ) : (
-                  <>音声感情モード</>
-                )
-              ) : isDetecting ? (
-                <>リアルタイム表情認識中</>
-              ) : isInitialized ? (
-                <>検出待機中</>
-              ) : (
-                <>初期化中...</>
-              )}
-            </p>
-          )}
+          {isReady && <p style={{ fontSize: "12px", color: "#A89BBE" }}>{getStatusText()}</p>}
         </div>
       </div>
     </div>
