@@ -67,7 +67,7 @@ export default function ExpressionsPage() {
           <button
             onClick={handleClosePreview}
             style={{
-              padding: "10px 24px",
+              padding: "10px 16px",
               fontSize: "14px",
               backgroundColor: "#E66CBC",
               color: "#1A1225",
@@ -76,8 +76,24 @@ export default function ExpressionsPage() {
               borderRadius: "8px",
               fontWeight: "bold",
               boxShadow: "0 4px 8px rgba(230, 108, 188, 0.4)",
+              display: "flex",
+              alignItems: "center",
+              gap: "6px",
             }}
           >
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <polyline points="9 14 4 9 9 4" />
+              <path d="M20 20v-7a4 4 0 0 0-4-4H4" />
+            </svg>
             表情一覧に戻る
           </button>
         </div>

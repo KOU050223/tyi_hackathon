@@ -1,4 +1,5 @@
-import type { ReactNode, RefObject } from "react";
+import { useEffect, type ReactNode, type RefObject } from "react";
+import { useDeviceType } from "@/hooks/useDeviceType";
 
 interface RinaBoardViewProps {
   canvasRef: RefObject<HTMLCanvasElement | null>;
@@ -10,6 +11,16 @@ interface RinaBoardViewProps {
  * 背景画像 + Canvas + オーバーレイコントロール（children）
  */
 export function RinaBoardView({ canvasRef, children }: RinaBoardViewProps) {
+  const deviceType = useDeviceType();
+  const isSmartphone = deviceType === "smartphone";
+
+  useEffect(() => {
+    document.body.classList.add("fullscreen-board");
+    return () => {
+      document.body.classList.remove("fullscreen-board");
+    };
+  }, []);
+
   return (
     <div
       style={{
@@ -21,8 +32,10 @@ export function RinaBoardView({ canvasRef, children }: RinaBoardViewProps) {
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        justifyContent: "center",
+        justifyContent: "flex-start",
         overflow: "hidden",
+        zIndex: 100,
+        backgroundColor: "#1A1225",
       }}
     >
       {/* 璃奈ちゃんボード（メイン表示） */}
@@ -31,9 +44,7 @@ export function RinaBoardView({ canvasRef, children }: RinaBoardViewProps) {
           position: "relative",
           width: "100vw",
           height: "100vh",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
+          overflow: "hidden",
         }}
       >
         <img
@@ -42,8 +53,9 @@ export function RinaBoardView({ canvasRef, children }: RinaBoardViewProps) {
           style={{
             display: "block",
             width: "100%",
-            height: "100%",
-            objectFit: "contain",
+            height: isSmartphone ? "200%" : "100%",
+            objectFit: isSmartphone ? "fill" : "contain",
+            objectPosition: "top center",
           }}
         />
         <canvas

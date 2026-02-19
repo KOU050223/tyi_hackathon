@@ -62,6 +62,10 @@ body {
 }
 
 /* Navigation */
+body.fullscreen-board .neon-nav {
+  display: none;
+}
+
 .neon-nav {
   border-bottom: 1px solid rgba(230, 108, 188, 0.2);
   background-color: rgba(26, 18, 37, 0.95);
